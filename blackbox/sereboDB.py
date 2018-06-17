@@ -55,7 +55,7 @@ class SereboDB(object):
         # Metadata table
         sql_metadata_create = '''
         create table if not exists metadata (
-            key text not null,
+            key text primary key,
             value text not null);'''
         sql_metadata_insert1 = '''
         insert into metadata values ('creation_timestamp', '%s');
