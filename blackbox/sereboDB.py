@@ -62,10 +62,15 @@ class SereboDB(object):
         ''' % (now)
         sql_metadata_insert2 = '''
         insert into metadata values ('blackboxID', '%s');
-        ''' % (self.randomString(1024))
+        ''' % (self.randomString(512))
+        # Data log table
+        # Blockchain table
         sqlstmt = [sql_metadata_create, 
                    sql_metadata_insert1,
                    sql_metadata_insert2]
         for statement in sqlstmt:
-            self.cur.execute(statement)
-            self.conn.commit()
+            try:
+                self.cur.execute(statement)
+                self.conn.commit()
+            except sqlite3.IntegrityError:
+                pass
