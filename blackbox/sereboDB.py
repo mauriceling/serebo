@@ -46,7 +46,7 @@ class SereboDB(object):
         return now
 
     def randomString(self, length=64):
-        choices = string.ascii_letters + string.digits
+        choices = string.ascii_letters + string.digits + '!@#$%&<>=[]?'
         x = random.choices(choices, k=length)
         return ''.join(x)
 
