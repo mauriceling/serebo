@@ -76,10 +76,10 @@ class SereboDB(object):
             key text primary key,
             value text not null);'''
         sql_metadata_insert1 = '''
-        insert into metadata values ('creation_timestamp', '%s');
+        insert into metadata (key, value) values ('creation_timestamp', '%s');
         ''' % (now)
         sql_metadata_insert2 = '''
-        insert into metadata values ('blackboxID', '%s');
+        insert into metadata (key, value) values ('blackboxID', '%s');
         ''' % (self.randomString(512))
         # Data log table
         # Blockchain table
