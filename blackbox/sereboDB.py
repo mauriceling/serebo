@@ -21,6 +21,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 '''
 from datetime import datetime
+import hashlib
 import random
 import os
 import secrets
@@ -49,6 +50,23 @@ class SereboDB(object):
         choices = string.ascii_letters + string.digits + '!@#$%&<>=[]?'
         x = random.choices(choices, k=length)
         return ''.join(x)
+
+    def hash(self, data):
+        data = str(data)
+        data = bytes(data, 'utf-8')
+        x = [hashlib.md5(data).hexdigest(),
+             hashlib.sha1(data).hexdigest(), 
+             hashlib.sha224(data).hexdigest(),
+             hashlib.sha3_224(data).hexdigest(),
+             hashlib.sha256(data).hexdigest(), 
+             hashlib.sha3_256(data).hexdigest(),
+             hashlib.sha384(data).hexdigest(),
+             hashlib.sha3_384(data).hexdigest(), 
+             hashlib.sha512(data).hexdigest(), 
+             hashlib.sha3_512(data).hexdigest(), 
+             hashlib.blake2b(data).hexdigest(), 
+             hashlib.blake2s(data).hexdigest()]
+        return ':'.join(x)
 
     def _createTables(self):
         now = self.dtStamp()
