@@ -70,7 +70,7 @@ class SereboDB(object):
         @return: Random string
         '''
         choices = string.ascii_letters + string.digits + '!@#$%&<>=[]?'
-        x = random.choices(choices, k=length)
+        x = random.choices(choices, k=int(length))
         return ''.join(x)
 
     def hash(self, data):
@@ -195,12 +195,12 @@ class SereboDB(object):
         '''
         # Step 1: Preparing data
         dtstamp = self.dtStamp()
-        DL_data = data
+        DL_data = str(data)
         DL_hash = self.hash(bytes(DL_data, 'utf-8'))
         # Step 2: Insert data into datalog
         sqlstmt = '''insert into datalog (dtstamp, hash, data) values 
             (?,?,?)'''
-        sqldata = (dtstamp, DL_hash, DL_data)
+        sqldata = (str(dtstamp), str(DL_hash), str(DL_data))
         self.cur.execute(sqlstmt, sqldata)
         print('Step 1&2: Inserted Data into Data Log ...')
         print('Date Time Stamp: %s' % dtstamp)
@@ -233,8 +233,9 @@ class SereboDB(object):
         hashdata = ''.join([str(p_dtstamp), str(p_randomstring),
                             str(p_hash), str(DL_hash)])
         BC_hash = self.hash(bytes(hashdata, 'utf-8'))
-        sqldata = (dtstamp, BC_rstr, BC_hash, p_ID, p_dtstamp, 
-                   p_randomstring, p_hash, DL_hash)
+        sqldata = (str(dtstamp), str(BC_rstr), str(BC_hash), str(p_ID),
+                   str(p_dtstamp), str(p_randomstring), str(p_hash), 
+                   str(DL_hash))
         sqlstmt = '''insert into blockchain (c_dtstamp, 
             c_randomstring, c_hash, p_ID, p_dtstamp, p_randomstring, 
             p_hash, data) values (?,?,?,?,?,?,?,?)'''
@@ -251,13 +252,13 @@ class SereboDB(object):
             description = str(description)
         sqlstmt = '''insert into eventlog (dtstamp, fID, description) 
         values (?,?,?)'''
-        sqldata = (dtstamp, str(fID), description)
+        sqldata = (str(dtstamp), str(fID), str(description))
         self.cur.execute(sqlstmt, sqldata)
         sqlstmt = '''insert into eventlog_datamap (fID, key, value) 
         values (?,?,?)'''
-        sqldata = [(str(fID), 'DataHash', DL_hash),
-                   (str(fID), 'ParentHash', p_hash),
-                   (str(fID), 'BlockHash', BC_hash)]
+        sqldata = [(str(fID), 'DataHash', str(DL_hash)),
+                   (str(fID), 'ParentHash', str(p_hash)),
+                   (str(fID), 'BlockHash', str(BC_hash))]
         self.cur.executemany(sqlstmt, sqldata)
         # Step 6: Commit 
         self.conn.commit()
