@@ -40,10 +40,15 @@ def initialize():
 
 def insertText(message, description='NA'):
     '''!
+    Function to insert a text string into SEREBO blackbox.
 
     Usage:
 
         python serebo.py intext --message=<text message to be inserted> --description=<explanatory description for this insertion>
+
+    For example:
+
+        python serebo.py intext --message="This is a text message for insertion" --description="Texting 1"
 
     @param message String: Text string to be inserted.
     @param description String: Explanation string for this entry 
