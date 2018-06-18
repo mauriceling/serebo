@@ -151,6 +151,7 @@ class SereboDB(object):
             description text not null);'''
         sql_eventlog_create2 = '''
         create table if not exists eventlog_datamap (
+            dtstamp text not null,
             fID text not null,
             key text not null,
             value text not null);'''
@@ -285,16 +286,16 @@ class SereboDB(object):
         time stamp, parent block hash, data hash, and current block 
         hash.
         '''
-        fID = self.randomString(1024)
+        fID = self.randomString(10)
         sqlstmt = '''insert into eventlog (dtstamp, fID, description) 
         values (?,?,?)'''
         sqldata = (str(dtstamp), str(fID), str(description))
         self.cur.execute(sqlstmt, sqldata)
-        sqlstmt = '''insert into eventlog_datamap (fID, key, value) 
-        values (?,?,?)'''
-        sqldata = [(str(fID), 'DataHash', str(DL_hash)),
-                   (str(fID), 'ParentHash', str(p_hash)),
-                   (str(fID), 'BlockHash', str(BC_hash))]
+        sqlstmt = '''insert into eventlog_datamap (dtstamp, fID, key, 
+            value) values (?,?,?,?)'''
+        sqldata = [(str(dtstamp), str(fID), 'DataHash', str(DL_hash)),
+                   (str(dtstamp), str(fID), 'ParentHash', str(p_hash)),
+                   (str(dtstamp), str(fID), 'BlockHash', str(BC_hash))]
         self.cur.executemany(sqlstmt, sqldata)
 
     def insertData(self, data, description='NA', debug=False):
