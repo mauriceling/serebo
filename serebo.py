@@ -25,9 +25,20 @@ import secrets
 
 import fire
 
-import serebo_api as api
+import serebo_blackbox as bb
+
+
+def initialize():
+    '''!
+    Function to initialize SEREBO blackbox.
+
+    Usage:
+
+        python serebo.py init
+    '''
+    db = bb.connectDB()
 
 
 if __name__ == '__main__':
-    exposed_functions = {}
+    exposed_functions = {'init': initialize}
     fire.Fire(exposed_functions)
