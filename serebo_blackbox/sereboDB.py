@@ -175,9 +175,9 @@ class SereboDB(object):
         Private method - Step 1 of insert data into CEREBO black box. 
         Called by insertData method. Step 1 (1) gets a UTC date time 
         stamp; (2) formats the description by suffixing the 
-        description with a 10-character random string; and (3) 
-        generates a hash using the UTC date time stamp, data and 
-        formatted description. 
+        description with a 10-character random string (80**10 = 1e19 
+        possibility); and (3) generates a hash using the UTC date time 
+        stamp, data and formatted description. 
         '''
         dtstamp = self.dtStamp()
         DL_data = str(data)
@@ -243,10 +243,10 @@ class SereboDB(object):
     def _insertData4(self, p_dtstamp, p_randomstring, p_hash, DL_hash):
         '''!
         Private method - Step 4 of insert data into CEREBO black box. 
-        Called by insertData method. Step 4 generates a hash from the 
-        parent date time stamp, parent random string, parent hash, and 
-        current data hash (from Step 1) as current block hash; and 
-        generates a random string for the current block.
+        Called by insertData method. Step 4 (1) generates a hash from 
+        the parent date time stamp, parent random string, parent hash, 
+        and current data hash (from Step 1) as current block hash; (2) 
+        and generates a random string for the current block.
         '''
         BC_rstr = self.randomString(128)
         hashdata = ''.join([str(p_dtstamp), str(p_randomstring),
