@@ -173,18 +173,21 @@ class SereboDB(object):
     def _insertData1(self, data, description, debug):
         '''!
         Private method - Step 1 of insert data into CEREBO black box. 
-        Called by insertData method. Step 1 gets a UTC date time 
-        stamp, formats the description, and generates a hash using 
-        data and formatted description. 
+        Called by insertData method. Step 1 (1) gets a UTC date time 
+        stamp; (2) formats the description by suffixing the 
+        description with a 10-character random string; and (3) 
+        generates a hash using the UTC date time stamp, data and 
+        formatted description. 
         '''
         dtstamp = self.dtStamp()
         DL_data = str(data)
         if description == 'NA' or description == None:
-            description = 'NA_' + self.randomString(64)
+            description = 'NA:' + self.randomString(10)
         else:
-            description = str(description) + '_' + \
-                          self.randomString(64)
-        DL_hash = self.hash(bytes(DL_data, 'utf-8') + \
+            description = str(description) + ':' + \
+                          self.randomString(10)
+        DL_hash = self.hash(bytes(dtstamp, 'utf-8') + \
+                            bytes(DL_data, 'utf-8') + \
                             bytes(description, 'utf-8'))
         return (dtstamp, DL_data, description, DL_hash)
 
