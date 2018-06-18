@@ -27,6 +27,11 @@ from . import sereboDB
 from .sereboDB import SereboDB
 
 def connectDB():
+    '''
+    Function to connect to SEREBO database - the recorder box.
+
+    @return: SEREBO database object
+    '''
     db = SereboDB()
     return db
 
