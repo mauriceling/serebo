@@ -30,7 +30,7 @@ import string
 
 class SereboDB(object):
     '''!
-    Class representing SEREBO database - the recorder box.
+    Class representing SEREBO database - the recorder black box.
     '''
     def __init__(self):
         '''!
