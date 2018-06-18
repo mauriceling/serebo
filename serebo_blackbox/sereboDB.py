@@ -110,15 +110,16 @@ class SereboDB(object):
         # Metadata table
         sql_metadata_create = '''
         create table if not exists metadata (
-            key text primary key,
+            dtstamp text not null,
+            key text not null,
             value text not null);'''
         sql_metadata_insert1 = '''
-        insert into metadata (key, value) values 
-            ('creation_timestamp', '%s');
-        ''' % (now)
+        insert into metadata (dtstamp, key, value) values 
+            ('%s', 'creation_timestamp', '%s');
+        ''' % (now, now)
         sql_metadata_insert2 = '''
-        insert into metadata (key, value) values ('blackboxID', '%s');
-        ''' % (self.randomString(512))
+        insert into metadata (dtstamp, key, value) values ('%s', 'blackboxID', '%s');
+        ''' % (now, self.randomString(512))
         # Data log table
         sql_datalog_create = '''
         create table if not exists datalog (
