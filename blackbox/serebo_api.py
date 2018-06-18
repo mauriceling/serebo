@@ -35,4 +35,31 @@ def connectDB():
     db = SereboDB()
     return db
 
+def insertData(sdb_object, data, description=None):
+    '''
+    Function to insert data into SEREBO database.
 
+    A dictionary of items generated will be returned with the 
+    following keys: (1) DateTimeStamp is the UTC date time stamp 
+    of this event, (2) Data is the given data string to be 
+    inserted, (3) UserDescription is the user given explanation 
+    string for this event suffixed with a 64-character random 
+    string, (4) DataHash is the hash string of Data, (5) 
+    ParentBlockID is the ID of the parent block in blockchain, (6) 
+    ParentDateTimeStamp is the UTC date time stamp of the parent 
+    block in blockchain (which is also the parent insertion 
+    event), (7) ParentRandomString is the random string generated 
+    in parent block in blockchain, (8) ParentHash is the hash of 
+    parent block in blockchain, (9) BlockRandomString is the 
+    random string generated for current insertion event, and (10) 
+    BlockHash is the block hash of current insertion event in 
+    blockchain.
+
+    @param sdb_object Object: SEREBO database object.
+    @param data String: Data to be inserted.
+    @param description String: Explanation string for this entry 
+    event. Default = NA.
+    @return: Dictionary of data generated from this event.
+    '''
+    rdata = sdb_object.insertData(data, description)
+    return rdata
