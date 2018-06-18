@@ -168,7 +168,7 @@ class SereboDB(object):
             except sqlite3.IntegrityError:
                 pass
 
-    def insertData(self, data, description='NA'):
+    def insertData(self, data, description='NA', debug=False):
         '''!
         Method to insert data into SEREBO database. Data will be 
         recorded in datalog table together with the hash of the data. 
@@ -194,6 +194,7 @@ class SereboDB(object):
         @param data String: Data to be inserted.
         @param description String: Explanation string for this entry 
         event. Default = NA.
+        @param debug Boolean: Flag to print out debugging statements.
         @return: Dictionary of data generated from this event.
         '''
         # Step 1: Preparing data
@@ -212,12 +213,12 @@ class SereboDB(object):
         sqldata = (str(dtstamp), str(DL_hash), str(DL_data), 
                    str(description))
         self.cur.execute(sqlstmt, sqldata)
-        print('Step 1&2: Inserted Data into Data Log ...')
-        print('Date Time Stamp: %s' % dtstamp)
-        print('Inserted Data: %s' % data)
-        print('Generated Hash: %s' % DL_hash)
+        if debug:
+            print('Step 1&2: Inserted Data into Data Log ...')
+            print('Date Time Stamp: %s' % dtstamp)
+            print('Inserted Data: %s' % data)
+            print('Generated Hash: %s' % DL_hash)
         # Step 3: Get latest block in blockchain
-        print('Step 3: Getting Latest Block from Blockchain ...')
         sqlstmt = '''select max(c_ID) from blockchain'''
         max_cID = [row for row in self.cur.execute(sqlstmt)][0][0]
         if max_cID == None:
@@ -227,17 +228,19 @@ class SereboDB(object):
             p_hash = 'MauriceHTLing'
         else:
             sqlstmt = '''select c_ID, c_dtstamp, c_randomstring, 
-                c_hash from blockchain where c_ID = ?'''
-            max_cID = str(max_cID)
-            data3 = [row for row in self.cur.execute(sqlstmt, max_cID)]
+                c_hash from blockchain where c_ID = %s''' % \
+                str(max_cID)
+            data3 = [row for row in self.cur.execute(sqlstmt)]
             p_ID = data3[0][0]
             p_dtstamp = data3[0][1]
             p_randomstring = data3[0][2]
             p_hash = data3[0][3]
-        print('Parent ID: %s' % p_ID)
-        print('Parent Date Time Stamp: %s' % p_dtstamp)
-        print('Parent Random String: %s' % p_randomstring)
-        print('Parent Hash: %s' % p_hash)
+        if debug:
+            print('Step 3: Getting Latest Block from Blockchain ...')
+            print('Parent ID: %s' % p_ID)
+            print('Parent Date Time Stamp: %s' % p_dtstamp)
+            print('Parent Random String: %s' % p_randomstring)
+            print('Parent Hash: %s' % p_hash)
         # Step 4: Insert data into blockchain
         BC_rstr = self.randomString(128)
         hashdata = ''.join([str(p_dtstamp), str(p_randomstring),
@@ -250,10 +253,11 @@ class SereboDB(object):
             c_randomstring, c_hash, p_ID, p_dtstamp, p_randomstring, 
             p_hash, data) values (?,?,?,?,?,?,?,?)'''
         self.cur.execute(sqlstmt, sqldata)
-        print('Step 4: Insert Data into Blockchain (New Block) ...')
-        print('Random String: %s' % BC_rstr)
-        print('New Block Hash: %s' % BC_hash)
-        print('')
+        if debug:
+            print('Step 4: Insert Data into Blockchain (New Block) ...')
+            print('Random String: %s' % BC_rstr)
+            print('New Block Hash: %s' % BC_hash)
+            print('')
         # Step 5: Insert event into eventlog
         fID = self.randomString(1024)
         sqlstmt = '''insert into eventlog (dtstamp, fID, description) 
