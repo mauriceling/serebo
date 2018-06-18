@@ -109,3 +109,56 @@ def insertText(sdb_object, text, description='NA'):
     '''
     rdata = sdb_object.insertData(text, description)
     return rdata
+
+def fileHash(filepath):
+    '''!
+    Function to generate a series of 12 hashes for a given file, in 
+    the format of <MD5>:<SHA1>:<SHA224>:<SHA3 244>:<SHA256>:<SHA3 
+    256>:<SHA384>:<SHA3 384>:<SHA512>:<SHA3 215>:<Blake 2b>:<Blake 
+    2s>.
+
+    @param filepath String: Path of file for hash generation.
+    @return: Hash
+    '''
+    md5 = hashlib.md5()
+    sha1 = hashlib.sha1()
+    sha224 = hashlib.sha224()
+    sha3_224 = hashlib.sha3_224()
+    sha256 = hashlib.sha256()
+    sha3_256 = hashlib.sha3_256()
+    sha384 = hashlib.sha384()
+    sha3_384 = hashlib.sha3_384()
+    sha512 = hashlib.sha512()
+    sha3_512 =  hashlib.sha3_512() 
+    blake2b = hashlib.blake2b()
+    blake2s = hashlib.blake2s()
+    with open(filepath, 'rb') as f:
+        while True:
+            data = f.read(65536)
+            if not data:
+                break
+            md5.update(data)
+            sha1.update(data)
+            sha224.update(data)
+            sha3_224.update(data)
+            sha256.update(data)
+            sha3_256.update(data)
+            sha384.update(data)
+            sha3_384.update(data)
+            sha512.update(data)
+            sha3_512.update(data)
+            blake2b.update(data)
+            blake2s.update(data)
+    x = [md5.hexdigest(),
+         sha1.hexdigest(), 
+         sha224.hexdigest(),
+         sha3_224.hexdigest(),
+         sha256.hexdigest(), 
+         sha3_256.hexdigest(),
+         sha384.hexdigest(),
+         sha3_384.hexdigest(), 
+         sha512.hexdigest(), 
+         sha3_512.hexdigest(), 
+         blake2b.hexdigest(), 
+         blake2s.hexdigest()]
+    return ':'.join(x)

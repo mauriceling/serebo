@@ -83,6 +83,7 @@ def systemData():
     for k in data:
         print('    %s: %s' % (k, data[k]))
     print('------ End of System Data ------')
+    print('')
 
 def systemRecord():
     '''!
@@ -106,10 +107,26 @@ def systemRecord():
         print('    %s: %s' % (k, data[k]))
     db.conn.commit()
     print('------ End of System Data ------')
+    print('')
+
+def fileHash(filepath):
+    '''!
+    Function to generate and print out hash of a file.
+
+    Usage:
+
+        python serebo.py fhash --filepath=<path of file to hash>
+    '''
+    fHash = bb.fileHash(filepath)
+    print('')
+    print('File Path: %s' % str(filepath))
+    print('File Hash: %s' % str(fHash))
+    print('')
 
 
 if __name__ == '__main__':
-    exposed_functions = {'init': initialize,
+    exposed_functions = {'fhash': fileHash,
+                         'init': initialize,
                          'intext': insertText,
                          'sysdata': systemData,
                          'sysrecord': systemRecord}
