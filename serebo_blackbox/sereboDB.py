@@ -168,6 +168,92 @@ class SereboDB(object):
             except sqlite3.IntegrityError:
                 pass
 
+    def _insertData1(self, data, description, debug):
+        dtstamp = self.dtStamp()
+        DL_data = str(data)
+        if description == 'NA' or description == None:
+            description = 'NA_' + self.randomString(64)
+        else:
+            description = str(description) + '_' + \
+                          self.randomString(64)
+        DL_hash = self.hash(bytes(DL_data, 'utf-8') + \
+                            bytes(description, 'utf-8'))
+        return (dtstamp, DL_data, description, DL_hash)
+
+    def _insertData2(self, dtstamp, DL_data, description, 
+                     DL_hash, debug):
+        sqlstmt = '''insert into datalog (dtstamp, hash, data, 
+            description) values (?,?,?,?)'''
+        sqldata = (str(dtstamp), str(DL_hash), str(DL_data), 
+                   str(description))
+        self.cur.execute(sqlstmt, sqldata)
+        if debug:
+            print('Step 1&2: Inserted Data into Data Log ...')
+            print('Date Time Stamp: %s' % dtstamp)
+            print('Inserted Data: %s' % data)
+            print('Generated Hash: %s' % DL_hash)
+
+    def _insertData3(self, debug):
+        sqlstmt = '''select max(c_ID) from blockchain'''
+        max_cID = [row for row in self.cur.execute(sqlstmt)][0][0]
+        if max_cID == None:
+            p_ID = 0 
+            p_dtstamp = '0'
+            p_randomstring = 'MauriceHTLing'
+            p_hash = 'MauriceHTLing'
+        else:
+            sqlstmt = '''select c_ID, c_dtstamp, c_randomstring, 
+                c_hash from blockchain where c_ID = %s''' % \
+                str(max_cID)
+            data3 = [row for row in self.cur.execute(sqlstmt)]
+            p_ID = data3[0][0]
+            p_dtstamp = data3[0][1]
+            p_randomstring = data3[0][2]
+            p_hash = data3[0][3]
+        if debug:
+            print('Step 3: Getting Latest Block from Blockchain ...')
+            print('Parent ID: %s' % p_ID)
+            print('Parent Date Time Stamp: %s' % p_dtstamp)
+            print('Parent Random String: %s' % p_randomstring)
+            print('Parent Hash: %s' % p_hash)
+        return (p_ID, p_dtstamp, p_randomstring, p_hash)
+
+    def _insertData4(self, p_dtstamp, p_randomstring, p_hash, DL_hash):
+        BC_rstr = self.randomString(128)
+        hashdata = ''.join([str(p_dtstamp), str(p_randomstring),
+                            str(p_hash), str(DL_hash)])
+        BC_hash = self.hash(bytes(hashdata, 'utf-8'))
+        return (BC_rstr, BC_hash)
+
+    def _insertData5(self, dtstamp, BC_rstr, BC_hash, p_ID,
+                   p_dtstamp, p_randomstring, p_hash, 
+                   DL_hash, debug):
+        sqldata = (str(dtstamp), str(BC_rstr), str(BC_hash), str(p_ID),
+                   str(p_dtstamp), str(p_randomstring), str(p_hash), 
+                   str(DL_hash))
+        sqlstmt = '''insert into blockchain (c_dtstamp, 
+            c_randomstring, c_hash, p_ID, p_dtstamp, p_randomstring, 
+            p_hash, data) values (?,?,?,?,?,?,?,?)'''
+        self.cur.execute(sqlstmt, sqldata)
+        if debug:
+            print('Step 5: Insert Data into Blockchain (New Block) ...')
+            print('Random String: %s' % BC_rstr)
+            print('New Block Hash: %s' % BC_hash)
+            print('')
+
+    def _insertData6(self, dtstamp, description, DL_hash, p_hash, BC_hash):
+        fID = self.randomString(1024)
+        sqlstmt = '''insert into eventlog (dtstamp, fID, description) 
+        values (?,?,?)'''
+        sqldata = (str(dtstamp), str(fID), str(description))
+        self.cur.execute(sqlstmt, sqldata)
+        sqlstmt = '''insert into eventlog_datamap (fID, key, value) 
+        values (?,?,?)'''
+        sqldata = [(str(fID), 'DataHash', str(DL_hash)),
+                   (str(fID), 'ParentHash', str(p_hash)),
+                   (str(fID), 'BlockHash', str(BC_hash))]
+        self.cur.executemany(sqlstmt, sqldata)
+
     def insertData(self, data, description='NA', debug=False):
         '''!
         Method to insert data into SEREBO database. Data will be 
@@ -198,81 +284,29 @@ class SereboDB(object):
         @return: Dictionary of data generated from this event.
         '''
         # Step 1: Preparing data
-        dtstamp = self.dtStamp()
-        DL_data = str(data)
-        if description == 'NA' or description == None:
-            description = 'NA_' + self.randomString(64)
-        else:
-            description = str(description) + '_' + \
-                          self.randomString(64)
-        DL_hash = self.hash(bytes(DL_data, 'utf-8') + \
-                            bytes(description, 'utf-8'))
+        (dtstamp, DL_data, description, DL_hash) = \
+            self._insertData1(data, description, debug)
         # Step 2: Insert data into datalog
-        sqlstmt = '''insert into datalog (dtstamp, hash, data, 
-            description) values (?,?,?,?)'''
-        sqldata = (str(dtstamp), str(DL_hash), str(DL_data), 
-                   str(description))
-        self.cur.execute(sqlstmt, sqldata)
-        if debug:
-            print('Step 1&2: Inserted Data into Data Log ...')
-            print('Date Time Stamp: %s' % dtstamp)
-            print('Inserted Data: %s' % data)
-            print('Generated Hash: %s' % DL_hash)
+        self._insertData2(dtstamp, DL_data, description, 
+                          DL_hash, debug)
         # Step 3: Get latest block in blockchain
-        sqlstmt = '''select max(c_ID) from blockchain'''
-        max_cID = [row for row in self.cur.execute(sqlstmt)][0][0]
-        if max_cID == None:
-            p_ID = 0 
-            p_dtstamp = '0'
-            p_randomstring = 'MauriceHTLing'
-            p_hash = 'MauriceHTLing'
-        else:
-            sqlstmt = '''select c_ID, c_dtstamp, c_randomstring, 
-                c_hash from blockchain where c_ID = %s''' % \
-                str(max_cID)
-            data3 = [row for row in self.cur.execute(sqlstmt)]
-            p_ID = data3[0][0]
-            p_dtstamp = data3[0][1]
-            p_randomstring = data3[0][2]
-            p_hash = data3[0][3]
-        if debug:
-            print('Step 3: Getting Latest Block from Blockchain ...')
-            print('Parent ID: %s' % p_ID)
-            print('Parent Date Time Stamp: %s' % p_dtstamp)
-            print('Parent Random String: %s' % p_randomstring)
-            print('Parent Hash: %s' % p_hash)
-        # Step 4: Insert data into blockchain
-        BC_rstr = self.randomString(128)
-        hashdata = ''.join([str(p_dtstamp), str(p_randomstring),
-                            str(p_hash), str(DL_hash)])
-        BC_hash = self.hash(bytes(hashdata, 'utf-8'))
-        sqldata = (str(dtstamp), str(BC_rstr), str(BC_hash), str(p_ID),
-                   str(p_dtstamp), str(p_randomstring), str(p_hash), 
-                   str(DL_hash))
-        sqlstmt = '''insert into blockchain (c_dtstamp, 
-            c_randomstring, c_hash, p_ID, p_dtstamp, p_randomstring, 
-            p_hash, data) values (?,?,?,?,?,?,?,?)'''
-        self.cur.execute(sqlstmt, sqldata)
-        if debug:
-            print('Step 4: Insert Data into Blockchain (New Block) ...')
-            print('Random String: %s' % BC_rstr)
-            print('New Block Hash: %s' % BC_hash)
-            print('')
-        # Step 5: Insert event into eventlog
-        fID = self.randomString(1024)
-        sqlstmt = '''insert into eventlog (dtstamp, fID, description) 
-        values (?,?,?)'''
-        sqldata = (str(dtstamp), str(fID), str(description))
-        self.cur.execute(sqlstmt, sqldata)
-        sqlstmt = '''insert into eventlog_datamap (fID, key, value) 
-        values (?,?,?)'''
-        sqldata = [(str(fID), 'DataHash', str(DL_hash)),
-                   (str(fID), 'ParentHash', str(p_hash)),
-                   (str(fID), 'BlockHash', str(BC_hash))]
-        self.cur.executemany(sqlstmt, sqldata)
-        # Step 6: Commit 
+        (p_ID, p_dtstamp, p_randomstring, p_hash) = \
+            self._insertData3(debug)
+        # Step 4: Prepare data for blockchain insertion
+        (BC_rstr, BC_hash) = self._insertData4(p_dtstamp, 
+                                               p_randomstring, 
+                                               p_hash, 
+                                               DL_hash)
+        # Step 5: Insert data into blockchain
+        self._insertData5(dtstamp, BC_rstr, BC_hash, p_ID,
+                          p_dtstamp, p_randomstring, p_hash, 
+                          DL_hash, debug)
+        # Step 6: Insert event into eventlog
+        self._insertData6(dtstamp, description, 
+                          DL_hash, p_hash, BC_hash)
+        # Step 7: Commit 
         self.conn.commit()
-        # Step 7: Return data
+        # Step 8: Return data
         return {'DateTimeStamp': dtstamp,
                 'Data': data,
                 'UserDescription': description,
