@@ -68,8 +68,49 @@ def insertText(message, description='NA'):
     print('------ Insert Text Successful ------')
     print('')
 
+def systemData():
+    
+    '''!
+    Function to print out data and test hashes of current platform.
+
+    Usage:
+
+        python serebo.py sysdata
+    '''
+    data = bb.systemData()
+    print('')
+    print('System Data ...')
+    for k in data:
+        print('    %s: %s' % (k, data[k]))
+    print('------ End of System Data ------')
+
+def systemRecord():
+    '''!
+    Function to record data and test hashes of current platform.
+
+    Usage:
+
+        python serebo.py sysrecord
+    '''
+    db = bb.connectDB()
+    data = bb.systemData()
+    dtstamp = db.dtStamp()
+    sqlstmt = '''insert into systemdata (dtstamp, key, value) values 
+        ('%s', '%s', '%s');'''
+    print('')
+    print('System Data ...')
+    for k in data:
+        if k != 'hashdata':
+            db.cur.execute(sqlstmt % (str(dtstamp), str(k), 
+                                      str(data[k])))
+        print('    %s: %s' % (k, data[k]))
+    db.conn.commit()
+    print('------ End of System Data ------')
+
 
 if __name__ == '__main__':
     exposed_functions = {'init': initialize,
-                         'intext': insertText}
+                         'intext': insertText,
+                         'sysdata': systemData,
+                         'sysrecord': systemRecord}
     fire.Fire(exposed_functions)

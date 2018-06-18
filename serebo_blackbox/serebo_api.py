@@ -20,6 +20,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 '''
+import hashlib
 import random
 import secrets
 
@@ -34,6 +35,51 @@ def connectDB():
     '''
     db = SereboDB()
     return db
+
+def systemData():
+    '''!
+    Function to extract data and test hashes of current platform.
+
+    @return: Dictionary of system data and test hashs 
+    '''
+    import platform
+    data = {\
+        'architecture': ':'.join(platform.architecture()),
+        'machine': platform.machine(),
+        'node': platform.node(),
+        'platform': platform.platform(),
+        'processor': platform.processor(),
+        'python_build': ' > '.join(platform.python_build()),
+        'python_compiler': platform.python_compiler(),
+        'python_implementation': platform.python_implementation(),
+        'python_branch': platform.python_branch(),
+        'python_revision': platform.python_revision(),
+        'python_version': platform.python_version(),
+        'release': platform.release(),
+        'system': platform.system(),
+        'version': platform.version()
+        }
+    data['hashdata'] = \
+    bytes('''yd6jwAYeqHmzSyxkNOVXTGtDr8dgZIE9LoL9jxRUbqOEuODCysfeJkLJHy3LuQX3Rp4f1Ms5HcfTDAyjdLSpNVJx2vbksBKAAi5VVkhW7MJ9CtlfZBlBvCYbX8Qk8Jw27fsglmaPmbR9BZQoFpuSQxCDF77dmCcbqw5WiKfuTQiUl9PeyHemnMVtsRGKfN2c0x0BA54HjOyN30Dy86fJhitrhLsW3wIY9PtzFEcXd1rq36cFKfrNp7lRjJzDJ4W8ZCuQY6P3HUM8Eu4fsGytH9WlVmJ1aJGiyPVf1ZAa42yKUnfBUwhFNU1aEtplVeHrQqQvO7tLxyE5Oc8TjRF7sAzQozjVbNyhVlxOmhI45pX4qtBA9y9XrHfYJP9RJaprTsnR24g1pOjxVypzEjSGVEh7EKYWXk7fLllwWRkAb7rG5HSEH5gmcsvbpTNNEsXfcmmyrvvh6i7cfQGPap2XmxjO6VRZg1hkf7yUarltZ1kTdD3pMJRBoPpPijuqB1uA''', 'utf-8')
+    data['hash_md5'] = hashlib.md5(data['hashdata']).hexdigest()
+    data['hash_sha1'] = hashlib.sha1(data['hashdata']).hexdigest()
+    data['hash_sha224'] = hashlib.sha224(data['hashdata']).hexdigest()
+    data['hash_sha3_224'] = \
+        hashlib.sha3_224(data['hashdata']).hexdigest()
+    data['hash_sha256'] = hashlib.sha256(data['hashdata']).hexdigest()
+    data['hash_sha3_256'] = \
+        hashlib.sha3_256(data['hashdata']).hexdigest()
+    data['hash_sha384'] = hashlib.sha384(data['hashdata']).hexdigest()
+    data['hash_sha3_384'] = \
+        hashlib.sha3_384(data['hashdata']).hexdigest() 
+    data['hash_sha512'] = hashlib.sha512(data['hashdata']).hexdigest()
+    data['hash_sha3_512'] = \
+        hashlib.sha3_512(data['hashdata']).hexdigest() 
+    data['hash_blake2b'] = \
+        hashlib.blake2b(data['hashdata']).hexdigest() 
+    data['hash_blake2s'] = \
+        hashlib.blake2s(data['hashdata']).hexdigest()
+    return data
 
 def insertText(sdb_object, text, description='NA'):
     '''!
