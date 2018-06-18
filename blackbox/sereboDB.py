@@ -76,7 +76,8 @@ class SereboDB(object):
             key text primary key,
             value text not null);'''
         sql_metadata_insert1 = '''
-        insert into metadata (key, value) values ('creation_timestamp', '%s');
+        insert into metadata (key, value) values 
+            ('creation_timestamp', '%s');
         ''' % (now)
         sql_metadata_insert2 = '''
         insert into metadata (key, value) values ('blackboxID', '%s');
@@ -137,7 +138,8 @@ class SereboDB(object):
         DL_data = data
         DL_hash = self.hash(bytes(DL_data, 'utf-8'))
         # Step 2: Insert data into datalog
-        sqlstmt = '''insert into datalog (dtstamp, hash, data) values (?,?,?)'''
+        sqlstmt = '''insert into datalog (dtstamp, hash, data) values 
+            (?,?,?)'''
         sqldata = (dtstamp, DL_hash, DL_data)
         self.cur.execute(sqlstmt, sqldata)
         print('Step 1&2: Inserted Data into Data Log ...')
@@ -154,7 +156,8 @@ class SereboDB(object):
             p_randomstring = 'MauriceHTLing'
             p_hash = 'MauriceHTLing'
         else:
-            sqlstmt = '''select c_ID, c_dtstamp, c_randomstring, c_hash from blockchain where c_ID = ?'''
+            sqlstmt = '''select c_ID, c_dtstamp, c_randomstring, 
+                c_hash from blockchain where c_ID = ?'''
             max_cID = str(max_cID)
             data3 = [row for row in self.cur.execute(sqlstmt, max_cID)]
             p_ID = data3[0][0]
@@ -172,7 +175,9 @@ class SereboDB(object):
         BC_hash = self.hash(bytes(hashdata, 'utf-8'))
         sqldata = (dtstamp, BC_rstr, BC_hash, p_ID, p_dtstamp, 
                    p_randomstring, p_hash, DL_hash)
-        sqlstmt = '''insert into blockchain (c_dtstamp, c_randomstring, c_hash, p_ID, p_dtstamp, p_randomstring, p_hash, data) values (?,?,?,?,?,?,?,?)'''
+        sqlstmt = '''insert into blockchain (c_dtstamp, 
+            c_randomstring, c_hash, p_ID, p_dtstamp, p_randomstring, 
+            p_hash, data) values (?,?,?,?,?,?,?,?)'''
         self.cur.execute(sqlstmt, sqldata)
         print('Step 4: Insert Data into Blockchain (New Block) ...')
         print('Random String: %s' % BC_rstr)
@@ -184,10 +189,12 @@ class SereboDB(object):
             description = 'NA'
         else:
             description = str(description)
-        sqlstmt = '''insert into eventlog (dtstamp, fID, description) values (?,?,?)'''
+        sqlstmt = '''insert into eventlog (dtstamp, fID, description) 
+        values (?,?,?)'''
         sqldata = (dtstamp, str(fID), description)
         self.cur.execute(sqlstmt, sqldata)
-        sqlstmt = '''insert into eventlog_datamap (fID, key, value) values (?,?,?)'''
+        sqlstmt = '''insert into eventlog_datamap (fID, key, value) 
+        values (?,?,?)'''
         sqldata = [(str(fID), 'DataHash', DL_hash),
                    (str(fID), 'ParentHash', p_hash),
                    (str(fID), 'BlockHash', BC_hash)]
