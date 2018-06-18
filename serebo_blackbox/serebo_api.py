@@ -61,5 +61,5 @@ def insertText(sdb_object, text, description='NA'):
     event. Default = NA.
     @return: Dictionary of data generated from this event.
     '''
-    rdata = sdb_object.insertData(data, description)
+    rdata = sdb_object.insertData(text, description)
     return rdata

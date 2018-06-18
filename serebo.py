@@ -38,7 +38,33 @@ def initialize():
     '''
     db = bb.connectDB()
 
+def insertText(message, description='NA'):
+    '''!
+
+    Usage:
+
+        python serebo.py intext --message=<text message to be inserted> --description=<explanatory description for this insertion>
+
+    @param message String: Text string to be inserted.
+    @param description String: Explanation string for this entry 
+    event. Default = NA.
+    '''
+    db = bb.connectDB()
+    rdata = bb.insertText(db, message, description)
+    print('')
+    print('Insert Text Status ...')
+    print('Message: %s' % rdata['Data'])
+    print('Description: %s' % rdata['UserDescription'])
+    print('Data Hash: %s' % rdata['DataHash'])
+    print('Date Time Stamp: %s' % rdata['DateTimeStamp'])
+    print('Number of Pre-existing Blocks in Blockchain: %s' % \
+          rdata['ParentBlockID'])
+    print('Current Block Hash: %s' % rdata['BlockHash'])
+    print('------ Insert Text Successful ------')
+    print('')
+
 
 if __name__ == '__main__':
-    exposed_functions = {'init': initialize}
+    exposed_functions = {'init': initialize,
+                         'intext': insertText}
     fire.Fire(exposed_functions)
