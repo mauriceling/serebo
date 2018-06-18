@@ -169,6 +169,12 @@ class SereboDB(object):
                 pass
 
     def _insertData1(self, data, description, debug):
+        '''!
+        Private method - Step 1 of insert data into CEREBO black box. 
+        Called by insertData method. Step 1 gets a UTC date time 
+        stamp, formats the description, and generates a hash using 
+        data and formatted description. 
+        '''
         dtstamp = self.dtStamp()
         DL_data = str(data)
         if description == 'NA' or description == None:
@@ -182,6 +188,11 @@ class SereboDB(object):
 
     def _insertData2(self, dtstamp, DL_data, description, 
                      DL_hash, debug):
+        '''!
+        Private method - Step 2 of insert data into CEREBO black box. 
+        Called by insertData method. Step 2 inserts the results from 
+        Step 1 into datalog table.
+        '''
         sqlstmt = '''insert into datalog (dtstamp, hash, data, 
             description) values (?,?,?,?)'''
         sqldata = (str(dtstamp), str(DL_hash), str(DL_data), 
@@ -194,6 +205,12 @@ class SereboDB(object):
             print('Generated Hash: %s' % DL_hash)
 
     def _insertData3(self, debug):
+        '''!
+        Private method - Step 3 of insert data into CEREBO black box. 
+        Called by insertData method. Step 3 gets data (ID, dtstamp, 
+        randomstring, and hash) the latest pre-existing block in 
+        blockchain table, to be used as parent in the next block.
+        '''
         sqlstmt = '''select max(c_ID) from blockchain'''
         max_cID = [row for row in self.cur.execute(sqlstmt)][0][0]
         if max_cID == None:
@@ -219,6 +236,13 @@ class SereboDB(object):
         return (p_ID, p_dtstamp, p_randomstring, p_hash)
 
     def _insertData4(self, p_dtstamp, p_randomstring, p_hash, DL_hash):
+        '''!
+        Private method - Step 4 of insert data into CEREBO black box. 
+        Called by insertData method. Step 4 generates a hash from the 
+        parent date time stamp, parent random string, parent hash, and 
+        current data hash (from Step 1) as current block hash; and 
+        generates a random string for the current block.
+        '''
         BC_rstr = self.randomString(128)
         hashdata = ''.join([str(p_dtstamp), str(p_randomstring),
                             str(p_hash), str(DL_hash)])
@@ -228,6 +252,11 @@ class SereboDB(object):
     def _insertData5(self, dtstamp, BC_rstr, BC_hash, p_ID,
                    p_dtstamp, p_randomstring, p_hash, 
                    DL_hash, debug):
+        '''!
+        Private method - Step 5 of insert data into CEREBO black box. 
+        Called by insertData method. Step 5 inserts data of the 
+        current block into blockchain table.  
+        '''
         sqldata = (str(dtstamp), str(BC_rstr), str(BC_hash), str(p_ID),
                    str(p_dtstamp), str(p_randomstring), str(p_hash), 
                    str(DL_hash))
@@ -241,7 +270,15 @@ class SereboDB(object):
             print('New Block Hash: %s' % BC_hash)
             print('')
 
-    def _insertData6(self, dtstamp, description, DL_hash, p_hash, BC_hash):
+    def _insertData6(self, dtstamp, description, 
+                     DL_hash, p_hash, BC_hash):
+        '''!
+        Private method - Step 6 of insert data into CEREBO black box. 
+        Called by insertData method. Step 6 records the current data 
+        insertion event into eventlog tables by recording the date 
+        time stamp, parent block hash, data hash, and current block 
+        hash.
+        '''
         fID = self.randomString(1024)
         sqlstmt = '''insert into eventlog (dtstamp, fID, description) 
         values (?,?,?)'''
