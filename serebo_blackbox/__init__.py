@@ -34,4 +34,4 @@ __description__ = '''
 
 from . import serebo_api
 from .serebo_api import connectDB
-from .serebo_api import insertData
+from .serebo_api import insertText
