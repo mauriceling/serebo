@@ -60,16 +60,18 @@ class SereboDB(object):
 
     def randomString(self, length=64):
         '''!
-        Method to generate a random string, which can contain 74 
+        Method to generate a random string, which can contain 80 
         possible characters - abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNO
-        PQRSTUVWXYZ0123456789!@#$%&<>=[]?. Hence, the possible number 
-        of strings is 74**length.
+        PQRSTUVWXYZ0123456789~!@#$%^&*()<>=+[]?. Hence, the possible 
+        number of strings is 80**length.
 
         @param length Integer: Length of random string to generate. 
         Default = 64.
         @return: Random string
         '''
-        choices = string.ascii_letters + string.digits + '!@#$%&<>=[]?'
+        choices = string.ascii_letters + \
+                  string.digits + \
+                  '~!@#$%^&*()<>=+[]?'
         x = random.choices(choices, k=int(length))
         return ''.join(x)
 
