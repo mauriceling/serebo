@@ -198,6 +198,22 @@ class SereboDB(object):
                             bytes(description, 'utf-8'))
         return (dtstamp, DL_data, description, DL_hash)
 
+    def _insertFile1(self, data, description, debug):
+        '''!
+        Private method - Step 1 of insert data into CEREBO black box. 
+        Called by insertData method. Step 1 (1) gets a UTC date time 
+        stamp; and (2) generates a hash using the UTC date time stamp, 
+        data and description containing the absolute and relative path 
+        to the file. 
+        '''
+        dtstamp = self.dtStamp()
+        DL_data = str(data)
+        description = str(description)
+        DL_hash = self.hash(bytes(dtstamp, 'utf-8') + \
+                            bytes(DL_data, 'utf-8') + \
+                            bytes(description, 'utf-8'))
+        return (dtstamp, DL_data, description, DL_hash)
+
     def _insertData2(self, dtstamp, DL_data, description, 
                      DL_hash, debug):
         '''!
@@ -304,7 +320,8 @@ class SereboDB(object):
                    (str(dtstamp), str(fID), 'BlockHash', str(BC_hash))]
         self.cur.executemany(sqlstmt, sqldata)
 
-    def insertData(self, data, description='NA', debug=False):
+    def insertData(self, data, description='NA', mode='text', 
+                   debug=False):
         '''!
         Method to insert data into SEREBO database. Data will be 
         recorded in datalog table together with the hash of the data. 
@@ -330,12 +347,18 @@ class SereboDB(object):
         @param data String: Data to be inserted.
         @param description String: Explanation string for this entry 
         event. Default = NA.
+        @param mode String: Type of data to insert. Allowable modes 
+        are 'text' and 'file'. Default = 'text'.
         @param debug Boolean: Flag to print out debugging statements.
         @return: Dictionary of data generated from this event.
         '''
         # Step 1: Preparing data
-        (dtstamp, DL_data, description, DL_hash) = \
-            self._insertData1(data, description, debug)
+        if mode.lower() == 'text':
+            (dtstamp, DL_data, description, DL_hash) = \
+                self._insertData1(data, description, debug)
+        elif mode.lower() == 'file':
+            (dtstamp, DL_data, description, DL_hash) = \
+                self._insertFile1(data, description, debug)
         # Step 2: Insert data into datalog
         self._insertData2(dtstamp, DL_data, description, 
                           DL_hash, debug)

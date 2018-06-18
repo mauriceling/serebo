@@ -38,4 +38,5 @@ from . import serebo_api
 from .serebo_api import connectDB
 from .serebo_api import fileHash
 from .serebo_api import insertText
+from .serebo_api import logFile
 from .serebo_api import systemData

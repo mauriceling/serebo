@@ -68,6 +68,36 @@ def insertText(message, description='NA'):
     print('------ Insert Text Successful ------')
     print('')
 
+def logFile(filepath, description='NA'):
+    '''!
+    Function to log a file into SEREBO blackbox.
+
+    Usage:
+
+        python serebo.py logfile --filepath=<path of file to log> --description=<explanatory description for this insertion>
+
+    For example:
+
+        python serebo.py logfile --filepath=doxygen_serebo  --description="Doxygen file for SEREBO"
+
+    @param fileapth String: Path of file to log in SEREBO black box.
+    @param description String: Explanation string for this entry 
+    event. Default = NA.
+    '''
+    db = bb.connectDB()
+    rdata = bb.logFile(db, filepath, description)
+    print('')
+    print('File Logging Status ...')
+    print('File Hash: %s' % rdata['Data'])
+    print('Description: %s' % rdata['UserDescription'])
+    print('Data Hash: %s' % rdata['DataHash'])
+    print('Date Time Stamp: %s' % rdata['DateTimeStamp'])
+    print('Number of Pre-existing Blocks in Blockchain: %s' % \
+          rdata['ParentBlockID'])
+    print('Current Block Hash: %s' % rdata['BlockHash'])
+    print('------ File Logging Successful ------')
+    print('')
+
 def systemData():
     
     '''!
@@ -128,6 +158,7 @@ if __name__ == '__main__':
     exposed_functions = {'fhash': fileHash,
                          'init': initialize,
                          'intext': insertText,
+                         'logfile': logFile,
                          'sysdata': systemData,
                          'sysrecord': systemRecord}
     fire.Fire(exposed_functions)
