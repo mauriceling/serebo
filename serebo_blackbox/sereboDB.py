@@ -246,9 +246,10 @@ class SereboDB(object):
         Called by insertData method. Step 4 (1) generates a hash from 
         the parent date time stamp, parent random string, parent hash, 
         and current data hash (from Step 1) as current block hash; (2) 
-        and generates a random string for the current block.
+        and generates a 32-character random string (80**32 = 8e60 
+        possibilities) for the current block.
         '''
-        BC_rstr = self.randomString(128)
+        BC_rstr = self.randomString(32)
         hashdata = ''.join([str(p_dtstamp), str(p_randomstring),
                             str(p_hash), str(DL_hash)])
         BC_hash = self.hash(bytes(hashdata, 'utf-8'))
