@@ -35,9 +35,9 @@ def connectDB():
     db = SereboDB()
     return db
 
-def insertData(sdb_object, data, description=None):
+def insertText(sdb_object, text, description='NA'):
     '''!
-    Function to insert data into SEREBO database.
+    Function to insert text string into SEREBO database.
 
     A dictionary of items generated will be returned with the 
     following keys: (1) DateTimeStamp is the UTC date time stamp 
@@ -56,7 +56,7 @@ def insertData(sdb_object, data, description=None):
     blockchain.
 
     @param sdb_object Object: SEREBO database object.
-    @param data String: Data to be inserted.
+    @param text String: Text string to be inserted.
     @param description String: Explanation string for this entry 
     event. Default = NA.
     @return: Dictionary of data generated from this event.
