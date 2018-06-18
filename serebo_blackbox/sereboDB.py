@@ -29,11 +29,11 @@ import sqlite3
 import string
 
 class SereboDB(object):
-    '''
+    '''!
     Class representing SEREBO database - the recorder box.
     '''
     def __init__(self):
-        '''
+        '''!
         Initiation method - connects to SEREBO database. If SEREBO 
         database does not exist, this function will create the 
         database with the necessary data tables.
@@ -44,7 +44,7 @@ class SereboDB(object):
         self._createTables()
 
     def dtStamp(self):
-        '''
+        '''!
         Method to generate a UTC date time stamp string in the format 
         of <year>:<month>:<day>:<hour>:<minute>:<second>:<microsecond>
 
@@ -59,7 +59,7 @@ class SereboDB(object):
         return now
 
     def randomString(self, length=64):
-        '''
+        '''!
         Method to generate a random string, which can contain 74 
         possible characters - abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNO
         PQRSTUVWXYZ0123456789!@#$%&<>=[]?. Hence, the possible number 
@@ -74,7 +74,7 @@ class SereboDB(object):
         return ''.join(x)
 
     def hash(self, data):
-        '''
+        '''!
         Method to generate a series of 12 hashes for a given data 
         string, in the format of <MD5>:<SHA1>:<SHA224>:<SHA3 
         244>:<SHA256>:<SHA3 256>:<SHA384>:<SHA3 384>:<SHA512>:<SHA3 
@@ -100,7 +100,7 @@ class SereboDB(object):
         return ':'.join(x)
 
     def _createTables(self):
-        '''
+        '''!
         Private method - used by initialization method to generate 
         data tables. 
         '''
@@ -169,7 +169,7 @@ class SereboDB(object):
                 pass
 
     def insertData(self, data, description='NA'):
-        '''
+        '''!
         Method to insert data into SEREBO database. Data will be 
         recorded in datalog table together with the hash of the data. 
         The hash of the data will be logged into blockchain table. 

@@ -27,7 +27,7 @@ from . import sereboDB
 from .sereboDB import SereboDB
 
 def connectDB():
-    '''
+    '''!
     Function to connect to SEREBO database - the recorder box.
 
     @return: SEREBO database object
@@ -36,7 +36,7 @@ def connectDB():
     return db
 
 def insertData(sdb_object, data, description=None):
-    '''
+    '''!
     Function to insert data into SEREBO database.
 
     A dictionary of items generated will be returned with the 
