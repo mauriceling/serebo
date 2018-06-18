@@ -228,8 +228,8 @@ class SereboDB(object):
         if max_cID == None:
             p_ID = 0 
             p_dtstamp = '0'
-            p_randomstring = 'MauriceHTLing'
-            p_hash = 'MauriceHTLing'
+            p_randomstring = 'GenesisBlock:SEREBO_MauriceHTLing'
+            p_hash = 'TheWord:OmAhHum'
         else:
             sqlstmt = '''select c_ID, c_dtstamp, c_randomstring, 
                 c_hash from blockchain where c_ID = %s''' % \
