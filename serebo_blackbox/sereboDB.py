@@ -38,7 +38,7 @@ class SereboDB(object):
         database does not exist, this function will create the 
         database with the necessary data tables.
         '''
-        path = os.sep.join(['blackbox', 'blackbox.sdb'])
+        path = os.sep.join(['serebo_blackbox', 'blackbox.sdb'])
         self.conn = sqlite3.connect(path)
         self.cur = self.conn.cursor()
         self._createTables()
