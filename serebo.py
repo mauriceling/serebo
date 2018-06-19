@@ -131,7 +131,7 @@ def systemRecord():
     '''
     db = bb.connectDB()
     data = bb.systemData()
-    dtstamp = db.dtStamp()
+    dtstamp = bb.dateTime(db)
     sqlstmt = '''insert into systemdata (dtstamp, key, value) values 
         ('%s', '%s', '%s');'''
     print('')

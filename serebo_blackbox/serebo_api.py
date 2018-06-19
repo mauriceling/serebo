@@ -205,3 +205,11 @@ def logFile(sdb_object, filepath, description='NA'):
     fHash = fileHash(absPath)
     rdata = sdb_object.insertData(fHash, description, 'file')
     return rdata
+
+def dateTime(sdb_object):
+    '''!
+    Function to get a date time string.
+    
+    @param sdb_object Object: SEREBO database object.
+    '''
+    return sdb_object.dtStamp()

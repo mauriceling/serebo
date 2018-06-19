@@ -36,6 +36,7 @@ SEREBO Black Box aims to address this issue using several approaches. Firstly, t
 
 from . import serebo_api
 from .serebo_api import connectDB
+from .serebo_api import dateTime
 from .serebo_api import fileHash
 from .serebo_api import insertText
 from .serebo_api import logFile
