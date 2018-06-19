@@ -38,6 +38,7 @@ from . import serebo_api
 from .serebo_api import connectDB
 from .serebo_api import dateTime
 from .serebo_api import fileHash
+from .serebo_api import insertFText
 from .serebo_api import insertText
 from .serebo_api import logFile
 from .serebo_api import randomString
