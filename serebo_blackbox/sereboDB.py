@@ -179,7 +179,7 @@ class SereboDB(object):
             except sqlite3.IntegrityError:
                 pass
 
-    def _insertData1(self, data, description, debug):
+    def _insertData1A(self, data, description):
         '''!
         Private method - Step 1 of insert data into CEREBO black box. 
         Called by insertData method. Step 1 (1) gets a UTC date time 
@@ -187,6 +187,12 @@ class SereboDB(object):
         description with a 10-character random string (80**10 = 1e19 
         possibility); and (3) generates a hash using the UTC date time 
         stamp, data and formatted description. 
+
+        The difference between _insertData1A() and _insertData1B() 
+        methods is that _insertData1A() method will suffix the 
+        description with a 10-character random string before using it 
+        to generate the hash whereas _insertData1B() method uses the 
+        original (un-suffixed) description in hash generation.
         '''
         dtstamp = self.dtStamp()
         DL_data = str(data)
@@ -200,13 +206,19 @@ class SereboDB(object):
                             bytes(description, 'utf-8'))
         return (dtstamp, DL_data, description, DL_hash)
 
-    def _insertFile1(self, data, description, debug):
+    def _insertData1B(self, data, description):
         '''!
         Private method - Step 1 of insert data into CEREBO black box. 
         Called by insertData method. Step 1 (1) gets a UTC date time 
         stamp; and (2) generates a hash using the UTC date time stamp, 
         data and description containing the absolute and relative path 
         to the file. 
+
+        The difference between _insertData1A() and _insertData1B() 
+        methods is that _insertData1A() method will suffix the 
+        description with a 10-character random string before using it 
+        to generate the hash whereas _insertData1B() method uses the 
+        original (un-suffixed) description in hash generation.
         '''
         dtstamp = self.dtStamp()
         DL_data = str(data)
@@ -357,10 +369,10 @@ class SereboDB(object):
         # Step 1: Preparing data
         if mode.lower() == 'text':
             (dtstamp, DL_data, description, DL_hash) = \
-                self._insertData1(data, description, debug)
+                self._insertData1A(data, description)
         elif mode.lower() == 'file':
             (dtstamp, DL_data, description, DL_hash) = \
-                self._insertFile1(data, description, debug)
+                self._insertData1B(data, description)
         # Step 2: Insert data into datalog
         self._insertData2(dtstamp, DL_data, description, 
                           DL_hash, debug)
