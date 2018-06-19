@@ -209,7 +209,19 @@ def logFile(sdb_object, filepath, description='NA'):
 def dateTime(sdb_object):
     '''!
     Function to get a date time string.
-    
+
     @param sdb_object Object: SEREBO database object.
+    @return: Date time string
     '''
     return sdb_object.dtStamp()
+
+def randomString(sdb_object, length):
+    '''!
+    Function to get a random string.
+
+    @param sdb_object Object: SEREBO database object.
+    @param length Integer: Length of random string to generate.
+    @return: Random string
+    '''
+    length = int(length)
+    return sdb_object.randomString(length)

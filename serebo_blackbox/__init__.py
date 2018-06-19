@@ -40,4 +40,5 @@ from .serebo_api import dateTime
 from .serebo_api import fileHash
 from .serebo_api import insertText
 from .serebo_api import logFile
+from .serebo_api import randomString
 from .serebo_api import systemData
