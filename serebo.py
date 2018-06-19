@@ -317,6 +317,32 @@ def registerBlackbox(owner, email,
     except:
         print('Registration failed - likely to be SEREBO Notary error or XMLRPC error.')
 
+def selfSign(bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to self-sign (self notarization) SEREBO black box.
+
+    Usage:
+
+        python serebo.py selfsign --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py selfsign --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    rstring = bb.randomString(db, 32) 
+    rdata = bb.insertFText(db, rstring, 'Self notarization')
+    print('')
+    print('Self-Signing / Self-Notarization ...')
+    print('SEREBO Black Box at %s' % str(db.path))
+    print('Date Time Stamp: %s' % rdata['DateTimeStamp'])
+    print('Random String: %s' % rstring)
+    print('------ Self-Signing Successful ------')
+    print('')
+
 
 if __name__ == '__main__':
     exposed_functions = {'fhash': fileHash,
@@ -325,7 +351,9 @@ if __name__ == '__main__':
                          'localcode': localCode,
                          'localdts': localDTS,
                          'logfile': logFile,
+                         #'notarize': notarize,
                          'register': registerBlackbox,
+                         'selfsign': selfSign,
                          'shash': stringHash,
                          'sysdata': systemData,
                          'sysrecord': systemRecord}
