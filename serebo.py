@@ -22,11 +22,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 '''
 import random
 import secrets
+import sqlite3
 
 import fire
 
 import serebo_blackbox as bb
-import serebo_notary as notary
+import serebo_notary_api as notary
 
 
 def initialize(bbpath='serebo_blackbox\\blackbox.sdb'):
@@ -309,10 +310,12 @@ def registerBlackbox(owner, email,
         print('Notary URL: %s' % notaryURL)
         print('Notary Authorization: %s' % notaryAuthorization)
         print('Notary Date Time Stamp: %s' % dtstamp)
-        print('------ Registration Successfuls ------')
+        print('------ Registration Successful ------')
         print('')
-    except xmlrpc.client.Fault:
-        print('------ Registration FAILED ------')
+    except sqlite3.IntegrityError:
+        print('SEREBO Black Box had been registered. Unable to register more than once.')
+    except:
+        print('Registration failed - likely to be SEREBO Notary error or XMLRPC error.')
 
 
 if __name__ == '__main__':
