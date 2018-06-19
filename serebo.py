@@ -28,15 +28,21 @@ import fire
 import serebo_blackbox as bb
 
 
-def initialize():
+def initialize(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to initialize SEREBO blackbox.
 
     Usage:
 
-        python serebo.py init
+        python serebo.py init --bbpath=<path to SEREBO black box>
     '''
-    db = bb.connectDB()
+    db = bb.connectDB(bbpath)
+    sqlstmt = '''insert into metadata (key, value) values ('serebo_blackbox_path', '%s');''' % (str(db.path))
+    db.cur.execute(sqlstmt)
+    db.conn.commit()
+    print('')
+    print('SEREBO Black Box initialized at %s' % str(db.path))
+    print('')
 
 def insertText(message, description='NA'):
     '''!

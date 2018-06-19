@@ -32,14 +32,16 @@ class SereboDB(object):
     '''!
     Class representing SEREBO database - the recorder black box.
     '''
-    def __init__(self):
+    def __init__(self, dbpath):
         '''!
         Initiation method - connects to SEREBO database. If SEREBO 
         database does not exist, this function will create the 
         database with the necessary data tables.
+
+        @param bbpath String: Path to SEREBO black box.
         '''
-        path = os.sep.join(['serebo_blackbox', 'blackbox.sdb'])
-        self.conn = sqlite3.connect(path)
+        self.path = dbpath
+        self.conn = sqlite3.connect(self.path)
         self.cur = self.conn.cursor()
         self._createTables()
 

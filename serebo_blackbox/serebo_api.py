@@ -28,13 +28,16 @@ import os.path
 from . import sereboDB
 from .sereboDB import SereboDB
 
-def connectDB():
+def connectDB(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to connect to SEREBO database - the recorder box.
 
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
     @return: SEREBO database object
     '''
-    db = SereboDB()
+    bbpath = os.path.abspath(bbpath)
+    db = SereboDB(bbpath)
     return db
 
 def systemData():
