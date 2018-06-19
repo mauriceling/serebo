@@ -237,6 +237,30 @@ def localDTS(bbpath='serebo_blackbox\\blackbox.sdb'):
     print('Date Time Stamp: %s' % str(dts))
     print('')
 
+def stringHash(dstring, bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to generate hash for a data string. This event is not 
+    logged.
+
+    Usage:
+
+        python serebo.py shash --dstring=<string to hash> --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py shash --dstring="SEREBO is hosted at https://github.com/mauriceling/serebo" --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    x = bb.stringHash(db, dstring)
+    print('')
+    print('SEREBO Black Box at %s' % str(db.path))
+    print('Data String: %s' % str(dstring))
+    print('Hash: %s' % str(x))
+    print('')
+
 
 if __name__ == '__main__':
     exposed_functions = {'fhash': fileHash,
@@ -245,6 +269,7 @@ if __name__ == '__main__':
                          'localcode': localCode,
                          'localdts': localDTS,
                          'logfile': logFile,
+                         'shash': stringHash,
                          'sysdata': systemData,
                          'sysrecord': systemRecord}
     fire.Fire(exposed_functions)

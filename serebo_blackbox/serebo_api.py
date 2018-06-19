@@ -254,3 +254,13 @@ def randomString(sdb_object, length):
     '''
     length = int(length)
     return sdb_object.randomString(length)
+
+def stringHash(sdb_object, dstring):
+    '''!
+    Function to generate hash for a data string.
+
+    @param dstring String: Data string for hash generation.
+    @param sdb_object Object: SEREBO database object.
+    @return: Hash
+    '''
+    return sdb_object.hash(str(dstring))
