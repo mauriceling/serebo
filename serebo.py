@@ -26,6 +26,7 @@ import secrets
 import fire
 
 import serebo_blackbox as bb
+import serebo_notary as notary
 
 
 def initialize(bbpath='serebo_blackbox\\blackbox.sdb'):
@@ -261,6 +262,58 @@ def stringHash(dstring, bbpath='serebo_blackbox\\blackbox.sdb'):
     print('Hash: %s' % str(x))
     print('')
 
+def registerBlackbox(owner, email, 
+                     bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to register SEREBO Black Box with SEREBO Notary.
+
+    Usage:
+
+        python serebo.py register --owner=<owner's name> --email=<owner's email> --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py shash register --owner="Maurice HT Ling" --email="mauriceling@acm.org" --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param owner String: Owner's or administrator's name.
+    @param email String: Owner's or administrator's email.
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    owner = str(owner)
+    email = str(email)
+    sqlstmt = "select value from metadata where key='blackboxID'"
+    blackboxID = [row for row in db.cur.execute(sqlstmt)][0][0]
+    data = bb.systemData() 
+    architecture = data['architecture']
+    machine = data['machine']
+    node = data['node'] 
+    platform = data['platform'] 
+    processor = data['processor']
+    try:
+        (notaryURL, notaryAuthorization, dtstamp) = \
+            notary.registerBlackbox(blackboxID, owner, email, 
+                                    architecture, machine, node, 
+                                    platform, processor)
+        sqlstmt = '''insert into metadata (key, value) values (?,?)'''
+        db.cur.execute(sqlstmt, ('notaryAuthorization', 
+                                 notaryAuthorization))
+        db.cur.execute(sqlstmt, ('notaryDTS', dtstamp))
+        db.cur.execute(sqlstmt, ('notaryURL', notaryURL))
+        db.conn.commit()
+        print('')
+        print('Registering SEREBO Black Box with SEREBO Notary...')
+        print('SEREBO Black Box at %s' % str(db.path))
+        print('SEREBO Black Box ID: %s' % str(blackboxID))
+        print('Notary URL: %s' % notaryURL)
+        print('Notary Authorization: %s' % notaryAuthorization)
+        print('Notary Date Time Stamp: %s' % dtstamp)
+        print('------ Registration Successfuls ------')
+        print('')
+    except xmlrpc.client.Fault:
+        print('------ Registration FAILED ------')
+
 
 if __name__ == '__main__':
     exposed_functions = {'fhash': fileHash,
@@ -269,6 +322,7 @@ if __name__ == '__main__':
                          'localcode': localCode,
                          'localdts': localDTS,
                          'logfile': logFile,
+                         'register': registerBlackbox,
                          'shash': stringHash,
                          'sysdata': systemData,
                          'sysrecord': systemRecord}
