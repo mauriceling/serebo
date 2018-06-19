@@ -35,6 +35,13 @@ def initialize(bbpath='serebo_blackbox\\blackbox.sdb'):
     Usage:
 
         python serebo.py init --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py init --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
     '''
     db = bb.connectDB(bbpath)
     sqlstmt = '''insert into metadata (key, value) values ('serebo_blackbox_path', '%s');''' % (str(db.path))
@@ -44,23 +51,26 @@ def initialize(bbpath='serebo_blackbox\\blackbox.sdb'):
     print('SEREBO Black Box initialized at %s' % str(db.path))
     print('')
 
-def insertText(message, description='NA'):
+def insertText(message, description='NA', 
+               bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to insert a text string into SEREBO blackbox.
 
     Usage:
 
-        python serebo.py intext --message=<text message to be inserted> --description=<explanatory description for this insertion>
+        python serebo.py intext --message=<text message to be inserted> --description=<explanatory description for this insertion> --bbpath=<path to SEREBO black box>
 
     For example:
 
-        python serebo.py intext --message="This is a text message for insertion" --description="Texting 1"
+        python serebo.py intext --message="This is a text message for insertion" --description="Texting 1" --bbpath='serebo_blackbox\\blackbox.sdb'
 
     @param message String: Text string to be inserted.
     @param description String: Explanation string for this entry 
     event. Default = NA.
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
     '''
-    db = bb.connectDB()
+    db = bb.connectDB(bbpath)
     rdata = bb.insertText(db, message, description)
     print('')
     print('Insert Text Status ...')
@@ -74,13 +84,14 @@ def insertText(message, description='NA'):
     print('------ Insert Text Successful ------')
     print('')
 
-def logFile(filepath, description='NA'):
+def logFile(filepath, description='NA',
+            bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to log a file into SEREBO blackbox.
 
     Usage:
 
-        python serebo.py logfile --filepath=<path of file to log> --description=<explanatory description for this insertion>
+        python serebo.py logfile --filepath=<path of file to log> --description=<explanatory description for this insertion> --bbpath=<path to SEREBO black box>
 
     For example:
 
@@ -89,8 +100,10 @@ def logFile(filepath, description='NA'):
     @param fileapth String: Path of file to log in SEREBO black box.
     @param description String: Explanation string for this entry 
     event. Default = NA.
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
     '''
-    db = bb.connectDB()
+    db = bb.connectDB(bbpath)
     rdata = bb.logFile(db, filepath, description)
     print('')
     print('File Logging Status ...')
@@ -121,15 +134,22 @@ def systemData():
     print('------ End of System Data ------')
     print('')
 
-def systemRecord():
+def systemRecord(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to record data and test hashes of current platform.
 
     Usage:
 
-        python serebo.py sysrecord
+        python serebo.py sysrecord --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py sysrecord --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
     '''
-    db = bb.connectDB()
+    db = bb.connectDB(bbpath)
     data = bb.systemData()
     dtstamp = bb.dateTime(db)
     sqlstmt = '''insert into systemdata (dtstamp, key, value) values 
