@@ -215,13 +215,35 @@ def localCode(length, description=None,
     print('------ Generate Random String (Local) Successful ------')
     print('')
 
+def localDTS(bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to get date time string. This event is not logged.
+
+    Usage:
+
+        python serebo.py localdts --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py localdts --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    dts = bb.dateTime(db)
+    print('')
+    print('SEREBO Black Box at %s' % str(db.path))
+    print('Date Time Stamp: %s' % str(dts))
+    print('')
+
 
 if __name__ == '__main__':
     exposed_functions = {'fhash': fileHash,
                          'init': initialize,
                          'intext': insertText,
                          'localcode': localCode,
-                         #'localdts': localDTS,
+                         'localdts': localDTS,
                          'logfile': logFile,
                          'sysdata': systemData,
                          'sysrecord': systemRecord}
