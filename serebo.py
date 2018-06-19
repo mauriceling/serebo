@@ -74,6 +74,7 @@ def insertText(message, description='NA',
     rdata = bb.insertText(db, message, description)
     print('')
     print('Insert Text Status ...')
+    print('SEREBO Black Box at %s' % str(db.path))
     print('Message: %s' % rdata['Data'])
     print('Description: %s' % rdata['UserDescription'])
     print('Data Hash: %s' % rdata['DataHash'])
@@ -107,6 +108,7 @@ def logFile(filepath, description='NA',
     rdata = bb.logFile(db, filepath, description)
     print('')
     print('File Logging Status ...')
+    print('SEREBO Black Box at %s' % str(db.path))
     print('File Hash: %s' % rdata['Data'])
     print('Description: %s' % rdata['UserDescription'])
     print('Data Hash: %s' % rdata['DataHash'])
@@ -156,6 +158,7 @@ def systemRecord(bbpath='serebo_blackbox\\blackbox.sdb'):
         ('%s', '%s', '%s');'''
     print('')
     print('System Data ...')
+    print('SEREBO Black Box at %s' % str(db.path))
     for k in data:
         if k != 'hashdata':
             db.cur.execute(sqlstmt % (str(dtstamp), str(k), 
