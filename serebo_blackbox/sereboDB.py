@@ -362,7 +362,10 @@ class SereboDB(object):
         @param description String: Explanation string for this entry 
         event. Default = NA.
         @param mode String: Type of data to insert. Allowable modes 
-        are 'text' and 'file'. Default = 'text'.
+        are 'text' (description text is suffixed with a 10-character 
+        random string), 'ftext' (description text is not suffixed with 
+        a 10-character random string) and 'file' (for file hash 
+        logging). Default = 'text'.
         @param debug Boolean: Flag to print out debugging statements.
         @return: Dictionary of data generated from this event.
         '''
@@ -371,6 +374,9 @@ class SereboDB(object):
             (dtstamp, DL_data, description, DL_hash) = \
                 self._insertData1A(data, description)
         elif mode.lower() == 'file':
+            (dtstamp, DL_data, description, DL_hash) = \
+                self._insertData1B(data, description)
+        elif mode.lower() == 'ftext':
             (dtstamp, DL_data, description, DL_hash) = \
                 self._insertData1B(data, description)
         # Step 2: Insert data into datalog
