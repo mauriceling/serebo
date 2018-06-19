@@ -1,5 +1,5 @@
 '''!
-Secured Recorder Box (SEREBO) Black Box Command Line Interface (CLI)
+Secured Recorder Box (SEREBO) Command Line Interface (CLI)
 
 Date created: 17th May 2018
 
