@@ -27,6 +27,7 @@ import os
 import secrets
 import sqlite3
 import string
+import time
 
 class SereboDB(object):
     '''!
@@ -116,8 +117,11 @@ class SereboDB(object):
             value text not null);'''
         sql_metadata_insert1 = '''
         insert into metadata (key, value) values 
-            ('creation_timestamp', '%s');''' % (now)
+            ('creation_datetimestamp', '%s');''' % (now)
         sql_metadata_insert2 = '''
+        insert into metadata (key, value) values 
+            ('creation_secondstamp', '%s');''' % str(time.time())
+        sql_metadata_insert3 = '''
         insert into metadata (key, value) values ('blackboxID', '%s');''' % (self.randomString(512))
         # System data table
         sql_systemdata_create = '''
@@ -166,6 +170,7 @@ class SereboDB(object):
         sqlstmt = [sql_metadata_create, 
                    sql_metadata_insert1,
                    sql_metadata_insert2,
+                   sql_metadata_insert3,
                    sql_systemdata_create,
                    sql_datalog_create,
                    sql_datalog_unique,
