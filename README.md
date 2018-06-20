@@ -1,3 +1,4 @@
+## SEcured REcorder BOx (SEREBO) - Secured Data Logger Based on Blockchain Technology
 **Problem scenario:** I am a researcher and I often generate data files as I go about my work. Take for example, an Excel file, sampleTimeSeries.xlsx, that I had generated on 15th May 2015. Three years later on 10th June 2018, how can I demonstrate that sampleTimeSeries.xlsx had not been changed / edited since 15th May 2015? If I had the intention to change the file on 10th December 2016, I can safely set my computer clock back to 15th May 2015, change the file, and the date will still be 15th May 2015.
 
 **Solution:** What is there is a way for me to log my file into a system, on 15th May 2015, and this record (the log statement) is not editable? To ensure that this record is not editable, it can be put on a blockchain. One of the most useful features of a blockchain is resistance against modification of data.
