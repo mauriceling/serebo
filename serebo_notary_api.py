@@ -23,11 +23,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from xmlrpc.client import ServerProxy
 
-notaryURL = 'https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc'
-
 def registerBlackbox(blackboxID, owner, email, 
                      architecture, machine, node, 
-                     platform, processor):
+                     platform, processor, 
+                     notaryURL='https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc'):
     '''!
     Function to communicate with SEREBO Notary to register SEREBO 
     Black Box with SEREBO Notary.
@@ -45,7 +44,9 @@ def registerBlackbox(blackboxID, owner, email,
     @param platform String: This platform description - from platform 
     library in Python Standard Library.
     @param processor String: Machine's processor description - from 
-    platform library in Python Standard Library.
+    platform library in Python Standard Library
+    @param notaryURL String: URL for SEREBO Notary web service. 
+    Default="https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc"
     @returns: (URL of SEREBO Notary, Notary authorization code, Date 
     time stamp from SEREBO Notary)
     '''
@@ -56,7 +57,8 @@ def registerBlackbox(blackboxID, owner, email,
                                platform, processor)
     return (notaryURL, str(notaryAuthorization), str(dtstamp))
 
-def notarizeBB(blackboxID, notaryAuthorization, dtstampBB, codeBB):
+def notarizeBB(blackboxID, notaryAuthorization, dtstampBB, codeBB,
+              notaryURL='https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc'):
     '''!
     Function to communicate with SEREBO Notary to notarize SEREBO 
     Black Box with SEREBO Notary.
@@ -67,6 +69,8 @@ def notarizeBB(blackboxID, notaryAuthorization, dtstampBB, codeBB):
     in metadata table in SEREBO black box database.
     @param dtstampBB String: Date time stamp from SEREBO black box.
     @param codeBB String: Notarization code from SEREBO black box.
+    @param notaryURL String: URL for SEREBO Notary web service. 
+    Default="https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc"
     @returns: (URL of SEREBO Notary, Date time stamp from SEREBO 
     Notary, Notarization code from SEREBO Notary, Cross-Signing code 
     from SEREBO Notary)
