@@ -412,6 +412,7 @@ if __name__ == '__main__':
          'localdts': localDTS,
          'logfile': logFile,
          'notarizebb': notarizeBlackbox,
+         #'notarizesn': notarizeNotary,
          'register': registerBlackbox,
          #'searchmsg': searchMessage,
          #'searchdesc': searchDescription,
