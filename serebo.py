@@ -395,16 +395,29 @@ def notarize(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
 
 
 if __name__ == '__main__':
-    exposed_functions = {'fhash': fileHash,
-                         'init': initialize,
-                         'intext': insertText,
-                         'localcode': localCode,
-                         'localdts': localDTS,
-                         'logfile': logFile,
-                         'notarizebb': notarize,
-                         'register': registerBlackbox,
-                         'selfsign': selfSign,
-                         'shash': stringHash,
-                         'sysdata': systemData,
-                         'sysrecord': systemRecord}
+    exposed_functions = {\
+         #'audit_blockchain': auditBlockchain,
+         #'audit_count': auditCount,
+         #'audit_data_blockchain': auditDataBlockchain,
+         #'audit_datahash': auditDatahash,
+         #'audit_notarizebb': auditNotarizeBB,
+         #'audit_register': auditRegister,
+         #'backup': backup,
+         #'changealias': changeAlias,
+         #'dump': dump,
+         'fhash': fileHash,
+         'init': initialize,
+         'intext': insertText,
+         'localcode': localCode,
+         'localdts': localDTS,
+         'logfile': logFile,
+         'notarizebb': notarize,
+         'register': registerBlackbox,
+         #'searchmsg': searchMessage,
+         #'searchdesc': searchDescription,
+         #'searchfile': searchFile,
+         'selfsign': selfSign,
+         'shash': stringHash,
+         'sysdata': systemData,
+         'sysrecord': systemRecord}
     fire.Fire(exposed_functions)
