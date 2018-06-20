@@ -24,9 +24,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 notabase = SQLDB('sqlite://serebo_notabase.sqlite')
 
+'''
+Table registered_blackbox is to store registration data 
+of SEREBO Black Box.
+'''
 notabase.define_table('registered_blackbox',
     SQLField('datetimestamp', 'text'),
-    SQLField('blackboxID', 'text'),
+    SQLField('blackboxID', 'text', unique=True),
     SQLField('owner', 'text'),
     SQLField('email', 'text'),
     SQLField('architecture', 'text'),

@@ -31,11 +31,20 @@ from gluon.tools import Service
 service = Service()
 
 def call():
+    '''!
+    Function to enable web services in Web2Py.
+    '''
     session.forget()
     return service()
 
 @service.xmlrpc
 def now():
+    '''!
+    Function to generate a UTC date time stamp string in the format 
+    of <year>:<month>:<day>:<hour>:<minute>:<second>:<microsecond>
+
+    @return: UTC date time stamp string
+    '''
     dt = datetime.utcnow()
     x = [str(dt.year), str(dt.month),
          str(dt.day), str(dt.hour),
@@ -45,6 +54,16 @@ def now():
 
 @service.xmlrpc
 def randomString(length=16):
+    '''!
+    Function to generate a random string, which can contain 80 
+    possible characters - abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNO
+    PQRSTUVWXYZ0123456789~!@#$%^&*()<>=+[]?. Hence, the possible 
+    number of strings is 80**length.
+
+    @param length Integer: Length of random string to generate. 
+    Default = 16.
+    @return: Random string
+    '''
     choices = string.ascii_letters + \
               string.digits + \
               '~!@#$%^&*()<>=+[]?'
@@ -56,6 +75,26 @@ def randomString(length=16):
 def register_blackbox(blackboxID, owner, email, 
              architecture, machine, node, 
              platform, processor):
+    '''!
+    Function to register SEREBO Black Box with SEREBO Notary.
+
+    @param blackboxID String: ID of SEREBO black box - found in 
+    metadata table in SEREBO black box database.
+    @param owner String: Owner's or administrator's name.
+    @param email String: Owner's or administrator's email.
+    @param architecture String: Architecture of machine - from 
+    platform library in Python Standard Library.
+    @param machine String: Machine description - from platform 
+    library in Python Standard Library.
+    @param node String: Machine's node description - from 
+    platform library in Python Standard Library.
+    @param platform String: Platform description - from platform 
+    library in Python Standard Library.
+    @param processor String: Machine's processor description - from 
+    platform library in Python Standard Library.
+    @returns: (Notary authorization code, Date time stamp from 
+    SEREBO Notary)
+    '''
     dtstamp = now()
     notaryAuthorization = str(randomString(256))
     notabase.registered_blackbox.insert(datetimestamp=dtstamp,
