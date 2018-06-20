@@ -39,3 +39,25 @@ notabase.define_table('registered_blackbox',
     SQLField('platform', 'text'),
     SQLField('processor', 'text'),
     SQLField('notaryAuthorization', 'text'))
+
+'''
+Table notarize_blackbox is to store notarization data 
+when SEREBO Black Box requests for SEREBO Notary's 
+notarization.
+'''
+notabase.define_table('notarize_blackbox',
+    SQLField('blackboxID', 'text'),
+    SQLField('notaryAuthorization', 'text'),
+    SQLField('dtstampBB', 'text'),
+    SQLField('dtstampNS', 'text'),
+    SQLField('codeBB', 'text'),
+    SQLField('codeNS', 'text'),
+    SQLField('codeCommon', 'text'))
+
+'''
+Table eventlog is to keep a record of notable events 
+in SEREBO Notary.
+'''
+notabase.define_table('eventlog',
+    SQLField('datetimestamp', 'text'),
+    SQLField('event', 'text'))
