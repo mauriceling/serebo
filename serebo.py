@@ -237,9 +237,9 @@ def localDTS(bbpath='serebo_blackbox\\blackbox.sdb'):
     db = bb.connectDB(bbpath)
     dts = bb.dateTime(db)
     print('')
-    print('SEREBO Black Box at %s' % str(db.path))
-    print('Date Time Stamp: %s' % str(dts))
-    print('')
+    return {'SEREBO Black Box': db,
+            'Black Box Path': str(db.path),
+            'Date Time Stamp': str(dts)}
 
 def stringHash(dstring, bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
