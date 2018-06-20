@@ -343,11 +343,10 @@ def selfSign(bbpath='serebo_blackbox\\blackbox.sdb'):
     rdata = bb.insertFText(db, rstring, 'Self notarization')
     print('')
     print('Self-Signing / Self-Notarization ...')
-    print('SEREBO Black Box at %s' % str(db.path))
-    print('Date Time Stamp: %s' % rdata['DateTimeStamp'])
-    print('Random String: %s' % rstring)
-    print('------ Self-Signing Successful ------')
-    print('')
+    return {'SEREBO Black Box': db,
+            'Black Box Path': str(db.path),
+            'Date Time Stamp': str(rdata['DateTimeStamp']),
+            'Random String': str(rstring)}
 
 def notarizeBlackbox(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
