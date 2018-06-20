@@ -29,7 +29,7 @@ def registerBlackbox(blackboxID, owner, email,
                      architecture, machine, node, 
                      platform, processor):
     '''!
-    Function to communicate with SEREBO Notaty to register SEREBO 
+    Function to communicate with SEREBO Notary to register SEREBO 
     Black Box with SEREBO Notary.
 
     @param blackboxID String: ID of SEREBO black box - found in 
@@ -46,6 +46,8 @@ def registerBlackbox(blackboxID, owner, email,
     library in Python Standard Library.
     @param processor String: Machine's processor description - from 
     platform library in Python Standard Library.
+    @returns: (URL of SEREBO Notary, Notary authorization code, Date 
+    time stamp from SEREBO Notary)
     '''
     serv = ServerProxy(notaryURL)
     (notaryAuthorization, dtstamp) = \
@@ -54,3 +56,23 @@ def registerBlackbox(blackboxID, owner, email,
                                platform, processor)
     return (notaryURL, str(notaryAuthorization), str(dtstamp))
 
+def notarizeBB(blackboxID, notaryAuthorization, dtstampBB, codeBB):
+    '''!
+    Function to communicate with SEREBO Notary to notarize SEREBO 
+    Black Box with SEREBO Notary.
+
+    @param blackboxID String: ID of SEREBO black box - found in 
+    metadata table in SEREBO black box database.
+    @param notaryAuthorization String: Notary authorization code of of SEREBO black box (generated during black box registration - found 
+    in metadata table in SEREBO black box database.
+    @param dtstampBB String: Date time stamp from SEREBO black box.
+    @param codeBB String: Notarization code from SEREBO black box.
+    @returns: (URL of SEREBO Notary, Date time stamp from SEREBO 
+    Notary, Notarization code from SEREBO Notary, Cross-Signing code 
+    from SEREBO Notary)
+    '''
+    serv = ServerProxy(notaryURL)
+    (dtstampNS, codeNS, codeCommon) = \
+        serv.notarizeSereboBB(blackboxID, notaryAuthorization, 
+                              dtstampBB, codeBB)
+    return (notaryURL, str(dtstampNS), str(codeNS), str(codeCommon))

@@ -319,7 +319,7 @@ def registerBlackbox(owner, email,
 
 def selfSign(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
-    Function to self-sign (self notarization) SEREBO black box.
+    Function to self-sign (self notarization) SEREBO Black Box.
 
     Usage:
 
@@ -343,6 +343,54 @@ def selfSign(bbpath='serebo_blackbox\\blackbox.sdb'):
     print('------ Self-Signing Successful ------')
     print('')
 
+def notarize(bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to notarize SEREBO Black Box with SEREBO Notary.
+
+    Usage:
+
+        python serebo.py notarize --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py notarize --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    sqlstmt = "select value from metadata where key='blackboxID'"
+    blackboxID = [row for row in db.cur.execute(sqlstmt)][0][0]
+    sqlstmt = "select value from metadata where key='notaryAuthorization'"
+    notaryAuthorization = \
+        [row for row in db.cur.execute(sqlstmt)][0][0]
+    dtstampBB = bb.dateTime(db)
+    codeBB = bb.randomString(db, 32)
+    (notaryURL, dtstampNS, codeNS, codeCommon) = \
+        notary.notarizeBB(blackboxID, notaryAuthorization, 
+                          dtstampBB, codeBB)
+    if codeCommon == 'not registered':
+        print('Black Box is not registered - Notarization Failed.')
+    else:
+        description = ['Notarization with SEREBO Notary',
+                       'Black Box Code: %s' % codeBB,
+                       'Black Box Date Time: %s' % dtstampBB,
+                       'Notary Code: %s' % codeNS,
+                       'Notary Date Time: %s' % dtstampNS,
+                       'Notary URL: %s' % notaryURL]
+        description = ' | '.join(description)
+        rdata = bb.insertFText(db, codeCommon, description)
+        print('')
+        print('Notarizing SEREBO Black Box with SEREBO Notary...')
+        print('Cross-Signing Code: %s' % codeCommon)
+        print('Black Box Date Time: %s' % dtstampBB)
+        print('Black Box Code: %s' % codeBB)
+        print('Notary Date Time: %s' % dtstampNS)
+        print('Notary Code: %s' % codeNS)
+        print('Notary URL: %s' % notaryURL)
+        print('------ Notarization Successful ------')
+        print('')
+
 
 if __name__ == '__main__':
     exposed_functions = {'fhash': fileHash,
@@ -351,7 +399,7 @@ if __name__ == '__main__':
                          'localcode': localCode,
                          'localdts': localDTS,
                          'logfile': logFile,
-                         #'notarize': notarize,
+                         'notarize': notarize,
                          'register': registerBlackbox,
                          'selfsign': selfSign,
                          'shash': stringHash,
