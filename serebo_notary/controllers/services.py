@@ -108,6 +108,15 @@ def register_blackbox(blackboxID, owner, email,
                                         platform=str(platform), 
                                         processor=str(processor), 
                                         notaryAuthorization=notaryAuthorization)
+    eventText = ['SEREBO Black Box Registration',
+                 'Date Time Stamp: %s' % dtstamp,
+                 'Black Box ID: %s' % blackboxID,
+                 'Owner: %s' % owner,
+                 'Email: %s' % email,
+                 'Notary Authorization: %s' % notaryAuthorization]
+    eventText = ' | '.join(eventText)
+    notabase.eventlog.insert(datetimestamp=dtstamp,
+                             event=eventText)
     return (notaryAuthorization, dtstamp)
 
 @service.xmlrpc
