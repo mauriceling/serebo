@@ -367,17 +367,22 @@ def notarizeBlackbox(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
     db = bb.connectDB(bbpath)
     sqlstmt = "select value from metadata where key='blackboxID'"
     blackboxID = [row for row in db.cur.execute(sqlstmt)][0][0]
-    sqlstmt = "select notaryAuthorization from notary where alias='%s'" % str(alias)
-    notaryAuthorization = \
-        [row for row in db.cur.execute(sqlstmt)][0][0]
+    try:
+        sqlstmt = "select notaryAuthorization, notaryURL from notary where alias='%s'" % str(alias)
+        sqlresult = [row for row in db.cur.execute(sqlstmt)][0]
+        notaryAuthorization = sqlresult[0]
+        notaryURL = sqlresult[1]
+    except IndexError:
+        print('Notary authorization or Notary URL not found for the given alias')
+        return {'SEREBO Black Box': db,
+                'Black Box Path': str(db.path),
+                'Notary Alias': str(alias)}
     dtstampBB = bb.dateTime(db)
     codeBB = bb.randomString(db, 32)
-    (notaryURL, dtstampNS, codeNS, codeCommon) = \
-        notary.notarizeBB(blackboxID, notaryAuthorization, 
-                          dtstampBB, codeBB)
-    if codeCommon == 'not registered':
-        print('Black Box is not registered - Notarization Failed.')
-    else:
+    try:
+        (notaryURL, dtstampNS, codeNS, codeCommon) = \
+            notary.notarizeBB(blackboxID, notaryAuthorization, 
+                              dtstampBB, codeBB, notaryURL)
         description = ['Notarization with SEREBO Notary',
                        'Black Box Code: %s' % codeBB,
                        'Black Box Date Time: %s' % dtstampBB,
@@ -388,14 +393,23 @@ def notarizeBlackbox(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
         rdata = bb.insertFText(db, codeCommon, description)
         print('')
         print('Notarizing SEREBO Black Box with SEREBO Notary...')
-        print('Cross-Signing Code: %s' % codeCommon)
-        print('Black Box Date Time: %s' % dtstampBB)
-        print('Black Box Code: %s' % codeBB)
-        print('Notary Date Time: %s' % dtstampNS)
-        print('Notary Code: %s' % codeNS)
-        print('Notary URL: %s' % notaryURL)
-        print('------ Notarization Successful ------')
-        print('')
+        return {'SEREBO Black Box': db,
+                'Black Box Path': str(db.path),
+                'Notary Alias': str(alias),
+                'Notary URL': str(notaryURL),
+                'Notary Authorization': str(notaryAuthorization),
+                'Notary Date Time Stamp': str(dtstampNS),
+                'Date Time Stamp': str(dtstampBB),
+                'Black Box Code': str(codeBB),
+                'Notary Code': str(codeNS),
+                'Cross-Signing Code': str(codeCommon)}
+    except:
+        print('Failed in attempt to notarize SEREBO Black Box with SEREBO Notary')
+        return {'SEREBO Black Box': db,
+                'Black Box Path': str(db.path),
+                'Notary Alias': str(alias),
+                'Notary URL': str(notaryURL),
+                'Notary Authorization': str(notaryAuthorization)}
 
 
 if __name__ == '__main__':
