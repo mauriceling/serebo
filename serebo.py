@@ -263,21 +263,25 @@ def stringHash(dstring, bbpath='serebo_blackbox\\blackbox.sdb'):
     print('Hash: %s' % str(x))
     print('')
 
-def registerBlackbox(owner, email, 
+def registerBlackbox(owner, email, alias, 
+                     notaryURL='https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc',
                      bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to register SEREBO Black Box with SEREBO Notary.
 
     Usage:
 
-        python serebo.py register --owner=<owner's name> --email=<owner's email> --bbpath=<path to SEREBO black box> 
+        python serebo.py register --alias=<alias for this SEREBO Notary> --notaryURL="https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc" --owner=<owner's name> --email=<owner's email> --bbpath=<path to SEREBO black box> 
 
     For example:
 
-        python serebo.py shash register --owner="Maurice HT Ling" --email="mauriceling@acm.org" --bbpath='serebo_blackbox\\blackbox.sdb'
+        python serebo.py register --alias="NotaryPythonAnywhere" --notaryURL="https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc" --owner="Maurice HT Ling" --email="mauriceling@acm.org" --bbpath='serebo_blackbox\\blackbox.sdb'
 
     @param owner String: Owner's or administrator's name.
     @param email String: Owner's or administrator's email.
+    @param alias String: Alias for this SEREBO Notary.
+    @param notaryURL String: URL for SEREBO Notary web service. 
+    Default="https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc"
     @param bbpath String: Path to SEREBO black box. Default = 
     'serebo_blackbox\\blackbox.sdb'.
     '''
@@ -296,12 +300,11 @@ def registerBlackbox(owner, email,
         (notaryURL, notaryAuthorization, dtstamp) = \
             notary.registerBlackbox(blackboxID, owner, email, 
                                     architecture, machine, node, 
-                                    platform, processor)
-        sqlstmt = '''insert into metadata (key, value) values (?,?)'''
-        db.cur.execute(sqlstmt, ('notaryAuthorization', 
-                                 notaryAuthorization))
-        db.cur.execute(sqlstmt, ('notaryDTS', dtstamp))
-        db.cur.execute(sqlstmt, ('notaryURL', notaryURL))
+                                    platform, processor, notaryURL)
+        sqlstmt = '''insert into notary (dtstamp, alias, owner, email, notaryDTS, notaryAuthorization, notaryURL) values (?,?,?,?,?,?,?)'''
+        sqldata = (db.dtStamp(), alias, owner, email, 
+                   dtstamp, notaryAuthorization, notaryURL)
+        db.cur.execute(sqlstmt, sqldata)
         db.conn.commit()
         print('')
         print('Registering SEREBO Black Box with SEREBO Notary...')
@@ -312,8 +315,6 @@ def registerBlackbox(owner, email,
         print('Notary Date Time Stamp: %s' % dtstamp)
         print('------ Registration Successful ------')
         print('')
-    except sqlite3.IntegrityError:
-        print('SEREBO Black Box had been registered. Unable to register more than once.')
     except:
         print('Registration failed - likely to be SEREBO Notary error or XMLRPC error.')
 
@@ -399,7 +400,7 @@ if __name__ == '__main__':
                          'localcode': localCode,
                          'localdts': localDTS,
                          'logfile': logFile,
-                         'notarize': notarize,
+                         'notarizebb': notarize,
                          'register': registerBlackbox,
                          'selfsign': selfSign,
                          'shash': stringHash,
