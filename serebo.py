@@ -310,15 +310,18 @@ def registerBlackbox(owner, email, alias,
         db.conn.commit()
         print('')
         print('Registering SEREBO Black Box with SEREBO Notary...')
-        print('SEREBO Black Box at %s' % str(db.path))
-        print('SEREBO Black Box ID: %s' % str(blackboxID))
-        print('Notary URL: %s' % notaryURL)
-        print('Notary Authorization: %s' % notaryAuthorization)
-        print('Notary Date Time Stamp: %s' % dtstamp)
-        print('------ Registration Successful ------')
-        print('')
+        return {'SEREBO Black Box': db,
+                'Black Box Path': str(db.path),
+                'Black Box ID': str(blackboxID),
+                'Notary URL': str(notaryURL),
+                'Notary Authorization': str(notaryAuthorization),
+                'Notary Date Time Stamp': str(dtstamp)}
     except:
         print('Registration failed - likely to be SEREBO Notary error or XMLRPC error.')
+        return {'SEREBO Black Box': db,
+                'Black Box Path': str(db.path),
+                'Black Box ID': str(blackboxID),
+                'Notary URL': str(notaryURL)}
 
 def selfSign(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
