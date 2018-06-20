@@ -46,12 +46,14 @@ def initialize(bbpath='serebo_blackbox\\blackbox.sdb'):
     'serebo_blackbox\\blackbox.sdb'.
     '''
     db = bb.connectDB(bbpath)
-    sqlstmt = '''insert into metadata (key, value) values ('serebo_blackbox_path', '%s');''' % (str(db.path))
-    db.cur.execute(sqlstmt)
-    db.conn.commit()
+    try:
+        sqlstmt = '''insert into metadata (key, value) values ('serebo_blackbox_path', '%s');''' % (str(db.path))
+        db.cur.execute(sqlstmt)
+        db.conn.commit()
+    except sqlite3.IntegrityError: pass
     print('')
-    print('SEREBO Black Box initialized at %s' % str(db.path))
-    print('')
+    return {'SEREBO Black Box': db,
+            'Black Box Path': str(db.path)}
 
 def insertText(message, description='NA', 
                bbpath='serebo_blackbox\\blackbox.sdb'):

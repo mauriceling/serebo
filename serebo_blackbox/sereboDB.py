@@ -130,7 +130,7 @@ class SereboDB(object):
             alias text not null,
             owner text not null,
             email text not null,
-            notaryDTS text, not null,
+            notaryDTS text not null,
             notaryAuthorization text not null,
             notaryURL text not null);'''
         # System data table
