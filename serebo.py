@@ -344,17 +344,17 @@ def selfSign(bbpath='serebo_blackbox\\blackbox.sdb'):
     print('------ Self-Signing Successful ------')
     print('')
 
-def notarize(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
+def notarizeBlackbox(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to notarize SEREBO Black Box with SEREBO Notary.
 
     Usage:
 
-        python serebo.py notarize --alias=<alias for SEREBO Notary> --bbpath=<path to SEREBO black box> 
+        python serebo.py notarizebb --alias=<alias for SEREBO Notary> --bbpath=<path to SEREBO black box> 
 
     For example:
 
-        python serebo.py notarize --alias="NotaryPythonAnywhere" --bbpath='serebo_blackbox\\blackbox.sdb'
+        python serebo.py notarizebb --alias="NotaryPythonAnywhere" --bbpath='serebo_blackbox\\blackbox.sdb'
 
     @param alias String: Alias for this SEREBO Notary.
     @param bbpath String: Path to SEREBO black box. Default = 
@@ -411,7 +411,7 @@ if __name__ == '__main__':
          'localcode': localCode,
          'localdts': localDTS,
          'logfile': logFile,
-         'notarizebb': notarize,
+         'notarizebb': notarizeBlackbox,
          'register': registerBlackbox,
          #'searchmsg': searchMessage,
          #'searchdesc': searchDescription,
