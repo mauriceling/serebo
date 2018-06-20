@@ -344,25 +344,26 @@ def selfSign(bbpath='serebo_blackbox\\blackbox.sdb'):
     print('------ Self-Signing Successful ------')
     print('')
 
-def notarize(bbpath='serebo_blackbox\\blackbox.sdb'):
+def notarize(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to notarize SEREBO Black Box with SEREBO Notary.
 
     Usage:
 
-        python serebo.py notarize --bbpath=<path to SEREBO black box> 
+        python serebo.py notarize --alias=<alias for SEREBO Notary> --bbpath=<path to SEREBO black box> 
 
     For example:
 
-        python serebo.py notarize --bbpath='serebo_blackbox\\blackbox.sdb'
+        python serebo.py notarize --alias="NotaryPythonAnywhere" --bbpath='serebo_blackbox\\blackbox.sdb'
 
+    @param alias String: Alias for this SEREBO Notary.
     @param bbpath String: Path to SEREBO black box. Default = 
     'serebo_blackbox\\blackbox.sdb'.
     '''
     db = bb.connectDB(bbpath)
     sqlstmt = "select value from metadata where key='blackboxID'"
     blackboxID = [row for row in db.cur.execute(sqlstmt)][0][0]
-    sqlstmt = "select value from metadata where key='notaryAuthorization'"
+    sqlstmt = "select notaryAuthorization from notary where alias='%s'" % str(alias)
     notaryAuthorization = \
         [row for row in db.cur.execute(sqlstmt)][0][0]
     dtstampBB = bb.dateTime(db)
