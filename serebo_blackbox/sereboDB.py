@@ -127,8 +127,10 @@ class SereboDB(object):
         create table if not exists notary (
             ID integer primary key autoincrement,
             dtstamp text not null,
-            notaryDTS text, not null,
             alias text not null,
+            owner text not null,
+            email text not null,
+            notaryDTS text, not null,
             notaryAuthorization text not null,
             notaryURL text not null);'''
         # System data table
