@@ -123,6 +123,14 @@ class SereboDB(object):
             ('creation_secondstamp', '%s');''' % str(time.time())
         sql_metadata_insert3 = '''
         insert into metadata (key, value) values ('blackboxID', '%s');''' % (self.randomString(512))
+        sql_notary_create = '''
+        create table if not exists notary (
+            ID integer primary key autoincrement,
+            dtstamp text not null,
+            notaryDTS text, not null,
+            alias text not null,
+            notaryAuthorization text not null,
+            notaryURL text not null);'''
         # System data table
         sql_systemdata_create = '''
         create table if not exists systemdata (
@@ -171,6 +179,7 @@ class SereboDB(object):
                    sql_metadata_insert1,
                    sql_metadata_insert2,
                    sql_metadata_insert3,
+                   sql_notary_create,
                    sql_systemdata_create,
                    sql_datalog_create,
                    sql_datalog_unique,
