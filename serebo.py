@@ -500,7 +500,7 @@ def changeAlias(alias, newalias,
 
     Usage:
 
-        python serebo.py changealias --alias=<current alias to be changed> --newalias=<new alias to change into>  --bbpath=<path to SEREBO black box>
+        python serebo.py changealias --alias=<current alias to be changed> --newalias=<new alias to change into> --bbpath=<path to SEREBO black box>
 
     For example:
 
@@ -526,6 +526,40 @@ def changeAlias(alias, newalias,
             'Alias': alias,
             'New Alias': newalias}
 
+def searchMessage(term, mode='like',
+                  bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to search SEREBO Black Box for a message.
+
+    Usage: 
+
+        python serebo.py changealias --mode=<search mode> --term=<search term> --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py searchmsg --mode='like' --term="Change notary alias%" --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param term String: Case sensitive search term.
+    @param mode String: Mode of search. Allowable modes are 'like' and 
+    'exact'. If mode is 'like', wildcards such as '_' (matches any 
+    single character) and '%' (matches any number of characters). 
+    Default = 'like'.
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    mode = str(mode)
+    term = str(term)
+    result = bb.searchDatalog(db, term, 'data', mode)
+    print('')
+    print('Search Result (Search by Message) ...')
+    print('')
+    for row in result:
+        print('Date Time Stamp: %s' % str(row[1]))
+        print('Message: %s' % str(row[3]))
+        print('Description: %s' % str(row[4]))
+        print('')
+
 
 if __name__ == '__main__':
     exposed_functions = {\
@@ -547,7 +581,7 @@ if __name__ == '__main__':
          'notarizebb': notarizeBlackbox,
          #'notarizesn': notarizeNotary,
          'register': registerBlackbox,
-         #'searchmsg': searchMessage,
+         'searchmsg': searchMessage,
          #'searchdesc': searchDescription,
          #'searchfile': searchFile,
          'selfsign': selfSign,

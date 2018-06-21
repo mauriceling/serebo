@@ -235,6 +235,29 @@ def logFile(sdb_object, filepath, description='NA'):
     rdata = sdb_object.insertData(fHash, description, 'file')
     return rdata
 
+def searchDatalog(sdb_object, term, field, mode='like'):
+    '''!
+    Function to search datalog table.
+
+    @param sdb_object Object: SEREBO database object.
+    @param term String: Case sensitive search term.
+    @param field String: Field name to search.
+    @param mode String: Mode of search. Allowable modes are 'like' and 
+    'exact'. If mode is 'like', wildcards such as '_' (matches any 
+    single character) and '%' (matches any number of characters). 
+    Default = 'like'.
+    @return: List of datalog rows: [ID, dtstamp, hash, data, 
+    description]
+    '''
+    term = str(term)
+    field = str(field)
+    if mode.lower() == 'exact':
+        sqlstmt = """select ID, dtstamp, hash, data, description from datalog where ?='%s'""" % (field, term)
+    if mode.lower() == 'like':
+        sqlstmt = """select ID, dtstamp, hash, data, description from datalog where %s like '%s'""" % (field, term)
+    result = [row for row in sdb_object.cur.execute(sqlstmt)]
+    return result
+
 def dateTime(sdb_object):
     '''!
     Function to get a date time string.

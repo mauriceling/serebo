@@ -42,5 +42,6 @@ from .serebo_api import insertFText
 from .serebo_api import insertText
 from .serebo_api import logFile
 from .serebo_api import randomString
+from .serebo_api import searchDatalog
 from .serebo_api import stringHash
 from .serebo_api import systemData
