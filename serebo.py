@@ -219,12 +219,15 @@ def fileHash(filepath):
     Usage:
 
         python serebo.py fhash --filepath=<path of file to hash>
+
+    For example:
+
+        python serebo.py fhash --filepath=doxygen_serebo
     '''
     fHash = bb.fileHash(filepath)
     print('')
-    print('File Path: %s' % str(filepath))
-    print('File Hash: %s' % str(fHash))
-    print('')
+    return {'File Path': str(filepath),
+            'File Hash': str(fHash)}
 
 def localCode(length, description=None, 
               bbpath='serebo_blackbox\\blackbox.sdb'):
