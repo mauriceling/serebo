@@ -78,16 +78,12 @@ def insertText(message, description='NA',
     rdata = bb.insertText(db, message, description)
     print('')
     print('Insert Text Status ...')
-    print('SEREBO Black Box at %s' % str(db.path))
-    print('Message: %s' % rdata['Data'])
-    print('Description: %s' % rdata['UserDescription'])
-    print('Data Hash: %s' % rdata['DataHash'])
-    print('Date Time Stamp: %s' % rdata['DateTimeStamp'])
-    print('Number of Pre-existing Blocks in Blockchain: %s' % \
-          rdata['ParentBlockID'])
-    print('Current Block Hash: %s' % rdata['BlockHash'])
-    print('------ Insert Text Successful ------')
-    print('')
+    return {'SEREBO Black Box': db,
+            'Black Box Path': str(db.path),
+            'Date Time Stamp': str(rdata['DateTimeStamp']),
+            'Message': str(rdata['Data']),
+            'Description': str(rdata['UserDescription']),
+            'Data Hash': str(rdata['DataHash'])}
 
 def logFile(filepath, description='NA',
             bbpath='serebo_blackbox\\blackbox.sdb'):
