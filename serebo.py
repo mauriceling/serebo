@@ -631,6 +631,9 @@ def searchFile(filepath, bbpath='serebo_blackbox\\blackbox.sdb'):
 
 def auditCount(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
+    Function to check for equal numbers of records in data log and 
+    blockchain in SEREBO Black Box - should have the same number of 
+    records.
 
     Usage: 
 
