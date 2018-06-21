@@ -144,6 +144,16 @@ def insertFText(sdb_object, text, description='NA'):
     rdata = sdb_object.insertData(text, description, 'ftext')
     return rdata
 
+def absolutePath(filepath):
+    '''!
+    Function to convert file path (absolute or relative file path) 
+    into absolute file path.
+
+    @param filepath String: File path to be converted.
+    @return: Absolute file path.
+    '''
+    return os.path.abspath(filepath)
+
 def fileHash(filepath):
     '''!
     Function to generate a series of 12 hashes for a given file, in 
