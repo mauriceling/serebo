@@ -223,6 +223,8 @@ def fileHash(filepath):
     For example:
 
         python serebo.py fhash --filepath=doxygen_serebo
+
+    @param fileapth String: Path of file to log in SEREBO black box.
     '''
     fHash = bb.fileHash(filepath)
     print('')
@@ -594,6 +596,39 @@ def searchDescription(term, mode='like',
         print('Description: %s' % str(row[4]))
         print('')
 
+def searchFile(filepath, bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to search SEREBO Black Box for a file logging event.
+
+    Usage: 
+
+        python serebo.py searchfile --filepath=<path to file for searching> --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py searchfile --filepath=doxygen_serebo --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param fileapth String: Path of file to search in SEREBO black box.
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    filepath = str(filepath)
+    absPath = bb.absolutePath(filepath)
+    fHash = bb.fileHash(absPath)
+    result = bb.searchDatalog(db, fHash, 'data', 'exact')
+    print('')
+    print('Search Result (Search by File) ...')
+    print('')
+    print('File Path: %s' % filepath)
+    print('Absolute File Path: %s' % absPath)
+    print('')
+    for row in result:
+        print('Date Time Stamp: %s' % str(row[1]))
+        print('Message: %s' % str(row[3]))
+        print('Description: %s' % str(row[4]))
+        print('')
+
 
 if __name__ == '__main__':
     exposed_functions = {\
@@ -617,7 +652,7 @@ if __name__ == '__main__':
          'register': registerBlackbox,
          'searchmsg': searchMessage,
          'searchdesc': searchDescription,
-         #'searchfile': searchFile,
+         'searchfile': searchFile,
          'selfsign': selfSign,
          'shash': stringHash,
          'sysdata': systemData,
