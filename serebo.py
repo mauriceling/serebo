@@ -676,13 +676,52 @@ def auditCount(bbpath='serebo_blackbox\\blackbox.sdb'):
         elif len(sqlresultA) < len(sqlresultB):
             print('Number of records in datalog LESS than the number of records in blockchain')
 
+def auditDatahash(bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to check for accuracy of hash generations in data log 
+    within SEREBO Black Box - recorded hash in data log and computed 
+    hash should be identical.
+
+    Usage: 
+
+        python serebo.py audit_datahash --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py audit_datahash --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    sqlstmt = '''select ID, dtstamp, data, description, hash from datalog'''
+    print('')
+    print('Audit SEREBO Black Box Data Log Records ...')
+    print('')
+    for row in db.cur.execute(sqlstmt):
+        ID = str(row[0])
+        dtstamp = str(row[1])
+        data = str(row[2])
+        description = str(row[3])
+        rHash = str(row[4])
+        dhash = bytes(dtstamp, 'utf-8') + \
+                bytes(data, 'utf-8') + \
+                bytes(description, 'utf-8')
+        tHash = db.hash(dhash)
+        if tHash == rHash:
+            print('Verified record %s in data log' % ID)
+        else:
+            print('ERROR in record %s in data log' % ID)
+            print('Hash in record: %s' % rHash)
+            print('Computed hash: %s' % tHash)
+
 
 if __name__ == '__main__':
     exposed_functions = {\
          #'audit_blockchain': auditBlockchain,
          'audit_count': auditCount,
          #'audit_data_blockchain': auditDataBlockchain,
-         #'audit_datahash': auditDatahash,
+         'audit_datahash': auditDatahash,
          #'audit_notarizebb': auditNotarizeBB,
          #'audit_register': auditRegister,
          #'backup': backup,
