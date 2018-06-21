@@ -472,7 +472,7 @@ def viewRegistration(bbpath='serebo_blackbox\\blackbox.sdb'):
 
     For example:
 
-        python serebo.py viewreg --bbpath='serebo_blackbox\\blackbox.sdb'
+        python serebo.py viewreg --bbpath=serebo_blackbox\\blackbox.sdb'
 
     @param bbpath String: Path to SEREBO black box. Default = 
     'serebo_blackbox\\blackbox.sdb'.
@@ -494,6 +494,39 @@ def viewRegistration(bbpath='serebo_blackbox\\blackbox.sdb'):
             'Black Box Path': str(db.path),
             'Notary Registrations': sqlresult}
 
+def changeAlias(alias, newalias, 
+                bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to change alias for a specific SEREBO Notary registration
+
+    Usage:
+
+        python serebo.py changealias --alias=<current alias to be changed> --newalias=<new alias to change into>  --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py changealias --alias="NotaryPythonAnywhere" --newalias="testAlias" --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param alias String: Current alias for the SEREBO Notary to change.
+    @param newalias String: New alias for the SEREBO Notary.
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    alias = str(alias)
+    newalias = str(newalias)
+    sqlstmt = '''update notary set alias=? where alias=?'''
+    db.cur.execute(sqlstmt, (newalias, alias))
+    db.conn.commit()
+    message = 'Change notary alias from %s to %s' % \
+        (alias, newalias)
+    rdata = bb.insertFText(db, message, 'NA')
+    print('')
+    return {'SEREBO Black Box': db,
+            'Black Box Path': str(db.path),
+            'Alias': alias,
+            'New Alias': newalias}
+
 
 if __name__ == '__main__':
     exposed_functions = {\
@@ -504,7 +537,7 @@ if __name__ == '__main__':
          #'audit_notarizebb': auditNotarizeBB,
          #'audit_register': auditRegister,
          #'backup': backup,
-         #'changealias': changeAlias,
+         'changealias': changeAlias,
          #'dump': dump,
          'fhash': fileHash,
          'init': initialize,
