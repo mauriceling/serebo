@@ -296,16 +296,17 @@ def stringHash(dstring, bbpath='serebo_blackbox\\blackbox.sdb'):
 
         python serebo.py shash --dstring="SEREBO is hosted at https://github.com/mauriceling/serebo" --bbpath='serebo_blackbox\\blackbox.sdb'
 
+    @param dstring String: String to generate hash.
     @param bbpath String: Path to SEREBO black box. Default = 
     'serebo_blackbox\\blackbox.sdb'.
     '''
     db = bb.connectDB(bbpath)
     x = bb.stringHash(db, dstring)
     print('')
-    print('SEREBO Black Box at %s' % str(db.path))
-    print('Data String: %s' % str(dstring))
-    print('Hash: %s' % str(x))
-    print('')
+    return {'SEREBO Black Box': db,
+            'Black Box Path': str(db.path),
+            'Data String': str(dstring),
+            'Data Hash': str(x)}
 
 def registerBlackbox(owner, email, alias, 
                      notaryURL='https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc',
