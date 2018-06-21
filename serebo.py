@@ -454,6 +454,39 @@ def notarizeBlackbox(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
                 'Notary URL': str(notaryURL),
                 'Notary Authorization': str(notaryAuthorization)}
 
+def viewRegistration(bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to view all SEREBO Notary registration for this SEREBO 
+    Black Box - This does not insert a record into SEREBO Black Box.
+
+    Usage:
+
+        python serebo.py viewreg --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py viewreg --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    sqlstmt = '''select ID, dtstamp, alias, owner, email, notaryDTS, notaryAuthorization, notaryURL from notary'''
+    sqlresult = {}
+    for row in db.cur.execute(sqlstmt):
+        ID = row[0]
+        reg = {'Date Time Stamp': str(row[1]),
+               'Notary Alias': str(row[2]),
+               'Owner': str(row[3]),
+               'Email': str(row[4]),
+               'Notary Date Time Stamp': str(row[5]),
+               'Notary Authorization': str(row[6]),
+               'Notary URL': str(row[7])}
+        sqlresult[str(ID)] = reg
+    return {'SEREBO Black Box': db,
+            'Black Box Path': str(db.path),
+            'Notary Registrations': sqlresult}
+
 
 if __name__ == '__main__':
     exposed_functions = {\
@@ -481,5 +514,6 @@ if __name__ == '__main__':
          'selfsign': selfSign,
          'shash': stringHash,
          'sysdata': systemData,
-         'sysrecord': systemRecord}
+         'sysrecord': systemRecord,
+         'viewreg': viewRegistration}
     fire.Fire(exposed_functions)
