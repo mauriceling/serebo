@@ -351,6 +351,13 @@ def registerBlackbox(owner, email, alias,
                    dtstamp, notaryAuthorization, notaryURL)
         db.cur.execute(sqlstmt, sqldata)
         db.conn.commit()
+        rstring = 'Register SEREBO Black Box with SEREBO Notary'
+        description = ['Notary URL: %s' % str(notaryURL),
+                       'Notary Authorization: %s' % \
+                            str(notaryAuthorization),
+                        'Notary Date Time Stamp %s' % str(dtstamp)]
+        description = ' | '.join(description)
+        rdata = bb.insertFText(db, rstring, description)
         print('')
         print('Registering SEREBO Black Box with SEREBO Notary...')
         return {'SEREBO Black Box': db,
