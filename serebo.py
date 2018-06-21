@@ -629,11 +629,55 @@ def searchFile(filepath, bbpath='serebo_blackbox\\blackbox.sdb'):
         print('Description: %s' % str(row[4]))
         print('')
 
+def auditCount(bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+
+    Usage: 
+
+        python serebo.py audit_count --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py audit_count --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    sqlstmtA = 'select ID, dtstamp from datalog'
+    sqlresultA = {}
+    for row in db.cur.execute(sqlstmtA):
+        sqlresultA[row[0]] = row[1]
+    sqlstmtB = 'select c_ID, c_dtstamp from blockchain'
+    sqlresultB = {}
+    for row in db.cur.execute(sqlstmtB):
+        sqlresultB[row[0]] = row[1]
+    print('')
+    print('Audit SEREBO Black Box Data Count ...')
+    print('')
+    if len(sqlresultA) == len(sqlresultB):
+        for k in sqlresultA:
+            if sqlresultA[k] != sqlresultB[k]:
+                print('Date time stamp mismatch')
+                print('Datalog record number %s' % str(k))
+                print('Datalog date time stamp: %s' % \
+                    str(sqlresultA[k]))
+                print('Blockchain date time stamp: %s' % \
+                    str(sqlresultB[k]))
+            else:
+                print('Date time stamp match - Record %s' % str(k))
+        print('Number of records in datalog matches the number of records in blockchain')
+    else:
+        if len(sqlresultA) > len(sqlresultB):
+            print('Number of records in datalog MORE than the number of records in blockchain')
+        elif len(sqlresultA) < len(sqlresultB):
+            print('Number of records in datalog LESS than the number of records in blockchain')
+
 
 if __name__ == '__main__':
     exposed_functions = {\
          #'audit_blockchain': auditBlockchain,
-         #'audit_count': auditCount,
+         'audit_count': auditCount,
          #'audit_data_blockchain': auditDataBlockchain,
          #'audit_datahash': auditDatahash,
          #'audit_notarizebb': auditNotarizeBB,
