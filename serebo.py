@@ -715,6 +715,43 @@ def auditDatahash(bbpath='serebo_blackbox\\blackbox.sdb'):
             print('Hash in record: %s' % rHash)
             print('Computed hash: %s' % tHash)
 
+def dumpHash(outputf, bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to write out record hash from SEREBO Black Box into a 
+    file.
+
+    Usage: 
+
+        python serebo.py dumphash --outputf=<output file path> --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py dumphash --outputf=sereboBB_hash --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param outputf String: Output file path. Default = sereboBB_hash
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    outputf = str(outputf)
+    outputf = bb.absolutePath(outputf)
+    outf = open(outputf, 'w')
+    sqlstmt = 'select ID, dtstamp, hash from datalog'
+    count = 0
+    for row in db.cur.execute(sqlstmt):
+        data = [str(row[0]), str(row[1]), str(row[2])]
+        data = ' | '.join(data)
+        outf.write(data + '\n')
+        count = count + 1
+    outf.close()
+    print('')
+    print('Dump SEREBO Black Box Data Log Hashes ...')
+    print('')
+    return {'SEREBO Black Box': db,
+            'Black Box Path': str(db.path),
+            'Output File Path': outputf,
+            'Number of Records': str(count)}
+
 
 if __name__ == '__main__':
     exposed_functions = {\
@@ -726,7 +763,9 @@ if __name__ == '__main__':
          #'audit_register': auditRegister,
          #'backup': backup,
          'changealias': changeAlias,
+         #'checkhash': checkHash,
          #'dump': dump,
+         'dumphash': dumpHash,
          'fhash': fileHash,
          'init': initialize,
          'intext': insertText,
