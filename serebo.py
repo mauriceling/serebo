@@ -472,27 +472,26 @@ def viewRegistration(bbpath='serebo_blackbox\\blackbox.sdb'):
 
     For example:
 
-        python serebo.py viewreg --bbpath=serebo_blackbox\\blackbox.sdb'
+        python serebo.py viewreg --bbpath='serebo_blackbox\\blackbox.sdb'
 
     @param bbpath String: Path to SEREBO black box. Default = 
     'serebo_blackbox\\blackbox.sdb'.
     '''
     db = bb.connectDB(bbpath)
-    sqlstmt = '''select ID, dtstamp, alias, owner, email, notaryDTS, notaryAuthorization, notaryURL from notary'''
-    sqlresult = {}
+    print('')
+    print('Black Box Path: %s' % str(bbpath))
+    sqlstmt = '''select dtstamp, alias, owner, email, notaryDTS, notaryAuthorization, notaryURL from notary'''
+    print('')
+    print('Notary Registration(s) ...')
     for row in db.cur.execute(sqlstmt):
-        ID = row[0]
-        reg = {'Date Time Stamp': str(row[1]),
-               'Notary Alias': str(row[2]),
-               'Owner': str(row[3]),
-               'Email': str(row[4]),
-               'Notary Date Time Stamp': str(row[5]),
-               'Notary Authorization': str(row[6]),
-               'Notary URL': str(row[7])}
-        sqlresult[str(ID)] = reg
-    return {'SEREBO Black Box': db,
-            'Black Box Path': str(db.path),
-            'Notary Registrations': sqlresult}
+        print('')
+        print('Date Time Stamp: %s' % str(row[0]))
+        print('Notary Alias: %s' % str(row[1]))
+        print('Owner: %s' % str(row[2]))
+        print('Email: %s' % str(row[3]))
+        print('Notary Date Time Stamp: %s' % str(row[4]))
+        print('Notary Authorization: %s' % str(row[5]))
+        print('Notary URL: %s' % str(row[6]))
 
 def changeAlias(alias, newalias, 
                 bbpath='serebo_blackbox\\blackbox.sdb'):
