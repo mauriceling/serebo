@@ -164,6 +164,7 @@ def fileHash(filepath):
     @param filepath String: Path of file for hash generation.
     @return: Hash
     '''
+    absPath = absolutePath(filepath)
     md5 = hashlib.md5()
     sha1 = hashlib.sha1()
     sha224 = hashlib.sha224()
@@ -176,7 +177,7 @@ def fileHash(filepath):
     sha3_512 =  hashlib.sha3_512() 
     blake2b = hashlib.blake2b()
     blake2s = hashlib.blake2s()
-    with open(filepath, 'rb') as f:
+    with open(absPath, 'rb') as f:
         while True:
             data = f.read(65536)
             if not data:
@@ -232,7 +233,7 @@ def logFile(sdb_object, filepath, description='NA'):
     event. Default = NA.
     @return: Dictionary of data generated from this event.
     '''
-    absPath = os.path.abspath(filepath)
+    absPath = absolutePath(filepath)
     if description == 'NA':
         description = ['UserGivenPath:>%s' % str(filepath),
                        'AbsolutePath:>%s' % str(absPath)]
@@ -262,7 +263,7 @@ def searchDatalog(sdb_object, term, field, mode='like'):
     term = str(term)
     field = str(field)
     if mode.lower() == 'exact':
-        sqlstmt = """select ID, dtstamp, hash, data, description from datalog where ?='%s'""" % (field, term)
+        sqlstmt = """select ID, dtstamp, hash, data, description from datalog where %s='%s'""" % (field, term)
     if mode.lower() == 'like':
         sqlstmt = """select ID, dtstamp, hash, data, description from datalog where %s like '%s'""" % (field, term)
     result = [row for row in sdb_object.cur.execute(sqlstmt)]
