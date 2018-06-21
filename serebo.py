@@ -96,7 +96,7 @@ def logFile(filepath, description='NA',
 
     For example:
 
-        python serebo.py logfile --filepath=doxygen_serebo  --description="Doxygen file for SEREBO"
+        python serebo.py logfile --filepath=doxygen_serebo  --description="Doxygen file for SEREBO" --bbpath='serebo_blackbox\\blackbox.sdb'
 
     @param fileapth String: Path of file to log in SEREBO black box.
     @param description String: Explanation string for this entry 
@@ -108,16 +108,12 @@ def logFile(filepath, description='NA',
     rdata = bb.logFile(db, filepath, description)
     print('')
     print('File Logging Status ...')
-    print('SEREBO Black Box at %s' % str(db.path))
-    print('File Hash: %s' % rdata['Data'])
-    print('Description: %s' % rdata['UserDescription'])
-    print('Data Hash: %s' % rdata['DataHash'])
-    print('Date Time Stamp: %s' % rdata['DateTimeStamp'])
-    print('Number of Pre-existing Blocks in Blockchain: %s' % \
-          rdata['ParentBlockID'])
-    print('Current Block Hash: %s' % rdata['BlockHash'])
-    print('------ File Logging Successful ------')
-    print('')
+    return {'SEREBO Black Box': db,
+            'Black Box Path': str(db.path),
+            'Date Time Stamp': str(rdata['DateTimeStamp']),
+            'File Hash': str(rdata['Data']),
+            'Description': str(rdata['UserDescription']),
+            'Data Hash': str(rdata['DataHash'])}
 
 def systemData():
     
