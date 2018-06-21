@@ -256,11 +256,10 @@ def localCode(length, description=None,
     rdata = bb.insertFText(db, rstring, description)
     print('')
     print('Generate Random String (Local) ...')
-    print('SEREBO Black Box at %s' % str(db.path))
-    print('Date Time Stamp: %s' % rdata['DateTimeStamp'])
-    print('Random String: %s' % rstring)
-    print('------ Generate Random String (Local) Successful ------')
-    print('')
+    return {'SEREBO Black Box': db,
+            'Black Box Path': str(db.path),
+            'Date Time Stamp': str(rdata['DateTimeStamp']),
+            'Random String': str(rstring)}
 
 def localDTS(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
