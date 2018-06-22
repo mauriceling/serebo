@@ -827,6 +827,45 @@ def auditBlockchain(bbpath='serebo_blackbox\\blackbox.sdb'):
             print('Hash in record: %s' % c_hash)
             print('Computed hash: %s' % tHash)
 
+def checkHash(hashfile, bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to compare record hash from SEREBO Black Box with that in 
+    a hash file.
+
+    Usage: 
+
+        python serebo.py checkhash --hashfile=<path to hash file> --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py checkhash --hashfile=sereboBB_hash --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param hashfile String: File path to hash file.
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    hashfile= str(hashfile)
+    hashfile = bb.absolutePath(hashfile)
+    print('')
+    print('Compare record hash from SEREBO Black Box with that in a hash file...')
+    print('')
+    hf = open(hashfile, 'r')
+    for record in hf:
+        record = [str(d.strip()) for d in record[:-1].split('|')]
+        ID = record[0]
+        dtstamp = record[1]
+        thash = record[2]
+        sqlstmt = """select hash from datalog where ID='%s' and dtstamp='%s'""" % (ID, dtstamp)
+        dhash = [row for row in db.cur.execute(sqlstmt)][0][0]
+        dhash = str(dhash)
+        if thash == dhash:
+            print('Verified record %s hash between Data Log and Hash file' % ID)
+        else:
+            print('ERROR in record %s' % ID)
+            print('Hash in Hash File: %s' % thash)
+            print('Hash in Data Log: %s' % dhash)
+
 
 if __name__ == '__main__':
     exposed_functions = {\
@@ -838,7 +877,7 @@ if __name__ == '__main__':
          #'audit_register': auditRegister,
          #'backup': backup,
          'changealias': changeAlias,
-         #'checkhash': checkHash,
+         'checkhash': checkHash,
          #'dump': dump,
          'dumphash': dumpHash,
          'fhash': fileHash,
