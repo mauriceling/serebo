@@ -40,6 +40,7 @@ from .serebo_api import absolutePath
 from .serebo_api import backup
 from .serebo_api import connectDB
 from .serebo_api import dateTime
+from .serebo_api import dumpTable
 from .serebo_api import fileHash
 from .serebo_api import gmtime
 from .serebo_api import insertFText

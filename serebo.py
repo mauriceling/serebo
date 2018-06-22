@@ -21,7 +21,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 '''
 import random
-import secrets
+import os
 import sqlite3
 
 import fire
@@ -1000,6 +1000,62 @@ def backup(backuppath='blackbox_backup.sdb',
         backuppath = bb.absolutePath(backuppath)
         return {'Black Box Path': bbpath,
                 'Backup Path': backuppath}
+
+def dump(dumpfolder='.', fileprefix='dumpBB', 
+         bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to dump individual data tables from SEREBO Black Box into 
+    text files.
+
+    Usage:
+
+        python serebo.py dump --dumpfolder=<folder to save dump files> --fileprefix=<prefix for individual dump files> --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py dump --dumpfolder='.' --fileprefix='dumpBB' --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param dumpfolder String: Folder to save dump files. Default = '.' 
+    (current working directory).
+    @param fileprefix String: Prefix for individual dump files. 
+    Default = 'dumpBB'.
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    tableSet = {'metadata': ['key', 'value'],
+                'notary': ['dtstamp', 
+                           'alias',
+                           'owner',
+                           'email',
+                           'notaryDTS',
+                           'notaryAuthorization',
+                           'notaryURL'],
+                'systemdata': ['dtstamp', 'key', 'value'],
+                'datalog': ['dtstamp',
+                            'hash',
+                            'data',
+                            'description'],
+                'blockchain': ['c_ID', 'c_dtstamp',
+                               'c_randomstring', 'c_hash',
+                               'p_ID', 'p_dtstamp',
+                               'p_randomstring', 'p_hash', 'data'],
+                'eventlog': ['dtstamp', 'fID', 'description'],
+                'eventlog_datamap': ['dtstamp', 'fID', 
+                                     'key', 'value']}
+    print('')
+    print('Dump out data (text backup) from SEREBO Black Box ...')
+    print('')
+    for tableName in tableSet:
+        outputfile = [dumpfolder, 
+                      fileprefix + '_' + tableName + '.csv']
+        outputfile = os.sep.join(outputfile)
+        (outputfile, count) = bb.dumpTable(db, tableName, 
+                                           tableSet[tableName], 
+                                           outputfile)
+        print('%s table dumped into %s' % (tableName, outputfile))
+        print('Number of records dumped: %s' % count)
+        print('')
     
 
 if __name__ == '__main__':
@@ -1015,7 +1071,7 @@ if __name__ == '__main__':
          'backup': backup,
          'changealias': changeAlias,
          'checkhash': checkHash,
-         #'dump': dump,
+         'dump': dump,
          'dumphash': dumpHash,
          'fhash': fileHash,
          'init': initialize,

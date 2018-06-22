@@ -334,3 +334,28 @@ def backup(bbpath, backuppath):
     shutil.copyfile(bbpath, backuppath)
     db.conn.rollback()
     return (str(bbpath), str(backuppath))
+
+def dumpTable(sdb_object, tableName, fieldNames, outputfile):
+    '''!
+    Function to dump table from SEREBO Black Box to CSV file.
+
+    @param sdb_object Object: SEREBO database object.
+    @param tableName String: Name of table.
+    @param fieldNames List: List of fields to dump.
+    @param outputfile String: Path of file to write data dump.
+    @return: (absolute output file path, number of records dumped)
+    '''
+    tableName = str(tableName)
+    fieldNames = [str(x) for x in fieldNames]
+    fieldNames = ','.join(fieldNames)
+    sqlstmt = 'select %s from %s' % (fieldNames, tableName)
+    outputfile = absolutePath(outputfile)
+    ofile = open(outputfile, 'w')
+    count = 0
+    for row in sdb_object.cur.execute(sqlstmt):
+        row = [str(d) for d in row]
+        row = ','.join(row)
+        ofile.write(row + '\n')
+        count = count + 1
+    ofile.close()
+    return (outputfile, str(count))
