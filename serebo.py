@@ -931,6 +931,44 @@ def auditBlockchainFlow(bbpath='serebo_blackbox\\blackbox.sdb'):
             print('Actual hash in record %s: %s' % \
                 (str(i), pc_hash))
 
+def NTPSign(bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to self-sign (self notarization) SEREBO Black Box using 
+    NTP (Network Time Protocol) server.
+
+    Usage:
+
+        python serebo.py ntpsign --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py ntpsign --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    ntp = bb.ntplib.NTPClient()
+    rstring = bb.randomString(db, 32)
+    response = ntp.request('pool.ntp.org', version=3)
+    dtstamp = bb.gmtime(response.tx_time)
+    ntp_ip = bb.ntplib.ref_id_to_text(response.ref_id)
+    description = ['NTP server (self) notarization',
+                   'Seconds Since Epoch: %s' % str(response.tx_time),
+                   'NTP Date Time: %s' % str(dtstamp),
+                   'NTP Server IP: %s' % str(ntp_ip)]
+    description = ' | '.join(description)
+    rdata = bb.insertFText(db, rstring, description)
+    print('')
+    print('Self-Signing / Self-Notarization ...')
+    return {'SEREBO Black Box': db,
+            'Black Box Path': str(db.path),
+            'Date Time Stamp': str(rdata['DateTimeStamp']),
+            'Random String': str(rstring),
+            'Seconds Since Epoch': str(response.tx_time),
+            'NTP Date Time': str(dtstamp),
+            'NTP Server IP': str(ntp_ip)}
+    
 
 if __name__ == '__main__':
     exposed_functions = {\
@@ -954,6 +992,7 @@ if __name__ == '__main__':
          'logfile': logFile,
          'notarizebb': notarizeBlackbox,
          #'notarizesn': notarizeNotary,
+         'ntpsign': NTPSign,
          'register': registerBlackbox,
          'searchmsg': searchMessage,
          'searchdesc': searchDescription,

@@ -24,6 +24,7 @@ import hashlib
 import random
 import secrets
 import os.path
+import time
 
 from . import sereboDB
 from .sereboDB import SereboDB
@@ -298,3 +299,21 @@ def stringHash(sdb_object, dstring):
     @return: Hash
     '''
     return sdb_object.hash(str(dstring))
+
+def gmtime(seconds_since_epoch):
+    '''!
+    Function to generate a UTC date time stamp string in the format 
+    of <year>:<month>:<day>:<hour>:<minute>:<second>:<microsecond> 
+    from seconds since epoch. However, microseconds cannot be 
+    converted; hence, it is given as 00000.
+
+    @param seconds_since_epoch Float: Seconds since epoch.
+    @return: UTC date time stamp string
+    '''
+    seconds_since_epoch = float(seconds_since_epoch)
+    now = time.gmtime(seconds_since_epoch)
+    now = [str(now.tm_year), str(now.tm_mon),
+           str(now.tm_mday), str(now.tm_hour),
+           str(now.tm_min), str(now.tm_sec),
+           '00000']
+    return ':'.join(now)
