@@ -787,19 +787,19 @@ def auditDataBlockchain(bbpath='serebo_blackbox\\blackbox.sdb'):
             print('Hash in Data Log: %s' % dHash)
             print('Data in Blockchain: %s' % bHash)
 
-def auditBlockchain(bbpath='serebo_blackbox\\blackbox.sdb'):
+def auditBlockchainHash(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
-    Function to check for accuracy in blockchain within SEREBO Black 
-    Box - recorded hash in blockchain and computed hash should be 
-    identical.
+    Function to check for accuracy in blockchain hash generation 
+    within SEREBO Black Box - recorded hash in blockchain and computed 
+    hash should be identical.
 
     Usage: 
 
-        python serebo.py audit_blockchain --bbpath=<path to SEREBO black box>
+        python serebo.py audit_blockchainhash --bbpath=<path to SEREBO black box>
 
     For example:
 
-        python serebo.py audit_blockchain --bbpath='serebo_blackbox\\blackbox.sdb'
+        python serebo.py audit_blockchainhash --bbpath='serebo_blackbox\\blackbox.sdb'
 
     @param bbpath String: Path to SEREBO black box. Default = 
     'serebo_blackbox\\blackbox.sdb'.
@@ -807,7 +807,7 @@ def auditBlockchain(bbpath='serebo_blackbox\\blackbox.sdb'):
     db = bb.connectDB(bbpath)
     sqlstmt = '''select c_ID, p_dtstamp, p_randomstring, p_hash, data, c_hash from blockchain'''
     print('')
-    print('Audit SEREBO Black Box Blockchain Records ...')
+    print('Audit SEREBO Black Box Blockchain hashes ...')
     print('')
     for row in db.cur.execute(sqlstmt):
         ID = str(row[0])
@@ -869,7 +869,8 @@ def checkHash(hashfile, bbpath='serebo_blackbox\\blackbox.sdb'):
 
 if __name__ == '__main__':
     exposed_functions = {\
-         'audit_blockchain': auditBlockchain,
+         #'audit_blockchainflow': auditBlockchainFlow,
+         'audit_blockchainhash': auditBlockchainHash,
          'audit_count': auditCount,
          'audit_data_blockchain': auditDataBlockchain,
          'audit_datahash': auditDatahash,
