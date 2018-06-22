@@ -752,12 +752,47 @@ def dumpHash(outputf, bbpath='serebo_blackbox\\blackbox.sdb'):
             'Output File Path': outputf,
             'Number of Records': str(count)}
 
+def auditDataBlockchain(bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to check for accuracy in data log and blockchain mapping 
+    in SEREBO Black Box - recorded hash in data log and data in 
+    blockchain should be identical.
+
+    Usage: 
+
+        python serebo.py audit_data_blockchain --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py audit_data_blockchain --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    sqlstmt = '''select datalog.ID, datalog.dtstamp, datalog.hash, blockchain.c_dtstamp, blockchain.data from datalog inner join blockchain where datalog.ID=blockchain.c_ID and datalog.dtstamp=blockchain.c_dtstamp'''
+    print('')
+    print('Audit SEREBO Black Box - Accuracy in Data Log to Blockchain Mapping...')
+    print('')
+    for row in db.cur.execute(sqlstmt):
+        dID = str(row[0])
+        ddtstamp = str(row[1])
+        dhash = str(row[2])
+        bdtstamp = str(row[3])
+        bhash = str(row[4])
+        if dhash == bhash:
+            print('Verified record %s mapping' % dID)
+        else:
+            print('ERROR in record %s mapping' % dID)
+            print('Hash in Data Log: %s' % dHash)
+            print('Data in Blockchain: %s' % bHash)
+
 
 if __name__ == '__main__':
     exposed_functions = {\
          #'audit_blockchain': auditBlockchain,
          'audit_count': auditCount,
-         #'audit_data_blockchain': auditDataBlockchain,
+         'audit_data_blockchain': auditDataBlockchain,
          'audit_datahash': auditDatahash,
          #'audit_notarizebb': auditNotarizeBB,
          #'audit_register': auditRegister,
