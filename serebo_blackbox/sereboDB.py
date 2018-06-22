@@ -1,5 +1,5 @@
 '''!
-Secured Recorder Box (SEREBO) Application Programming Interface (API)
+Secured Recorder Box (SEREBO) Black Box Interface
 
 Date created: 17th May 2018
 
