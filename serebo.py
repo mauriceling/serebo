@@ -866,10 +866,75 @@ def checkHash(hashfile, bbpath='serebo_blackbox\\blackbox.sdb'):
             print('Hash in Hash File: %s' % thash)
             print('Hash in Data Log: %s' % dhash)
 
+def auditBlockchainFlow(bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to trace the decendancy of blockchain records (also known 
+    as blocks) within SEREBO Black Box - decandency from first block 
+    should be traceable to the last / latest block
+
+    Usage: 
+
+        python serebo.py audit_blockchainflow --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py audit_blockchainflow --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    sqlstmt = '''select max(c_ID) from blockchain'''
+    print('')
+    print("Trace SEREBO Black Box Blockchain's block decendancy ...")
+    print('')
+    maxID = [row for row in db.cur.execute(sqlstmt)][0][0]
+    maxID = int(maxID)
+    for i in range(1, maxID, 1):
+        # Get parent data from parent block
+        sqlstmt = """select c_ID, c_dtstamp, c_randomstring, c_hash from blockchain where c_ID=%s""" % str(i)
+        #print(sqlstmt)
+        p_data = [row for row in db.cur.execute(sqlstmt)][0]
+        pc_ID = str(p_data[0])
+        pc_dtstamp = str(p_data[1])
+        pc_randomstring = str(p_data[2])
+        pc_hash = str(p_data[3])
+        # Get parent data from current / child block
+        sqlstmt = """select p_ID, p_dtstamp, p_randomstring, p_hash from blockchain where c_ID=%s""" % str(i+1)
+        #print(sqlstmt)
+        c_data = [row for row in db.cur.execute(sqlstmt)][0]
+        p_ID = str(c_data[0])
+        p_dtstamp = str(c_data[1])
+        p_randomstring = str(c_data[2])
+        p_hash = str(c_data[3])
+        # Compare parental block record and parent data in current 
+        # record
+        if (p_ID == pc_ID) and \
+            (p_dtstamp == pc_dtstamp) and \
+            (p_randomstring == pc_randomstring) and \
+            (p_hash == pc_hash):
+            print('Verified - Record %s was used as parent record in record %s' % \
+                (str(i), str(i+1)))
+        else:
+            print('ERROR in record %s' % str(i+1))
+            print('Parent ID in record %s: %s' % (str(i+1), str(i)))
+            print('Parent date time stamp in record %s: %s' % \
+                (str(i+1), p_dtstamp))
+            print('Actual date time stamp in record %s: %s' % \
+                (str(i), pc_dtstamp))
+            print('Parent random string in record %s: %s' % \
+                (str(i+1), p_randomstring))
+            print('Actual random string in record %s: %s' % \
+                (str(i), pc_randomstring))
+            print('Parent hash in record %s: %s' % \
+                (str(i+1), p_hash))
+            print('Actual hash in record %s: %s' % \
+                (str(i), pc_hash))
+
 
 if __name__ == '__main__':
     exposed_functions = {\
-         #'audit_blockchainflow': auditBlockchainFlow,
+         'audit_blockchainflow': auditBlockchainFlow,
          'audit_blockchainhash': auditBlockchainHash,
          'audit_count': auditCount,
          'audit_data_blockchain': auditDataBlockchain,
