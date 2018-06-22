@@ -961,6 +961,7 @@ def NTPSign(bbpath='serebo_blackbox\\blackbox.sdb'):
     rdata = bb.insertFText(db, rstring, description)
     print('')
     print('Self-Signing / Self-Notarization ...')
+    print('')
     return {'SEREBO Black Box': db,
             'Black Box Path': str(db.path),
             'Date Time Stamp': str(rdata['DateTimeStamp']),
@@ -968,10 +969,42 @@ def NTPSign(bbpath='serebo_blackbox\\blackbox.sdb'):
             'Seconds Since Epoch': str(response.tx_time),
             'NTP Date Time': str(dtstamp),
             'NTP Server IP': str(ntp_ip)}
+
+def backup(backuppath='blackbox_backup.sdb',
+           bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to backup SEREBO Black Box.
+
+    Usage:
+
+        python serebo.py backup --backuppath=<path for backed-up SEREBO black box> --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py backup --backuppath='blackbox_backup.sdb' --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param backuppath String: Path for backed-up SEREBO black box. Default = 'blackbox_backup.sdb'
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    print('')
+    print('Backup SEREBO Black Box ...')
+    print('')
+    if backuppath != bbpath:
+        (bbpath, backuppath) = bb.backup(bbpath, backuppath)
+        return {'Black Box Path': bbpath,
+                'Backup Path': backuppath}
+    else:
+        print('Backup path cannot be the same as SEREBO Black Box path')
+        bbpath = bb.absolutePath(bbpath)
+        backuppath = bb.absolutePath(backuppath)
+        return {'Black Box Path': bbpath,
+                'Backup Path': backuppath}
     
 
 if __name__ == '__main__':
     exposed_functions = {\
+         #'append': append,
          'audit_blockchainflow': auditBlockchainFlow,
          'audit_blockchainhash': auditBlockchainHash,
          'audit_count': auditCount,
@@ -979,7 +1012,7 @@ if __name__ == '__main__':
          'audit_datahash': auditDatahash,
          #'audit_notarizebb': auditNotarizeBB,
          #'audit_register': auditRegister,
-         #'backup': backup,
+         'backup': backup,
          'changealias': changeAlias,
          'checkhash': checkHash,
          #'dump': dump,
@@ -987,6 +1020,7 @@ if __name__ == '__main__':
          'fhash': fileHash,
          'init': initialize,
          'intext': insertText,
+         #'load': load,
          'localcode': localCode,
          'localdts': localDTS,
          'logfile': logFile,

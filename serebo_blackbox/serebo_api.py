@@ -317,3 +317,20 @@ def gmtime(seconds_since_epoch):
            str(now.tm_min), str(now.tm_sec),
            '00000']
     return ':'.join(now)
+
+def backup(bbpath, backuppath):
+    '''!
+    Function to backup SEREBO Black Box.
+
+    @param backuppath String: Path for backed-up SEREBO black box. 
+    @param bbpath String: Path to SEREBO black box.
+    @return: (absolute bbpath, absolute backuppath)
+    '''
+    import shutil
+    bbpath = absolutePath(bbpath)
+    backuppath = absolutePath(backuppath)
+    db = connectDB(bbpath)
+    db.cur.execute('begin immediate')
+    shutil.copyfile(bbpath, backuppath)
+    db.conn.rollback()
+    return (str(bbpath), str(backuppath))
