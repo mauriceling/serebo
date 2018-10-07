@@ -1112,7 +1112,6 @@ def auditRegister(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
 
 if __name__ == '__main__':
     exposed_functions = {\
-         #'append': append,
          'audit_blockchainflow': auditBlockchainFlow,
          'audit_blockchainhash': auditBlockchainHash,
          'audit_count': auditCount,
@@ -1128,12 +1127,10 @@ if __name__ == '__main__':
          'fhash': fileHash,
          'init': initialize,
          'intext': insertText,
-         #'load': load,
          'localcode': localCode,
          'localdts': localDTS,
          'logfile': logFile,
          'notarizebb': notarizeBlackbox,
-         #'notarizesn': notarizeNotary,
          'ntpsign': NTPSign,
          'register': registerBlackbox,
          'searchmsg': searchMessage,
