@@ -1057,6 +1057,58 @@ def dump(dumpfolder='.', fileprefix='dumpBB',
         print('Number of records dumped: %s' % count)
         print('')
     
+def auditRegister(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to check for SEREBO Black Box registration with SEREBO 
+    Notary.
+
+    Usage:
+
+        python serebo.py audit_register --alias=<alias for SEREBO Notary> --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py audit_register --alias="NotaryPythonAnywhere" --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param alias String: Alias for this SEREBO Notary.
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    sqlstmt = "select value from metadata where key='blackboxID'"
+    blackboxID = [row for row in db.cur.execute(sqlstmt)][0][0]
+    try:
+        sqlstmt = "select notaryAuthorization, notaryURL from notary where alias='%s'" % str(alias)
+        sqlresult = [row for row in db.cur.execute(sqlstmt)][0]
+        notaryAuthorization = sqlresult[0]
+        notaryURL = sqlresult[1]
+    except IndexError:
+        print('Notary authorization or Notary URL not found for the given alias')
+        return {'SEREBO Black Box': db,
+                'Black Box Path': str(db.path),
+                'Notary Alias': str(alias)}
+    try:
+        presence = notary.checkRegistration(blackboxID, notaryAuthorization)
+        if presence:
+            message = 'Registration found in SEREBO Notary'
+        else:
+            message = 'Registration NOT found in SEREBO Notary'
+        print('')
+        print('Checking SEREBO Black Box registration in SEREBO Notary...')
+        return {'SEREBO Black Box': db,
+                'Black Box Path': str(db.path),
+                'Notary Alias': str(alias),
+                'Notary URL': str(notaryURL),
+                'Notary Authorization': str(notaryAuthorization),
+                'Status': message}
+    except:
+        print('Failed in checking SEREBO Black Box registration in SEREBO Notary')
+        return {'SEREBO Black Box': db,
+                'Black Box Path': str(db.path),
+                'Notary Alias': str(alias),
+                'Notary URL': str(notaryURL),
+                'Notary Authorization': str(notaryAuthorization)}
+
 
 if __name__ == '__main__':
     exposed_functions = {\
@@ -1067,7 +1119,7 @@ if __name__ == '__main__':
          'audit_data_blockchain': auditDataBlockchain,
          'audit_datahash': auditDatahash,
          #'audit_notarizebb': auditNotarizeBB,
-         #'audit_register': auditRegister,
+         'audit_register': auditRegister,
          'backup': backup,
          'changealias': changeAlias,
          'checkhash': checkHash,

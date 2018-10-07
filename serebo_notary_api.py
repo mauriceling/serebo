@@ -65,7 +65,8 @@ def notarizeBB(blackboxID, notaryAuthorization, dtstampBB, codeBB,
 
     @param blackboxID String: ID of SEREBO black box - found in 
     metadata table in SEREBO black box database.
-    @param notaryAuthorization String: Notary authorization code of of SEREBO black box (generated during black box registration - found 
+    @param notaryAuthorization String: Notary authorization code of 
+    SEREBO black box (generated during black box registration - found 
     in metadata table in SEREBO black box database.
     @param dtstampBB String: Date time stamp from SEREBO black box.
     @param codeBB String: Notarization code from SEREBO black box.
@@ -80,3 +81,26 @@ def notarizeBB(blackboxID, notaryAuthorization, dtstampBB, codeBB,
         serv.notarizeSereboBB(blackboxID, notaryAuthorization, 
                               dtstampBB, codeBB)
     return (notaryURL, str(dtstampNS), str(codeNS), str(codeCommon))
+
+def checkRegistration(blackboxID, notaryAuthorization, 
+                      notaryURL='https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc'):
+    '''!
+
+    @param blackboxID String: ID of SEREBO black box - found in 
+    metadata table in SEREBO black box database.
+    @param notaryAuthorization String: Notary authorization code of 
+    SEREBO black box (generated during black box registration - found 
+    in metadata table in SEREBO black box database.
+    @param notaryURL String: URL for SEREBO Notary web service. 
+    Default="https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc"
+    @returns: Boolean flag - True if SEREBO black box registration 
+    is found in SEREBO Notary. False if SEREBO black box registration 
+    is not found in SEREBO Notary.
+    '''
+    serv = ServerProxy(notaryURL)
+    value = serv.checkBlackBoxRegistration(blackboxID, 
+                                           notaryAuthorization)
+    if value or value == 'True':
+        return True
+    elif not value or value == 'False':
+        return False

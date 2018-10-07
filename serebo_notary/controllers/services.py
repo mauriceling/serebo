@@ -138,6 +138,7 @@ def hash(dstring):
          h.sha512(dstring).hexdigest()]
     return ':'.join(x)
     
+@service.xmlrpc
 def checkBlackBoxRegistration(blackboxID, notaryAuthorization):
     '''!
     Function to check for SEREBO Black Box registration.
