@@ -1210,6 +1210,96 @@ def viewNotaryNotarizations(bbpath='serebo_blackbox\\blackbox.sdb'):
         print(description[4]) # Notary Date Time
         print(description[5]) # Notary URL
 
+def _auditSingleNotarizeBB(blackboxID, notaryAuthorization, notaryURL,
+                           BBCode, NCode, CommonCode):
+    '''!
+    Private function - communicate with SEREBO Notary to check for 
+    SEREBO Black Box notarization record.
+
+    @param blackboxID String: ID of SEREBO black box - found in 
+    metadata table in SEREBO black box database.
+    @param notaryAuthorization String: Notary authorization code of 
+    SEREBO black box (generated during black box registration - found 
+    in metadata table in SEREBO black box database.
+     @param notaryURL String: URL for SEREBO Notary web service.
+    @param BBCode String: Notarization code from SEREBO Black Box.
+    @param NCode String: Notarization code from SEREBO Notary.
+    @param CommonCode String: Cross-Signing code from SEREBO Notary.
+    @returns: 'True' if SEREBO Black Box notarization is found in 
+    SEREBO Notary. 'False' if SEREBO Black Box notarization is not 
+    found in SEREBO Notary. 'Failed' if there is any errors, such as 
+    network error.
+    '''
+    try:
+        presence = notary.checkNotarization(blackboxID, 
+                                            notaryAuthorization, 
+                                            BBCode, 
+                                            NCode, 
+                                            CommonCode, 
+                                            notaryURL)
+        return presence
+    except:
+        return 'Failed'
+
+def auditNotarizeBB(bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to view all notarizations by SEREBO Notary for this SEREBO 
+    Black Box - This does not insert a record into SEREBO Black Box.
+
+    Usage:
+
+        python serebo.py audit_notarizebb --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py audit_notarizebb --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    sqlstmt = "select value from metadata where key='blackboxID'"
+    blackboxID = [row for row in db.cur.execute(sqlstmt)][0][0]
+    print('')
+    print('Black Box Path: %s' % str(bbpath))
+    sqlstmtA = """select dtstamp, data, description from datalog where description like 'Notarization with SEREBO Notary%'"""
+    dataA = [row for row in db.cur.execute(sqlstmtA)]
+    print('')
+    print('Notarization(s) by SEREBO Notary(ies) ...')
+    for row in dataA:
+        description = [x.strip() for x in str(row[2]).split('|')]
+        try:
+            notaryURL = description[5].split(': ')[1].strip()
+            sqlstmt = "select notaryAuthorization from notary where notaryURL='%s'" % str(notaryURL)
+            sqlresult = [row for row in db.cur.execute(sqlstmt)][0]
+            notaryAuthorization = sqlresult[0]
+        except IndexError:
+            print('Notary authorization not found for the given Notary URL')
+            return {'SEREBO Black Box': db,
+                    'Black Box Path': str(db.path),
+                    'Notary URL': str(notaryURL)}
+        presence = _auditSingleNotarizeBB(blackboxID, 
+                                          notaryAuthorization,
+                                          notaryURL,
+                                          description[1].split(': ')[1].strip(), 
+                                          description[3].split(': ')[1].strip(), 
+                                          str(row[1]))
+        if presence == 'True':
+            message = 'Notarization record is found in SEREBO Notary'
+        elif presence == 'False':
+            message = 'Notarization record is NOT found in SEREBO Notary'
+        elif presence == 'Failed':
+            message = 'Unspecified error - does not mean that notarization record is not found. It may mean network error.'
+        print('')
+        print('Date Time Stamp: %s' % str(row[0]))
+        print('Common Code: %s' % str(row[1]))
+        print(description[1]) # Black Box Code
+        print(description[2]) # Black Box Date Time
+        print(description[3]) # Notary Code
+        print(description[4]) # Notary Date Time
+        print(description[5]) # Notary URL
+        print('Status: %s' % message)
+        
 
 if __name__ == '__main__':
     exposed_functions = {\
@@ -1218,7 +1308,7 @@ if __name__ == '__main__':
          'audit_count': auditCount,
          'audit_data_blockchain': auditDataBlockchain,
          'audit_datahash': auditDatahash,
-         #'audit_notarizebb': auditNotarizeBB,
+         'audit_notarizebb': auditNotarizeBB,
          'audit_register': auditRegister,
          'backup': backup,
          'changealias': changeAlias,

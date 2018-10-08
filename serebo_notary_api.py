@@ -106,3 +106,33 @@ def checkRegistration(blackboxID, notaryAuthorization,
         return True
     elif not value or value == 'False':
         return False
+
+def checkNotarization(blackboxID, notaryAuthorization, 
+                      BBCode, NCode, CommonCode,
+                      notaryURL='https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc'):
+    '''!
+    Function to communicate with SEREBO Notary to check for SEREBO 
+    Black Box notarization record.
+
+    @param blackboxID String: ID of SEREBO black box - found in 
+    metadata table in SEREBO black box database.
+    @param notaryAuthorization String: Notary authorization code of 
+    SEREBO black box (generated during black box registration - found 
+    in metadata table in SEREBO black box database.
+    @param BBCode String: Notarization code from SEREBO Black Box.
+    @param NCode String: Notarization code from SEREBO Notary.
+    @param CommonCode String: Cross-Signing code from SEREBO Notary.
+    @param notaryURL String: URL for SEREBO Notary web service. 
+    Default="https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc"
+    @returns: Boolean flag - True if SEREBO Black Box notarization 
+    is found in SEREBO Notary. False if SEREBO Black Box notarization 
+    is not found in SEREBO Notary.
+    '''
+    serv = ServerProxy(notaryURL)
+    value = serv.checkNotarizeSereboBB(blackboxID, 
+                                       notaryAuthorization, 
+                                       BBCode, NCode, CommonCode)
+    if value or value == 'True':
+        return 'True'
+    elif not value or value == 'False':
+        return 'False'
