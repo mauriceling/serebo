@@ -1109,6 +1109,39 @@ def auditRegister(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
                 'Notary URL': str(notaryURL),
                 'Notary Authorization': str(notaryAuthorization)}
 
+def viewNotaryNotarizations(bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to view all notarizations by SEREBO Notary for this SEREBO 
+    Black Box - This does not insert a record into SEREBO Black Box.
+
+    Usage:
+
+        python serebo.py viewsnnote --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py viewsnnote --bbpath='serebo_blackbox\\blackbox.sdb'
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    print('')
+    print('Black Box Path: %s' % str(bbpath))
+    sqlstmt = """select dtstamp, data, description from datalog where description like 'Notarization with SEREBO Notary%'"""
+    print('')
+    print('Notarization(s) by SEREBO Notary(ies) ...')
+    for row in db.cur.execute(sqlstmt):
+        description = [x.strip() for x in str(row[2]).split('|')]
+        print('')
+        print('Date Time Stamp: %s' % str(row[0]))
+        print('Common Code: %s' % str(row[1]))
+        print('Black Box Code: %s' % description[1])
+        print('Black Box Date Time: %s' % description[2])
+        print('Notary Code: %s' % description[3])
+        print('Notary Date Time: %s' % description[4])
+        print('Notary URL: %s' % description[5])
+
 
 if __name__ == '__main__':
     exposed_functions = {\
@@ -1140,5 +1173,6 @@ if __name__ == '__main__':
          'shash': stringHash,
          'sysdata': systemData,
          'sysrecord': systemRecord,
+         'viewsnnote': viewNotaryNotarizations,
          'viewreg': viewRegistration}
     fire.Fire(exposed_functions)
