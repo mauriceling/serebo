@@ -1204,11 +1204,11 @@ def viewNotaryNotarizations(bbpath='serebo_blackbox\\blackbox.sdb'):
         print('')
         print('Date Time Stamp: %s' % str(row[0]))
         print('Common Code: %s' % str(row[1]))
-        print('Black Box Code: %s' % description[1])
-        print('Black Box Date Time: %s' % description[2])
-        print('Notary Code: %s' % description[3])
-        print('Notary Date Time: %s' % description[4])
-        print('Notary URL: %s' % description[5])
+        print(description[1]) # Black Box Code
+        print(description[2]) # Black Box Date Time
+        print(description[3]) # Notary Code
+        print(description[4]) # Notary Date Time
+        print(description[5]) # Notary URL
 
 
 if __name__ == '__main__':
