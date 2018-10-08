@@ -151,8 +151,8 @@ def checkBlackBoxRegistration(blackboxID, notaryAuthorization):
     @return: True is SEREBO Black Box is registered; False if SEREBO 
     Black Box is not registered
     '''
-    if notabase(notabase.notarize_blackbox.blackboxID == blackboxID) \
-        (notabase.notarize_blackbox.notaryAuthorization == notaryAuthorization).count():
+    if notabase(notabase.registered_blackbox.blackboxID == blackboxID) \
+        (notabase.registered_blackbox.notaryAuthorization == notaryAuthorization).count():
         return True
     else:
         return False
