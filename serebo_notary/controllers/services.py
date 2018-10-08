@@ -137,7 +137,7 @@ def hash(dstring):
          h.sha384(dstring).hexdigest(),
          h.sha512(dstring).hexdigest()]
     return ':'.join(x)
-    
+
 @service.xmlrpc
 def checkBlackBoxRegistration(blackboxID, notaryAuthorization):
     '''!
@@ -148,7 +148,7 @@ def checkBlackBoxRegistration(blackboxID, notaryAuthorization):
     @param notaryAuthorization String: Notary authorization code 
     of SEREBO black box (generated during black box registration 
     - found in metadata table in SEREBO black box database.
-    @return: True is SEREBO Black Box is registered; False if SEREBO 
+    @return: True if SEREBO Black Box is registered; False if SEREBO 
     Black Box is not registered
     '''
     if notabase(notabase.registered_blackbox.blackboxID == blackboxID) \
@@ -178,19 +178,6 @@ def notarizeSereboBB(blackboxID, notaryAuthorization,
     dtstampBB = str(dtstampBB)
     codeBB = str(codeBB)
     dtstampNS = now()
-    if not checkBlackBoxRegistration(blackboxID, 
-                                     notaryAuthorization):
-        eventText = ['SEREBO Black Box Notarization',
-                     'Failed - Registration not found',
-                     'Date Time Stamp: %s' % dtstampNS,
-                     'Black Box ID: %s' % blackboxID,
-                     'Notary Authorization: %s' % notaryAuthorization]
-        eventText = ' | '.join(eventText)
-        notabase.eventlog.insert(datetimestamp=dtstampNS,
-                                 event=eventText)
-        return ('not registered', 
-                'not registered', 
-                'not registered')
     codeNS = str(randomString(32))
     codeCommon = hash(codeBB + codeNS)
     notabase.notarize_blackbox.insert(blackboxID=blackboxID,
@@ -212,3 +199,29 @@ def notarizeSereboBB(blackboxID, notaryAuthorization,
     notabase.eventlog.insert(datetimestamp=dtstampNS,
                              event=eventText)
     return (dtstampNS, codeNS, codeCommon)
+
+@service.xmlrpc
+def checkNotarizeSereboBB(blackboxID, notaryAuthorization, BBCode, NCode, CommonCode):
+    '''!
+    Function to check for SEREBO Black Box notarization by SEREBO 
+    Notary.
+    
+    @param blackboxID String: ID of SEREBO black box - found in 
+    metadata table in SEREBO black box database.
+    @param notaryAuthorization String: Notary authorization code 
+    of SEREBO black box (generated during black box registration 
+    - found in metadata table in SEREBO black box database.
+    @param BBCode String: Notarization code from SEREBO Black Box.
+    @param NCode String: Notarization code from SEREBO Notary.
+    @param CommonCode String: Cross-Signing code from SEREBO Notary.
+    @return: True if notarization is found; False if notarization is 
+    not found.
+    '''
+    if notabase(notabase.notarize_blackbox.blackboxID == blackboxID) \
+        (notabase.notarize_blackbox.notaryAuthorization == notaryAuthorization)\
+        (notabase.notarize_blackbox.codeBB == BBCode)\
+        (notabase.notarize_blackbox.codeNS == NCode)\
+        (notabase.notarize_blackbox.codeCommon == CommonCode).count():
+        return True
+    else:
+        return False
