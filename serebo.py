@@ -118,7 +118,8 @@ def logFile(filepath, description='NA',
 def systemData():
     
     '''!
-    Function to print out data and test hashes of current platform.
+    Function to print out data and test hashes of current platform - 
+    This does not insert a record into SEREBO Black Box.
 
     Usage:
 
@@ -235,7 +236,7 @@ def localCode(length, description=None,
               bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to generate a random string, and log this generation into 
-    SEREBO blackbox.
+    SEREBO Black Box.
 
     Usage:
 
@@ -498,7 +499,7 @@ def viewRegistration(bbpath='serebo_blackbox\\blackbox.sdb'):
 def changeAlias(alias, newalias, 
                 bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
-    Function to change alias for a specific SEREBO Notary registration
+    Function to change alias for a specific SEREBO Notary registration.
 
     Usage:
 
@@ -531,7 +532,8 @@ def changeAlias(alias, newalias,
 def searchMessage(term, mode='like',
                   bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
-    Function to search SEREBO Black Box for a message.
+    Function to search SEREBO Black Box for a message - This does 
+    not insert a record into SEREBO Black Box.
 
     Usage: 
 
@@ -565,7 +567,8 @@ def searchMessage(term, mode='like',
 def searchDescription(term, mode='like',
                       bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
-    Function to search SEREBO Black Box for a description.
+    Function to search SEREBO Black Box for a description - This does 
+    not insert a record into SEREBO Black Box.
 
     Usage: 
 
@@ -598,7 +601,8 @@ def searchDescription(term, mode='like',
 
 def searchFile(filepath, bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
-    Function to search SEREBO Black Box for a file logging event.
+    Function to search SEREBO Black Box for a file logging event - 
+    This does not insert a record into SEREBO Black Box.
 
     Usage: 
 
@@ -633,7 +637,7 @@ def auditCount(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to check for equal numbers of records in data log and 
     blockchain in SEREBO Black Box - should have the same number of 
-    records.
+    records. This does not insert a record into SEREBO Black Box.
 
     Usage: 
 
@@ -680,7 +684,8 @@ def auditDatahash(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to check for accuracy of hash generations in data log 
     within SEREBO Black Box - recorded hash in data log and computed 
-    hash should be identical.
+    hash should be identical. This does not insert a record into 
+    SEREBO Black Box.
 
     Usage: 
 
@@ -718,7 +723,7 @@ def auditDatahash(bbpath='serebo_blackbox\\blackbox.sdb'):
 def dumpHash(outputf, bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to write out record hash from SEREBO Black Box into a 
-    file.
+    file - This does not insert a record into SEREBO Black Box.
 
     Usage: 
 
@@ -756,7 +761,8 @@ def auditDataBlockchain(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to check for accuracy in data log and blockchain mapping 
     in SEREBO Black Box - recorded hash in data log and data in 
-    blockchain should be identical.
+    blockchain should be identical. This does not insert a record 
+    into SEREBO Black Box.
 
     Usage: 
 
@@ -791,7 +797,8 @@ def auditBlockchainHash(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to check for accuracy in blockchain hash generation 
     within SEREBO Black Box - recorded hash in blockchain and computed 
-    hash should be identical.
+    hash should be identical. This does not insert a record into 
+    SEREBO Black Box.
 
     Usage: 
 
@@ -830,7 +837,7 @@ def auditBlockchainHash(bbpath='serebo_blackbox\\blackbox.sdb'):
 def checkHash(hashfile, bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to compare record hash from SEREBO Black Box with that in 
-    a hash file.
+    a hash file. This does not insert a record into SEREBO Black Box.
 
     Usage: 
 
@@ -870,7 +877,8 @@ def auditBlockchainFlow(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to trace the decendancy of blockchain records (also known 
     as blocks) within SEREBO Black Box - decandency from first block 
-    should be traceable to the last / latest block
+    should be traceable to the last / latest block. This does not 
+    insert a record into SEREBO Black Box.
 
     Usage: 
 
@@ -973,7 +981,8 @@ def NTPSign(bbpath='serebo_blackbox\\blackbox.sdb'):
 def backup(backuppath='blackbox_backup.sdb',
            bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
-    Function to backup SEREBO Black Box.
+    Function to backup SEREBO Black Box - This does not insert a 
+    record into SEREBO Black Box.
 
     Usage:
 
@@ -1005,7 +1014,7 @@ def dump(dumpfolder='.', fileprefix='dumpBB',
          bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to dump individual data tables from SEREBO Black Box into 
-    text files.
+    text files - This does not insert a record into SEREBO Black Box.
 
     Usage:
 
@@ -1060,7 +1069,7 @@ def dump(dumpfolder='.', fileprefix='dumpBB',
 def auditRegister(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to check for SEREBO Black Box registration with SEREBO 
-    Notary.
+    Notary - This does not insert a record into SEREBO Black Box.
 
     Usage:
 
