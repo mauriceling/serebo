@@ -1097,7 +1097,8 @@ def auditRegister(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
                 'Black Box Path': str(db.path),
                 'Notary Alias': str(alias)}
     try:
-        presence = notary.checkRegistration(blackboxID, notaryAuthorization)
+        presence = notary.checkRegistration(blackboxID, notaryAuthorization, 
+                                            notaryURL)
         if presence:
             message = 'Registration found in SEREBO Notary'
         else:
