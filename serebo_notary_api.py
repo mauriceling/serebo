@@ -85,6 +85,8 @@ def notarizeBB(blackboxID, notaryAuthorization, dtstampBB, codeBB,
 def checkRegistration(blackboxID, notaryAuthorization, 
                       notaryURL='https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc'):
     '''!
+    Function to communicate with SEREBO Notary to check for SEREBO 
+    Black Box registration record.
 
     @param blackboxID String: ID of SEREBO black box - found in 
     metadata table in SEREBO black box database.
@@ -93,8 +95,8 @@ def checkRegistration(blackboxID, notaryAuthorization,
     in metadata table in SEREBO black box database.
     @param notaryURL String: URL for SEREBO Notary web service. 
     Default="https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc"
-    @returns: Boolean flag - True if SEREBO black box registration 
-    is found in SEREBO Notary. False if SEREBO black box registration 
+    @returns: Boolean flag - True if SEREBO Black Box registration 
+    is found in SEREBO Notary. False if SEREBO Black Box registration 
     is not found in SEREBO Notary.
     '''
     serv = ServerProxy(notaryURL)
