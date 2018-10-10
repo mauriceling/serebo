@@ -147,7 +147,7 @@ class SereboDB(object):
             dtstamp text not null,
             hash text not null,
             data blob,
-            description not null);'''
+            description blob not null);'''
         sql_datalog_unique = '''
         create unique index if not exists datalog_unique on datalog (
             dtstamp, hash);'''
