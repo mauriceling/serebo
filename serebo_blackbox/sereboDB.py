@@ -197,7 +197,7 @@ class SereboDB(object):
 
     def _insertData1A(self, data, description):
         '''!
-        Private method - Step 1 of insert data into CEREBO black box. 
+        Private method - Step 1 of insert data into SEREBO black box. 
         Called by insertData method. Step 1 (1) gets a UTC date time 
         stamp; (2) formats the description by suffixing the 
         description with a 10-character random string (80**10 = 1e19 
@@ -224,7 +224,7 @@ class SereboDB(object):
 
     def _insertData1B(self, data, description):
         '''!
-        Private method - Step 1 of insert data into CEREBO black box. 
+        Private method - Step 1 of insert data into SEREBO black box. 
         Called by insertData method. Step 1 (1) gets a UTC date time 
         stamp; and (2) generates a hash using the UTC date time stamp, 
         data and description containing the absolute and relative path 
@@ -247,7 +247,7 @@ class SereboDB(object):
     def _insertData2(self, dtstamp, DL_data, description, 
                      DL_hash, debug):
         '''!
-        Private method - Step 2 of insert data into CEREBO black box. 
+        Private method - Step 2 of insert data into SEREBO black box. 
         Called by insertData method. Step 2 inserts the results from 
         Step 1 into datalog table.
         '''
@@ -264,7 +264,7 @@ class SereboDB(object):
 
     def _insertData3(self, debug):
         '''!
-        Private method - Step 3 of insert data into CEREBO black box. 
+        Private method - Step 3 of insert data into SEREBO black box. 
         Called by insertData method. Step 3 gets data (ID, dtstamp, 
         randomstring, and hash) the latest pre-existing block in 
         blockchain table, to be used as parent in the next block.
@@ -295,7 +295,7 @@ class SereboDB(object):
 
     def _insertData4(self, p_dtstamp, p_randomstring, p_hash, DL_hash):
         '''!
-        Private method - Step 4 of insert data into CEREBO black box. 
+        Private method - Step 4 of insert data into SEREBO black box. 
         Called by insertData method. Step 4 (1) generates a hash from 
         the parent date time stamp, parent random string, parent hash, 
         and current data hash (from Step 1) as current block hash; (2) 
@@ -312,7 +312,7 @@ class SereboDB(object):
                    p_dtstamp, p_randomstring, p_hash, 
                    DL_hash, debug):
         '''!
-        Private method - Step 5 of insert data into CEREBO black box. 
+        Private method - Step 5 of insert data into SEREBO black box. 
         Called by insertData method. Step 5 inserts data of the 
         current block into blockchain table.  
         '''
@@ -332,7 +332,7 @@ class SereboDB(object):
     def _insertData6(self, dtstamp, description, 
                      DL_hash, p_hash, BC_hash):
         '''!
-        Private method - Step 6 of insert data into CEREBO black box. 
+        Private method - Step 6 of insert data into SEREBO black box. 
         Called by insertData method. Step 6 records the current data 
         insertion event into eventlog tables by recording the date 
         time stamp, parent block hash, data hash, and current block 
