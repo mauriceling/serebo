@@ -3,7 +3,7 @@
 
 **Solution:** What if there is a way for me to log my file into a system, on 15th May 2015, and this record (the log statement) is not editable? To ensure that this record is not editable, it can be put on a blockchain. One of the most useful features of a blockchain is resistance against modification of data.
 
-This is where I thought of the concept of a data recorder based on blockchain and **SEcured REcorder BOx (SEREBO)** is borned. The term "secured" refers to security against amendments or modifications rather than security against data theft. SEREBO consists of two components for secured data logging - **SEREBO Black Box** and **SEREBO Notary**.
+This is where I thought of the concept of a data recorder based on blockchain and **SEcured REcorder BOx (SEREBO)** is born. The term "secured" refers to security against amendments or modifications rather than security against data theft. SEREBO consists of two components for secured data logging - **SEREBO Black Box** and **SEREBO Notary**.
 
 ## SEREBO Black Box
 SEREBO Black Box is inspired by the black boxes (cockpit voice recorder and flight data recorder) in airliners. The intended purpose is to track and audit research records under the following premise - Given a set of data files, is there a system to log and verify that these files had not been changed or edited since its supposed creation?
