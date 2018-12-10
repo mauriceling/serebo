@@ -13,3 +13,6 @@ SEREBO Black Box aims to address this issue by using several approaches. Firstly
 ## SEREBO Notary
 SEREBO Black Box, in itself, is insufficiently secured from modifications by the fact that it is a standalone unit. An easy method to increase the level of security is to have SEREBO Black Boxes periodically notarized by one or more independent notary / notaries. SEREBO Notary is a web application built on Web2Py framework and exposes a set of XMLRPC web services so as to provide an independent agent / platform as a notary service.
 
+## How to Cite SEREBO
+If you used SEREBO, please cite the following source(s):
+* Ling, MHT. 2018. [SEcured REcorder BOx (SEREBO) Based on Blockchain Technology for Immutable Data Management and Notarization.](https://github.com/mauriceling/mauriceling.github.io/wiki/SEcured-REcorder-BOx-%28SEREBO%29-Based-on-Blockchain-Technology-for-Immutable-Data-Management-and-Notarization.) MOJ Proteomics & Bioinformatics 7(6):169‒174.
