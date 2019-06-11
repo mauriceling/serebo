@@ -52,8 +52,9 @@ def initialize(bbpath='serebo_blackbox\\blackbox.sdb'):
         db.conn.commit()
     except sqlite3.IntegrityError: pass
     print('')
-    return {'SEREBO Black Box': db,
+    rdat = {'SEREBO Black Box': db,
             'Black Box Path': str(db.path)}
+    return rdat
 
 def insertText(message, description='NA', 
                bbpath='serebo_blackbox\\blackbox.sdb'):
@@ -78,12 +79,13 @@ def insertText(message, description='NA',
     rdata = bb.insertText(db, message, description)
     print('')
     print('Insert Text Status ...')
-    return {'SEREBO Black Box': db,
+    rdat = {'SEREBO Black Box': db,
             'Black Box Path': str(db.path),
             'Date Time Stamp': str(rdata['DateTimeStamp']),
             'Message': str(rdata['Data']),
             'Description': str(rdata['UserDescription']),
             'Data Hash': str(rdata['DataHash'])}
+    return rdat
 
 def logFile(filepath, description='NA',
             bbpath='serebo_blackbox\\blackbox.sdb'):
@@ -108,12 +110,13 @@ def logFile(filepath, description='NA',
     rdata = bb.logFile(db, filepath, description)
     print('')
     print('File Logging Status ...')
-    return {'SEREBO Black Box': db,
+    rdat = {'SEREBO Black Box': db,
             'Black Box Path': str(db.path),
             'Date Time Stamp': str(rdata['DateTimeStamp']),
             'File Hash': str(rdata['Data']),
             'Description': str(rdata['UserDescription']),
             'Data Hash': str(rdata['DataHash'])}
+    return rdat
 
 def systemData():
     
@@ -128,7 +131,7 @@ def systemData():
     data = bb.systemData()
     print('')
     print('System Data ...')
-    return {'architecture': str(data['architecture']),
+    rdat = {'architecture': str(data['architecture']),
             'machine': str(data['machine']),
             'node': str(data['node']),
             'platform': str(data['platform']),
@@ -155,6 +158,7 @@ def systemData():
             'hash_sha3_512': str(data['hash_sha3_512']),
             'hash_blake2b': str(data['hash_blake2b']),
             'hash_blake2s': str(data['hash_blake2s'])}
+    return rdat
 
 def systemRecord(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
@@ -183,7 +187,7 @@ def systemRecord(bbpath='serebo_blackbox\\blackbox.sdb'):
             db.cur.execute(sqlstmt % (str(dtstamp), str(k), 
                                       str(data[k])))
     db.conn.commit()
-    return {'SEREBO Black Box': db,
+    rdat = {'SEREBO Black Box': db,
             'Black Box Path': str(db.path),
             'architecture': str(data['architecture']),
             'machine': str(data['machine']),
@@ -212,6 +216,7 @@ def systemRecord(bbpath='serebo_blackbox\\blackbox.sdb'):
             'hash_sha3_512': str(data['hash_sha3_512']),
             'hash_blake2b': str(data['hash_blake2b']),
             'hash_blake2s': str(data['hash_blake2s'])}
+    return rdat
 
 def fileHash(filepath):
     '''!
@@ -229,8 +234,9 @@ def fileHash(filepath):
     '''
     fHash = bb.fileHash(filepath)
     print('')
-    return {'File Path': str(filepath),
+    rdat = {'File Path': str(filepath),
             'File Hash': str(fHash)}
+    return rdat
 
 def localCode(length, description=None, 
               bbpath='serebo_blackbox\\blackbox.sdb'):
@@ -259,10 +265,11 @@ def localCode(length, description=None,
     rdata = bb.insertFText(db, rstring, description)
     print('')
     print('Generate Random String (Local) ...')
-    return {'SEREBO Black Box': db,
+    rdat = {'SEREBO Black Box': db,
             'Black Box Path': str(db.path),
             'Date Time Stamp': str(rdata['DateTimeStamp']),
             'Random String': str(rstring)}
+    return rdat
 
 def localDTS(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
@@ -282,9 +289,10 @@ def localDTS(bbpath='serebo_blackbox\\blackbox.sdb'):
     db = bb.connectDB(bbpath)
     dts = bb.dateTime(db)
     print('')
-    return {'SEREBO Black Box': db,
+    rdat = {'SEREBO Black Box': db,
             'Black Box Path': str(db.path),
             'Date Time Stamp': str(dts)}
+    return rdat
 
 def stringHash(dstring, bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
@@ -306,10 +314,11 @@ def stringHash(dstring, bbpath='serebo_blackbox\\blackbox.sdb'):
     db = bb.connectDB(bbpath)
     x = bb.stringHash(db, dstring)
     print('')
-    return {'SEREBO Black Box': db,
+    rdat = {'SEREBO Black Box': db,
             'Black Box Path': str(db.path),
             'Data String': str(dstring),
             'Data Hash': str(x)}
+    return rdat
 
 def registerBlackbox(owner, email, alias, 
                      notaryURL='https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc',
@@ -363,18 +372,20 @@ def registerBlackbox(owner, email, alias,
         rdata = bb.insertFText(db, rstring, description)
         print('')
         print('Registering SEREBO Black Box with SEREBO Notary...')
-        return {'SEREBO Black Box': db,
+        rdat = {'SEREBO Black Box': db,
                 'Black Box Path': str(db.path),
                 'Black Box ID': str(blackboxID),
                 'Notary URL': str(notaryURL),
                 'Notary Authorization': str(notaryAuthorization),
                 'Notary Date Time Stamp': str(dtstamp)}
+        return rdat
     except:
         print('Registration failed - likely to be SEREBO Notary error or XMLRPC error.')
-        return {'SEREBO Black Box': db,
+        rdat = {'SEREBO Black Box': db,
                 'Black Box Path': str(db.path),
                 'Black Box ID': str(blackboxID),
                 'Notary URL': str(notaryURL)}
+        return rdat
 
 def selfSign(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
@@ -396,10 +407,11 @@ def selfSign(bbpath='serebo_blackbox\\blackbox.sdb'):
     rdata = bb.insertFText(db, rstring, 'Self notarization')
     print('')
     print('Self-Signing / Self-Notarization ...')
-    return {'SEREBO Black Box': db,
+    rdat = {'SEREBO Black Box': db,
             'Black Box Path': str(db.path),
             'Date Time Stamp': str(rdata['DateTimeStamp']),
             'Random String': str(rstring)}
+    return rdat
 
 def notarizeBlackbox(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
@@ -446,7 +458,7 @@ def notarizeBlackbox(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
         rdata = bb.insertFText(db, codeCommon, description)
         print('')
         print('Notarizing SEREBO Black Box with SEREBO Notary...')
-        return {'SEREBO Black Box': db,
+        rdat = {'SEREBO Black Box': db,
                 'Black Box Path': str(db.path),
                 'Notary Alias': str(alias),
                 'Notary URL': str(notaryURL),
@@ -456,13 +468,15 @@ def notarizeBlackbox(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
                 'Black Box Code': str(codeBB),
                 'Notary Code': str(codeNS),
                 'Cross-Signing Code': str(codeCommon)}
+        return rdat
     except:
         print('Failed in attempt to notarize SEREBO Black Box with SEREBO Notary')
-        return {'SEREBO Black Box': db,
+        rdat = {'SEREBO Black Box': db,
                 'Black Box Path': str(db.path),
                 'Notary Alias': str(alias),
                 'Notary URL': str(notaryURL),
                 'Notary Authorization': str(notaryAuthorization)}
+        return rdat
 
 def viewRegistration(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
@@ -486,7 +500,7 @@ def viewRegistration(bbpath='serebo_blackbox\\blackbox.sdb'):
     sqlstmt = '''select dtstamp, alias, owner, email, notaryDTS, notaryAuthorization, notaryURL from notary'''
     print('')
     print('Notary Registration(s) ...')
-    for row in db.cur.execute(sqlstmt):
+    for row in db.cur.execute(sqlstmt):     
         print('')
         print('Date Time Stamp: %s' % str(row[0]))
         print('Notary Alias: %s' % str(row[1]))
@@ -495,6 +509,32 @@ def viewRegistration(bbpath='serebo_blackbox\\blackbox.sdb'):
         print('Notary Date Time Stamp: %s' % str(row[4]))
         print('Notary Authorization: %s' % str(row[5]))
         print('Notary URL: %s' % str(row[6]))
+
+def viewRegistrationReturn(bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to view all SEREBO Notary registration for this SEREBO 
+    Black Box - This does not insert a record into SEREBO Black Box. 
+    This is identical to viewRegistration() but used when results 
+    needs to be returned to the calling function.
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    print('')
+    print('Black Box Path: %s' % str(bbpath))
+    sqlstmt = '''select dtstamp, alias, owner, email, notaryDTS, notaryAuthorization, notaryURL from notary'''
+    rdat = []
+    for row in db.cur.execute(sqlstmt):
+        tempD = {'Date Time Stamp': str(row[0]),
+                 'Notary Alias': str(row[1]),
+                 'Owner': str(row[2]),
+                 'Email': str(row[3]),
+                 'Notary Date Time Stamp': str(row[4]),
+                 'Notary Authorization': str(row[5]),
+                 'Notary URL': str(row[6])}
+        rdat.append(tempD)
+    return rdat
 
 def changeAlias(alias, newalias, 
                 bbpath='serebo_blackbox\\blackbox.sdb'):
@@ -524,10 +564,11 @@ def changeAlias(alias, newalias,
         (alias, newalias)
     rdata = bb.insertFText(db, message, 'NA')
     print('')
-    return {'SEREBO Black Box': db,
+    rdat - {'SEREBO Black Box': db,
             'Black Box Path': str(db.path),
             'Alias': alias,
             'New Alias': newalias}
+    return rdat
 
 def searchMessage(term, mode='like',
                   bbpath='serebo_blackbox\\blackbox.sdb'):
@@ -564,6 +605,34 @@ def searchMessage(term, mode='like',
         print('Description: %s' % str(row[4]))
         print('')
 
+def searchMessageReturn(term, mode='like',
+                        bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to search SEREBO Black Box for a message - This does 
+    not insert a record into SEREBO Black Box. This is identical to 
+    searchMessage() but used when results needs to be returned to the 
+    calling function.
+
+    @param term String: Case sensitive search term.
+    @param mode String: Mode of search. Allowable modes are 'like' and 
+    'exact'. If mode is 'like', wildcards such as '_' (matches any 
+    single character) and '%' (matches any number of characters). 
+    Default = 'like'.
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    mode = str(mode)
+    term = str(term)
+    result = bb.searchDatalog(db, term, 'data', mode)
+    rdat = []
+    for row in result:
+        tempD = {'Date Time Stamp': str(row[1]),
+                 'Message': str(row[3]),
+                 'Description': str(row[4])}
+        rdat.append(tempD)
+    return rdat
+
 def searchDescription(term, mode='like',
                       bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
@@ -599,6 +668,34 @@ def searchDescription(term, mode='like',
         print('Description: %s' % str(row[4]))
         print('')
 
+def searchDescriptionReturn(term, mode='like',
+                            bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to search SEREBO Black Box for a description - This does 
+    not insert a record into SEREBO Black Box. This is identical to 
+    searchDescription() but used when results needs to be returned to 
+    the calling function.
+
+    @param term String: Case sensitive search term.
+    @param mode String: Mode of search. Allowable modes are 'like' and 
+    'exact'. If mode is 'like', wildcards such as '_' (matches any 
+    single character) and '%' (matches any number of characters). 
+    Default = 'like'.
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    mode = str(mode)
+    term = str(term)
+    result = bb.searchDatalog(db, term, 'description', mode)
+    rdat = []
+    for row in result:
+        tempD = {'Date Time Stamp': str(row[1]),
+                 'Message': str(row[3]),
+                 'Description': str(row[4])}
+        rdat.append(tempD)
+    return rdat
+
 def searchFile(filepath, bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
     Function to search SEREBO Black Box for a file logging event - 
@@ -632,6 +729,31 @@ def searchFile(filepath, bbpath='serebo_blackbox\\blackbox.sdb'):
         print('Message: %s' % str(row[3]))
         print('Description: %s' % str(row[4]))
         print('')
+
+def searchFileReturn(filepath, bbpath='serebo_blackbox\\blackbox.sdb'):
+    '''!
+    Function to search SEREBO Black Box for a file logging event - 
+    This does not insert a record into SEREBO Black Box. This is 
+    identical to searchFile() but used when results needs to be 
+    returned to the calling function.
+
+    @param fileapth String: Path of file to search in SEREBO black box.
+    @param bbpath String: Path to SEREBO black box. Default = 
+    'serebo_blackbox\\blackbox.sdb'.
+    '''
+    db = bb.connectDB(bbpath)
+    filepath = str(filepath)
+    absPath = bb.absolutePath(filepath)
+    fHash = bb.fileHash(absPath)
+    result = bb.searchDatalog(db, fHash, 'data', 'exact')
+    rdat = ['File Path: %s' % filepath,
+            'Absolute File Path: %s' % absPath]
+    for row in result:
+        tempD = {'Date Time Stamp': str(row[1]),
+                 'Message': str(row[3]),
+                 'Description': str(row[4])}
+        rdat.append(tempD)
+    return rdat
 
 def auditCount(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
@@ -752,10 +874,11 @@ def dumpHash(outputf, bbpath='serebo_blackbox\\blackbox.sdb'):
     print('')
     print('Dump SEREBO Black Box Data Log Hashes ...')
     print('')
-    return {'SEREBO Black Box': db,
+    rdat = {'SEREBO Black Box': db,
             'Black Box Path': str(db.path),
             'Output File Path': outputf,
             'Number of Records': str(count)}
+    return rdat
 
 def auditDataBlockchain(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
@@ -970,13 +1093,14 @@ def NTPSign(bbpath='serebo_blackbox\\blackbox.sdb'):
     print('')
     print('Self-Signing / Self-Notarization ...')
     print('')
-    return {'SEREBO Black Box': db,
+    rdat = {'SEREBO Black Box': db,
             'Black Box Path': str(db.path),
             'Date Time Stamp': str(rdata['DateTimeStamp']),
             'Random String': str(rstring),
             'Seconds Since Epoch': str(response.tx_time),
             'NTP Date Time': str(dtstamp),
             'NTP Server IP': str(ntp_ip)}
+    return rdat
 
 def backup(backuppath='blackbox_backup.sdb',
            bbpath='serebo_blackbox\\blackbox.sdb'):
@@ -1001,14 +1125,16 @@ def backup(backuppath='blackbox_backup.sdb',
     print('')
     if backuppath != bbpath:
         (bbpath, backuppath) = bb.backup(bbpath, backuppath)
-        return {'Black Box Path': bbpath,
+        rdat = {'Black Box Path': bbpath,
                 'Backup Path': backuppath}
+        return rdat
     else:
         print('Backup path cannot be the same as SEREBO Black Box path')
         bbpath = bb.absolutePath(bbpath)
         backuppath = bb.absolutePath(backuppath)
-        return {'Black Box Path': bbpath,
+        rdat = {'Black Box Path': bbpath,
                 'Backup Path': backuppath}
+        return rdat
 
 def dump(dumpfolder='.', fileprefix='dumpBB', 
          bbpath='serebo_blackbox\\blackbox.sdb'):
@@ -1105,19 +1231,21 @@ def auditRegister(alias, bbpath='serebo_blackbox\\blackbox.sdb'):
             message = 'Registration NOT found in SEREBO Notary'
         print('')
         print('Checking SEREBO Black Box registration in SEREBO Notary...')
-        return {'SEREBO Black Box': db,
+        rdat = {'SEREBO Black Box': db,
                 'Black Box Path': str(db.path),
                 'Notary Alias': str(alias),
                 'Notary URL': str(notaryURL),
                 'Notary Authorization': str(notaryAuthorization),
                 'Status': message}
+        return rdat
     except:
         print('Failed in checking SEREBO Black Box registration in SEREBO Notary')
-        return {'SEREBO Black Box': db,
+        rdat = {'SEREBO Black Box': db,
                 'Black Box Path': str(db.path),
                 'Notary Alias': str(alias),
                 'Notary URL': str(notaryURL),
                 'Notary Authorization': str(notaryAuthorization)}
+        return rdat
 
 def viewSelfNotarizations(bbpath='serebo_blackbox\\blackbox.sdb'):
     '''!
