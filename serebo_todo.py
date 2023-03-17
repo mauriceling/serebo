@@ -222,40 +222,6 @@ def changeAlias(alias, newalias,
             "New Alias": newalias}
     return rdat
 
-def backup(backuppath="blackbox_backup.sdb",
-           bbpath="serebo_blackbox\\blackbox.sdb"):
-    """!
-    Function to backup SEREBO Black Box - This does not insert a 
-    record into SEREBO Black Box.
-
-    Usage:
-
-        python serebo.py backup --backuppath=<path for backed-up SEREBO black box> --bbpath=<path to SEREBO black box> 
-
-    For example:
-
-        python serebo.py backup --backuppath="blackbox_backup.sdb" --bbpath="serebo_blackbox\\blackbox.sdb"
-
-    @param backuppath String: Path for backed-up SEREBO black box. Default = "blackbox_backup.sdb"
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
-    """
-    print("")
-    print("Backup SEREBO Black Box ...")
-    print("")
-    if backuppath != bbpath:
-        (bbpath, backuppath) = bb.backup(bbpath, backuppath)
-        rdat = {"Black Box Path": bbpath,
-                "Backup Path": backuppath}
-        return rdat
-    else:
-        print("Backup path cannot be the same as SEREBO Black Box path")
-        bbpath = bb.absolutePath(bbpath)
-        backuppath = bb.absolutePath(backuppath)
-        rdat = {"Black Box Path": bbpath,
-                "Backup Path": backuppath}
-        return rdat
-
 def dump(dumpfolder=".", fileprefix="dumpBB", 
          bbpath="serebo_blackbox\\blackbox.sdb"):
     """!

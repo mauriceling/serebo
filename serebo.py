@@ -797,6 +797,38 @@ def checkHash(filepath, bbpath="serebo_blackbox\\blackbox.sdb"):
             print("Hash in Data Log: %s" % dhash)
     return {}
 
+def backup(filepath="blackbox_backup.sdb",
+           bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to backup SEREBO Black Box - This does not insert a record into SEREBO Black Box.
+
+    Usage:
+
+        python serebo.py backup --filepath=<path for backed-up SEREBO black box> --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py backup --filepath="blackbox_backup.sdb" --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param filepath String: Path for backed-up SEREBO black box. Default = "blackbox_backup.sdb"
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
+    """
+    print("")
+    print("Backup SEREBO Black Box ...")
+    print("")
+    if filepath != bbpath:
+        (bbpath, filepath) = bb.backup(bbpath, filepath)
+        rdat = {"Black Box Path": bbpath,
+                "Backup Path": filepath}
+        return rdat
+    else:
+        print("Backup path cannot be the same as SEREBO Black Box path")
+        bbpath = bb.absolutePath(bbpath)
+        filepath = bb.absolutePath(filepath)
+        rdat = {"Black Box Path": bbpath,
+                "Backup Path": filepath}
+        return rdat
+
 
 if __name__ == "__main__":
     # Argument Parser
@@ -816,6 +848,7 @@ if __name__ == "__main__":
     elif args.command.lower() == "audit_count": result = auditCount(args.bbpath)
     elif args.command.lower() == "audit_data_blockchain": result = auditDataBlockchain(args.bbpath)
     elif args.command.lower() == "audit_datahash": result = auditDatahash(args.bbpath)
+    elif args.command.lower() == "backup": result = backup(args.filepath, args.bbpath)
     elif args.command.lower() == "checkhash": result = checkHash(args.filepath, args.bbpath)
     elif args.command.lower() == "dumphash": result = dumpHash(args.filepath, args.bbpath)
     elif args.command.lower() == "fhash": result = fileHash(args.filepath)
@@ -855,7 +888,6 @@ if __name__ == "__main__":
     """
 "audit_notarizebb": auditNotarizeBB,
 "audit_register": auditRegister,
-"backup": backup,
 "changealias": changeAlias,
 "dump": dump,
 "notarizebb": notarizeBlackbox,
