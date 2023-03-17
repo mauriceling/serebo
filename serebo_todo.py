@@ -1,44 +1,4 @@
-def systemData():
-    
-    """!
-    Function to print out data and test hashes of current platform - 
-    This does not insert a record into SEREBO Black Box.
 
-    Usage:
-
-        python serebo.py sysdata
-    """
-    data = bb.systemData()
-    print("")
-    print("System Data ...")
-    rdat = {"architecture": str(data["architecture"]),
-            "machine": str(data["machine"]),
-            "node": str(data["node"]),
-            "platform": str(data["platform"]),
-            "processor": str(data["processor"]),
-            "python_build": str(data["python_build"]),
-            "python_compiler": str(data["python_compiler"]),
-            "python_implementation": str(data["python_implementation"]),
-            "python_branch": str(data["python_branch"]),
-            "python_revision": str(data["python_revision"]),
-            "python_version": str(data["python_version"]),
-            "release": str(data["release"]),
-            "system": str(data["system"]),
-            "version": str(data["version"]),
-            "hashdata": str(data["hashdata"]),
-            "hash_md5": str(data["hash_md5"]),
-            "hash_sha1": str(data["hash_sha1"]),
-            "hash_sha224": str(data["hash_sha224"]),
-            "hash_sha3_224": str(data["hash_sha3_224"]),
-            "hash_sha256": str(data["hash_sha256"]),
-            "hash_sha3_256": str(data["hash_sha3_256"]),
-            "hash_sha384": str(data["hash_sha384"]),
-            "hash_sha3_384": str(data["hash_sha3_384"]),
-            "hash_sha512": str(data["hash_sha512"]),
-            "hash_sha3_512": str(data["hash_sha3_512"]),
-            "hash_blake2b": str(data["hash_blake2b"]),
-            "hash_blake2s": str(data["hash_blake2s"])}
-    return rdat
 
 def systemRecord(bbpath="serebo_blackbox\\blackbox.sdb"):
     """!
