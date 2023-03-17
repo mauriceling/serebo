@@ -222,45 +222,6 @@ def changeAlias(alias, newalias,
             "New Alias": newalias}
     return rdat
 
-def checkHash(hashfile, bbpath="serebo_blackbox\\blackbox.sdb"):
-    """!
-    Function to compare record hash from SEREBO Black Box with that in 
-    a hash file. This does not insert a record into SEREBO Black Box.
-
-    Usage: 
-
-        python serebo.py checkhash --hashfile=<path to hash file> --bbpath=<path to SEREBO black box>
-
-    For example:
-
-        python serebo.py checkhash --hashfile=sereboBB_hash --bbpath="serebo_blackbox\\blackbox.sdb"
-
-    @param hashfile String: File path to hash file.
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
-    """
-    db = bb.connectDB(bbpath)
-    hashfile= str(hashfile)
-    hashfile = bb.absolutePath(hashfile)
-    print("")
-    print("Compare record hash from SEREBO Black Box with that in a hash file...")
-    print("")
-    hf = open(hashfile, "r")
-    for record in hf:
-        record = [str(d.strip()) for d in record[:-1].split("|")]
-        ID = record[0]
-        dtstamp = record[1]
-        thash = record[2]
-        sqlstmt = """select hash from datalog where ID="%s" and dtstamp="%s"""" % (ID, dtstamp)"""
-        dhash = [row for row in db.cur.execute(sqlstmt)][0][0]
-        dhash = str(dhash)
-        if thash == dhash:
-            print("Verified record %s hash between Data Log and Hash file" % ID)
-        else:
-            print("ERROR in record %s" % ID)
-            print("Hash in Hash File: %s" % thash)
-            print("Hash in Data Log: %s" % dhash)
-
 def backup(backuppath="blackbox_backup.sdb",
            bbpath="serebo_blackbox\\blackbox.sdb"):
     """!

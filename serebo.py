@@ -758,6 +758,45 @@ def dumpHash(filepath, bbpath="serebo_blackbox\\blackbox.sdb"):
             "Number of Records": str(count)}
     return rdat
 
+def checkHash(filepath, bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to compare record hash from SEREBO Black Box with that in a hash file. This does not insert a record into SEREBO Black Box.
+
+    Usage: 
+
+        python serebo.py checkhash --filepath=<path to hash file> --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py checkhash --filepath=sereboBB_hash --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param filepath String: File path to hash file.
+    @param bbpath String: Path to SEREBO black box. Default = 
+    "serebo_blackbox\\blackbox.sdb".
+    """
+    db = bb.connectDB(bbpath)
+    filepath= str(filepath)
+    filepath = bb.absolutePath(filepath)
+    print("")
+    print("Compare record hash from SEREBO Black Box with that in a hash file...")
+    print("")
+    hf = open(filepath, "r")
+    for record in hf:
+        record = [str(d.strip()) for d in record[:-1].split("|")]
+        ID = record[0]
+        dtstamp = record[1]
+        thash = record[2]
+        sqlstmt = """select hash from datalog where ID='%s' and dtstamp='%s'""" % (ID, dtstamp)
+        dhash = [row for row in db.cur.execute(sqlstmt)][0][0]
+        dhash = str(dhash)
+        if thash == dhash:
+            print("Verified record %s hash between Data Log and Hash file" % ID)
+        else:
+            print("ERROR in record %s" % ID)
+            print("Hash in Hash File: %s" % thash)
+            print("Hash in Data Log: %s" % dhash)
+    return {}
+
 
 if __name__ == "__main__":
     # Argument Parser
@@ -777,6 +816,7 @@ if __name__ == "__main__":
     elif args.command.lower() == "audit_count": result = auditCount(args.bbpath)
     elif args.command.lower() == "audit_data_blockchain": result = auditDataBlockchain(args.bbpath)
     elif args.command.lower() == "audit_datahash": result = auditDatahash(args.bbpath)
+    elif args.command.lower() == "checkhash": result = checkHash(args.filepath, args.bbpath)
     elif args.command.lower() == "dumphash": result = dumpHash(args.filepath, args.bbpath)
     elif args.command.lower() == "fhash": result = fileHash(args.filepath)
     elif args.command.lower() == "init": result = initialize(args.bbpath)
@@ -817,9 +857,7 @@ if __name__ == "__main__":
 "audit_register": auditRegister,
 "backup": backup,
 "changealias": changeAlias,
-"checkhash": checkHash,
 "dump": dump,
-"": dumpHash,
 "notarizebb": notarizeBlackbox,
 "register": registerBlackbox,
 "viewsnnote": viewNotaryNotarizations,
