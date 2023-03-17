@@ -360,6 +360,34 @@ def searchMessage(message, mode="like",
         rdat.append(tempD)
     return rdat
 
+def searchDescription(message, mode="like",
+                      bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to search SEREBO Black Box for a description - This does not insert a record into SEREBO Black Box.
+
+    Usage: 
+
+        python serebo.py searchdesc --mode=<search mode> --message=<search term> --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py searchdesc --mode="like" --message="%NA%" --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param message String: Case sensitive search term.
+    @param mode String: Mode of search. Allowable modes are "like" and "exact". If mode is "like", wildcards such as "_" (matches any single character) and "%" (matches any number of characters). Default = "like".
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
+    """
+    db = bb.connectDB(bbpath)
+    mode = str(mode)
+    message = str(message)
+    result = bb.searchDatalog(db, message, "description", mode)
+    rdat = []
+    for row in result:
+        tempD = {"Date Time Stamp": str(row[1]),
+                 "Message": str(row[3]),
+                 "Description": str(row[4])}
+        rdat.append(tempD)
+    return rdat
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -380,6 +408,7 @@ if __name__ == "__main__":
     elif args.command.lower() == "localcode": result = localCode(args.length, args.description, args.bbpath)
     elif args.command.lower() == "localdts": result = localDTS(args.bbpath)
     elif args.command.lower() == "logfile": result = logFile(args.filepath, args.description, args.bbpath)
+    elif args.command.lower() == "searchdesc": result = searchDescription(args.message, args.mode, args.bbpath)
     elif args.command.lower() == "searchmsg": result = searchMessage(args.message, args.mode, args.bbpath)
     elif args.command.lower() == "selfsign": result = selfSign(args.bbpath)
     elif args.command.lower() == "shash": result = stringHash(args.message, args.bbpath)
@@ -410,7 +439,6 @@ if __name__ == "__main__":
 "notarizebb": notarizeBlackbox,
 "ntpsign": NTPSign,
 "register": registerBlackbox,
-"searchdesc": searchDescription,
 "searchfile": searchFile,
 "viewntpnote": viewNTPNotarizations,
 "viewselfnote": viewSelfNotarizations,
