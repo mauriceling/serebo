@@ -1,4 +1,4 @@
-'''!
+"""!
 Secured Recorder Box (SEREBO) Command Line Interface (CLI)
 
 Date created: 17th May 2018
@@ -19,7 +19,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
-'''
+"""
 import argparse
 import random
 import os
@@ -29,8 +29,8 @@ import serebo_blackbox as bb
 import serebo_notary_api as notary
 
 
-def initialize(bbpath='serebo_blackbox\\blackbox.sdb'):
-    '''!
+def initialize(bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
     Function to initialize SEREBO blackbox.
 
     Usage:
@@ -39,25 +39,25 @@ def initialize(bbpath='serebo_blackbox\\blackbox.sdb'):
 
     For example:
 
-        python serebo.py init --bbpath='serebo_blackbox\\blackbox.sdb'
+        python serebo.py init --bbpath="serebo_blackbox\\blackbox.sdb"
 
     @param bbpath String: Path to SEREBO black box. Default = 
-    'serebo_blackbox\\blackbox.sdb'.
-    '''
+    "serebo_blackbox\\blackbox.sdb".
+    """
     db = bb.connectDB(bbpath)
     try:
-        sqlstmt = '''insert into metadata (key, value) values ('serebo_blackbox_path', '%s');''' % (str(db.path))
+        sqlstmt = """insert into metadata (key, value) values ("serebo_blackbox_path", "%s");""" % (str(db.path))
         db.cur.execute(sqlstmt)
         db.conn.commit()
     except sqlite3.IntegrityError: pass
-    print('')
-    rdat = {'SEREBO Black Box': db,
-            'Black Box Path': str(db.path)}
+    print("")
+    rdat = {"SEREBO Black Box": db,
+            "Black Box Path": str(db.path)}
     return rdat
 
-def insertText(message, description='NA', 
-               bbpath='serebo_blackbox\\blackbox.sdb'):
-    '''!
+def insertText(message, description="NA", 
+               bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
     Function to insert a text string into SEREBO blackbox.
 
     Usage:
@@ -66,34 +66,34 @@ def insertText(message, description='NA',
 
     For example:
 
-        python serebo.py intext --message="This is a text message for insertion" --description="Texting 1" --bbpath='serebo_blackbox\\blackbox.sdb'
+        python serebo.py intext --message="This is a text message for insertion" --description="Texting 1" --bbpath="serebo_blackbox\\blackbox.sdb"
 
     @param message String: Text string to be inserted.
     @param description String: Explanation string for this entry 
     event. Default = NA.
     @param bbpath String: Path to SEREBO black box. Default = 
-    'serebo_blackbox\\blackbox.sdb'.
-    '''
+    "serebo_blackbox\\blackbox.sdb".
+    """
     db = bb.connectDB(bbpath)
     rdata = bb.insertText(db, message, description)
-    print('')
-    print('Insert Text Status ...')
-    rdat = {'SEREBO Black Box': db,
-            'Black Box Path': str(db.path),
-            'Date Time Stamp': str(rdata['DateTimeStamp']),
-            'Message': str(rdata['Data']),
-            'Description': str(rdata['UserDescription']),
-            'Data Hash': str(rdata['DataHash'])}
+    print("")
+    print("Insert Text Status ...")
+    rdat = {"SEREBO Black Box": db,
+            "Black Box Path": str(db.path),
+            "Date Time Stamp": str(rdata["DateTimeStamp"]),
+            "Message": str(rdata["Data"]),
+            "Description": str(rdata["UserDescription"]),
+            "Data Hash": str(rdata["DataHash"])}
     return rdat
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("command", type=str, help="command to use")
-    parser.add_argument("-bb", "--bbpath", type=str, help="values for computation")
-    parser.add_argument("-m", "--message", type=str, help="values for computation")
-    parser.add_argument("-d", "--description", type=str, help="values for computation")
+    parser.add_argument("command", type=str, help="SEREBO command")
+    parser.add_argument("-bb", "--bbpath", type=str, help="Path to SEREBO blackbox")
+    parser.add_argument("-d", "--description", type=str, default="NA", help="Explanation string for this entry")
+    parser.add_argument("-m", "--message", type=str, help="Text string to be inserted")
 
     args = parser.parse_args()
 
@@ -105,35 +105,34 @@ if __name__ == '__main__':
     for key in result: print("%s: %s" % (str(key), str(result[key])))
     """
      exposed_functions = {\
-         'audit_blockchainflow': auditBlockchainFlow,
-         'audit_blockchainhash': auditBlockchainHash,
-         'audit_count': auditCount,
-         'audit_data_blockchain': auditDataBlockchain,
-         'audit_datahash': auditDatahash,
-         'audit_notarizebb': auditNotarizeBB,
-         'audit_register': auditRegister,
-         'backup': backup,
-         'changealias': changeAlias,
-         'checkhash': checkHash,
-         'dump': dump,
-         'dumphash': dumpHash,
-         'fhash': fileHash,
-         'intext': insertText,
-         'localcode': localCode,
-         'localdts': localDTS,
-         'logfile': logFile,
-         'notarizebb': notarizeBlackbox,
-         'ntpsign': NTPSign,
-         'register': registerBlackbox,
-         'searchmsg': searchMessage,
-         'searchdesc': searchDescription,
-         'searchfile': searchFile,
-         'selfsign': selfSign,
-         'shash': stringHash,
-         'sysdata': systemData,
-         'sysrecord': systemRecord,
-         'viewntpnote': viewNTPNotarizations,
-         'viewselfnote': viewSelfNotarizations,
-         'viewsnnote': viewNotaryNotarizations,
-         'viewreg': viewRegistration}
+         "audit_blockchainflow": auditBlockchainFlow,
+         "audit_blockchainhash": auditBlockchainHash,
+         "audit_count": auditCount,
+         "audit_data_blockchain": auditDataBlockchain,
+         "audit_datahash": auditDatahash,
+         "audit_notarizebb": auditNotarizeBB,
+         "audit_register": auditRegister,
+         "backup": backup,
+         "changealias": changeAlias,
+         "checkhash": checkHash,
+         "dump": dump,
+         "dumphash": dumpHash,
+         "fhash": fileHash,
+         "localcode": localCode,
+         "localdts": localDTS,
+         "logfile": logFile,
+         "notarizebb": notarizeBlackbox,
+         "ntpsign": NTPSign,
+         "register": registerBlackbox,
+         "searchmsg": searchMessage,
+         "searchdesc": searchDescription,
+         "searchfile": searchFile,
+         "selfsign": selfSign,
+         "shash": stringHash,
+         "sysdata": systemData,
+         "sysrecord": systemRecord,
+         "viewntpnote": viewNTPNotarizations,
+         "viewselfnote": viewSelfNotarizations,
+         "viewsnnote": viewNotaryNotarizations,
+         "viewreg": viewRegistration}
     """
