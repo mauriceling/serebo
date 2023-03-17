@@ -723,6 +723,41 @@ def viewNTPNotarizations(bbpath="serebo_blackbox\\blackbox.sdb"):
         rdat.append(tempD)
     return rdat
 
+def dumpHash(filepath, bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to write out record hash from SEREBO Black Box into a file - This does not insert a record into SEREBO Black Box.
+
+    Usage: 
+
+        python serebo.py dumphash --filepath=<output file path> --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py dumphash --filepath=sereboBB_hash --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param filepath String: Output file path. 
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
+    """
+    db = bb.connectDB(bbpath)
+    filepath = str(filepath)
+    filepath = bb.absolutePath(filepath)
+    outf = open(filepath, "w")
+    sqlstmt = "select ID, dtstamp, hash from datalog"
+    count = 0
+    for row in db.cur.execute(sqlstmt):
+        data = " | ".join([str(row[0]), str(row[1]), str(row[2])])
+        outf.write(data + "\n")
+        count = count + 1
+    outf.close()
+    print("")
+    print("Dump SEREBO Black Box Data Log Hashes ...")
+    print("")
+    rdat = {"SEREBO Black Box": db,
+            "Black Box Path": str(db.path),
+            "Output File Path": filepath,
+            "Number of Records": str(count)}
+    return rdat
+
 
 if __name__ == "__main__":
     # Argument Parser
@@ -742,6 +777,7 @@ if __name__ == "__main__":
     elif args.command.lower() == "audit_count": result = auditCount(args.bbpath)
     elif args.command.lower() == "audit_data_blockchain": result = auditDataBlockchain(args.bbpath)
     elif args.command.lower() == "audit_datahash": result = auditDatahash(args.bbpath)
+    elif args.command.lower() == "dumphash": result = dumpHash(args.filepath, args.bbpath)
     elif args.command.lower() == "fhash": result = fileHash(args.filepath)
     elif args.command.lower() == "init": result = initialize(args.bbpath)
     elif args.command.lower() == "intext": result = insertText(args.message, args.description, args.bbpath)
@@ -783,7 +819,7 @@ if __name__ == "__main__":
 "changealias": changeAlias,
 "checkhash": checkHash,
 "dump": dump,
-"dumphash": dumpHash,
+"": dumpHash,
 "notarizebb": notarizeBlackbox,
 "register": registerBlackbox,
 "viewsnnote": viewNotaryNotarizations,

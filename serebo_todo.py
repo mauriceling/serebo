@@ -222,44 +222,6 @@ def changeAlias(alias, newalias,
             "New Alias": newalias}
     return rdat
 
-def dumpHash(outputf, bbpath="serebo_blackbox\\blackbox.sdb"):
-    """!
-    Function to write out record hash from SEREBO Black Box into a 
-    file - This does not insert a record into SEREBO Black Box.
-
-    Usage: 
-
-        python serebo.py dumphash --outputf=<output file path> --bbpath=<path to SEREBO black box>
-
-    For example:
-
-        python serebo.py dumphash --outputf=sereboBB_hash --bbpath="serebo_blackbox\\blackbox.sdb"
-
-    @param outputf String: Output file path. Default = sereboBB_hash
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
-    """
-    db = bb.connectDB(bbpath)
-    outputf = str(outputf)
-    outputf = bb.absolutePath(outputf)
-    outf = open(outputf, "w")
-    sqlstmt = "select ID, dtstamp, hash from datalog"
-    count = 0
-    for row in db.cur.execute(sqlstmt):
-        data = [str(row[0]), str(row[1]), str(row[2])]
-        data = " | ".join(data)
-        outf.write(data + "\n")
-        count = count + 1
-    outf.close()
-    print("")
-    print("Dump SEREBO Black Box Data Log Hashes ...")
-    print("")
-    rdat = {"SEREBO Black Box": db,
-            "Black Box Path": str(db.path),
-            "Output File Path": outputf,
-            "Number of Records": str(count)}
-    return rdat
-
 def checkHash(hashfile, bbpath="serebo_blackbox\\blackbox.sdb"):
     """!
     Function to compare record hash from SEREBO Black Box with that in 
