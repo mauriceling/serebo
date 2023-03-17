@@ -159,6 +159,64 @@ def systemData():
             "hash_blake2s": str(data["hash_blake2s"])}
     return rdat
 
+def systemRecord(bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to record data and test hashes of current platform.
+
+    Usage:
+
+        python serebo.py sysrecord --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py sysrecord --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    "serebo_blackbox\\blackbox.sdb".
+    """
+    db = bb.connectDB(bbpath)
+    data = bb.systemData()
+    dtstamp = bb.dateTime(db)
+    sqlstmt = """insert into systemdata (dtstamp, key, value) values 
+        ("%s", "%s", "%s");"""
+    print("")
+    print("System Data ...")
+    for k in data:
+        if k != "hashdata":
+            db.cur.execute(sqlstmt % (str(dtstamp), str(k), 
+                                      str(data[k])))
+    db.conn.commit()
+    rdat = {"SEREBO Black Box": db,
+            "Black Box Path": str(db.path),
+            "architecture": str(data["architecture"]),
+            "machine": str(data["machine"]),
+            "node": str(data["node"]),
+            "platform": str(data["platform"]),
+            "processor": str(data["processor"]),
+            "python_build": str(data["python_build"]),
+            "python_compiler": str(data["python_compiler"]),
+            "python_implementation": str(data["python_implementation"]),
+            "python_branch": str(data["python_branch"]),
+            "python_revision": str(data["python_revision"]),
+            "python_version": str(data["python_version"]),
+            "release": str(data["release"]),
+            "system": str(data["system"]),
+            "version": str(data["version"]),
+            "hashdata": str(data["hashdata"]),
+            "hash_md5": str(data["hash_md5"]),
+            "hash_sha1": str(data["hash_sha1"]),
+            "hash_sha224": str(data["hash_sha224"]),
+            "hash_sha3_224": str(data["hash_sha3_224"]),
+            "hash_sha256": str(data["hash_sha256"]),
+            "hash_sha3_256": str(data["hash_sha3_256"]),
+            "hash_sha384": str(data["hash_sha384"]),
+            "hash_sha3_384": str(data["hash_sha3_384"]),
+            "hash_sha512": str(data["hash_sha512"]),
+            "hash_sha3_512": str(data["hash_sha3_512"]),
+            "hash_blake2b": str(data["hash_blake2b"]),
+            "hash_blake2s": str(data["hash_blake2s"])}
+    return rdat
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -175,6 +233,7 @@ if __name__ == "__main__":
     elif args.command.lower() == "intext": result = insertText(args.message, args.description, args.bbpath)
     elif args.command.lower() == "logfile": result = logFile(args.filepath,  args.description, args.bbpath)
     elif args.command.lower() == "sysdata": result = systemData()
+    elif args.command.lower() == "sysrecord": result = systemRecord(args.bbpath)
 
     for key in result: print("%s: %s" % (str(key), str(result[key])))
     """
@@ -202,7 +261,6 @@ if __name__ == "__main__":
          "searchfile": searchFile,
          "selfsign": selfSign,
          "shash": stringHash,
-         "sysrecord": systemRecord,
          "viewntpnote": viewNTPNotarizations,
          "viewselfnote": viewSelfNotarizations,
          "viewsnnote": viewNotaryNotarizations,
