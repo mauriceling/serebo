@@ -829,6 +829,59 @@ def backup(filepath="blackbox_backup.sdb",
                 "Backup Path": filepath}
         return rdat
 
+def dump(dumpfolder=".", prefix="dumpBB", 
+         bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to dump individual data tables from SEREBO Black Box into text files - This does not insert a record into SEREBO Black Box.
+
+    Usage:
+
+        python serebo.py dump --dumpfolder=<folder to save dump files> --prefix=<prefix for individual dump files> --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py dump --dumpfolder="." --prefix="dumpBB" --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param dumpfolder String: Folder to save dump files. Default = "." (current working directory).
+    @param prefix String: Prefix for individual dump files. Default = "dumpBB".
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
+    """
+    db = bb.connectDB(bbpath)
+    tableSet = {"metadata": ["key", "value"],
+                "notary": ["dtstamp", 
+                           "alias",
+                           "owner",
+                           "email",
+                           "notaryDTS",
+                           "notaryAuthorization",
+                           "notaryURL"],
+                "systemdata": ["dtstamp", "key", "value"],
+                "datalog": ["dtstamp",
+                            "hash",
+                            "data",
+                            "description"],
+                "blockchain": ["c_ID", "c_dtstamp",
+                               "c_randomstring", "c_hash",
+                               "p_ID", "p_dtstamp",
+                               "p_randomstring", "p_hash", "data"],
+                "eventlog": ["dtstamp", "fID", "description"],
+                "eventlog_datamap": ["dtstamp", "fID", 
+                                     "key", "value"]}
+    print("")
+    print("Dump out data (text backup) from SEREBO Black Box ...")
+    print("")
+    for tableName in tableSet:
+        outputfile = [dumpfolder, 
+                      prefix + "_" + tableName + ".csv"]
+        outputfile = os.sep.join(outputfile)
+        (outputfile, count) = bb.dumpTable(db, tableName, 
+                                           tableSet[tableName], 
+                                           outputfile)
+        print("%s table dumped into %s" % (tableName, outputfile))
+        print("Number of records dumped: %s" % count)
+        print("")
+    return {}
+
 
 if __name__ == "__main__":
     # Argument Parser
@@ -836,10 +889,12 @@ if __name__ == "__main__":
     parser.add_argument("command", type=str, help="SEREBO command")
     parser.add_argument("-bb", "--bbpath", type=str, default="serebo_blackbox\\blackbox.sdb", help="Path to SEREBO blackbox")
     parser.add_argument("-d", "--description", type=str, default="NA", help="Explanation string for this entry")
+    parser.add_argument("-dp", "--dumpfolder", type=str, default=".", help="Folder to dump files")
     parser.add_argument("-f", "--filepath", type=str, default=None, help="Path of file")
     parser.add_argument("-l", "--length", type=int, default=10, help="Length of item to generate")
     parser.add_argument("-m", "--message", type=str, help="Text string to be processed")
     parser.add_argument("-mo", "--mode", type=str, default="like", help="Type of processing mode")
+    parser.add_argument("-p", "--prefix", type=str, default="dumpBB", help="Name to prefix output files")
     args = parser.parse_args()
 
     # Command Routers
@@ -850,6 +905,7 @@ if __name__ == "__main__":
     elif args.command.lower() == "audit_datahash": result = auditDatahash(args.bbpath)
     elif args.command.lower() == "backup": result = backup(args.filepath, args.bbpath)
     elif args.command.lower() == "checkhash": result = checkHash(args.filepath, args.bbpath)
+    elif args.command.lower() == "dump": result = dump(args.dumpfolder, args.prefix, args.bbpath)
     elif args.command.lower() == "dumphash": result = dumpHash(args.filepath, args.bbpath)
     elif args.command.lower() == "fhash": result = fileHash(args.filepath)
     elif args.command.lower() == "init": result = initialize(args.bbpath)
@@ -889,7 +945,6 @@ if __name__ == "__main__":
 "audit_notarizebb": auditNotarizeBB,
 "audit_register": auditRegister,
 "changealias": changeAlias,
-"dump": dump,
 "notarizebb": notarizeBlackbox,
 "register": registerBlackbox,
 "viewsnnote": viewNotaryNotarizations,
