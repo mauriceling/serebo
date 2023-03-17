@@ -1,22 +1,4 @@
-def fileHash(filepath):
-    """!
-    Function to generate and print out hash of a file.
 
-    Usage:
-
-        python serebo.py fhash --filepath=<path of file to hash>
-
-    For example:
-
-        python serebo.py fhash --filepath=doxygen_serebo
-
-    @param fileapth String: Path of file to log in SEREBO black box.
-    """
-    fHash = bb.fileHash(filepath)
-    print("")
-    rdat = {"File Path": str(filepath),
-            "File Hash": str(fHash)}
-    return rdat
 
 def localCode(length, description=None, 
               bbpath="serebo_blackbox\\blackbox.sdb"):

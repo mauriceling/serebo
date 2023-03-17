@@ -217,6 +217,26 @@ def systemRecord(bbpath="serebo_blackbox\\blackbox.sdb"):
             "hash_blake2s": str(data["hash_blake2s"])}
     return rdat
 
+def fileHash(filepath):
+    """!
+    Function to generate and print out hash of a file.
+
+    Usage:
+
+        python serebo.py fhash --filepath=<path of file to hash>
+
+    For example:
+
+        python serebo.py fhash --filepath=doxygen_serebo
+
+    @param fileapth String: Path of file to process.
+    """
+    fHash = bb.fileHash(filepath)
+    print("")
+    rdat = {"File Path": str(filepath),
+            "File Hash": str(fHash)}
+    return rdat
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -229,9 +249,10 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.command.lower() == "init": result = initialize(args.bbpath)
+    if args.command.lower() == "fhash": result = fileHash(args.filepath)
+    elif args.command.lower() == "init": result = initialize(args.bbpath)
     elif args.command.lower() == "intext": result = insertText(args.message, args.description, args.bbpath)
-    elif args.command.lower() == "logfile": result = logFile(args.filepath,  args.description, args.bbpath)
+    elif args.command.lower() == "logfile": result = logFile(args.filepath, args.description, args.bbpath)
     elif args.command.lower() == "sysdata": result = systemData()
     elif args.command.lower() == "sysrecord": result = systemRecord(args.bbpath)
 
@@ -250,7 +271,6 @@ if __name__ == "__main__":
          "checkhash": checkHash,
          "dump": dump,
          "dumphash": dumpHash,
-         "fhash": fileHash,
          "localcode": localCode,
          "localdts": localDTS,
          "notarizebb": notarizeBlackbox,
