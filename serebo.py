@@ -41,8 +41,7 @@ def initialize(bbpath="serebo_blackbox\\blackbox.sdb"):
 
         python serebo.py init --bbpath="serebo_blackbox\\blackbox.sdb"
 
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
     """
     db = bb.connectDB(bbpath)
     try:
@@ -69,10 +68,8 @@ def insertText(message, description="NA",
         python serebo.py intext --message="This is a text message for insertion" --description="Texting 1" --bbpath="serebo_blackbox\\blackbox.sdb"
 
     @param message String: Text string to be inserted.
-    @param description String: Explanation string for this entry 
-    event. Default = NA.
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
+    @param description String: Explanation string for this entry event. Default = NA.
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
     """
     db = bb.connectDB(bbpath)
     rdata = bb.insertText(db, message, description)
@@ -100,10 +97,8 @@ def logFile(filepath, description="NA",
         python serebo.py logfile --filepath=doxygen_serebo  --description="Doxygen file for SEREBO" --bbpath="serebo_blackbox\\blackbox.sdb"
 
     @param fileapth String: Path of file to log in SEREBO black box.
-    @param description String: Explanation string for this entry 
-    event. Default = NA.
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
+    @param description String: Explanation string for this entry event. Default = NA.
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
     """
     db = bb.connectDB(bbpath)
     rdata = bb.logFile(db, filepath, description)
@@ -120,8 +115,7 @@ def logFile(filepath, description="NA",
 def systemData():
     
     """!
-    Function to print out data and test hashes of current platform - 
-    This does not insert a record into SEREBO Black Box.
+    Function to print out data and test hashes of current platform - This does not insert a record into SEREBO Black Box.
 
     Usage:
 
@@ -171,8 +165,7 @@ def systemRecord(bbpath="serebo_blackbox\\blackbox.sdb"):
 
         python serebo.py sysrecord --bbpath="serebo_blackbox\\blackbox.sdb"
 
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
     """
     db = bb.connectDB(bbpath)
     data = bb.systemData()
@@ -240,8 +233,7 @@ def fileHash(filepath):
 def localCode(length, description=None, 
               bbpath="serebo_blackbox\\blackbox.sdb"):
     """!
-    Function to generate a random string, and log this generation into 
-    SEREBO Black Box.
+    Function to generate a random string, and log this generation into SEREBO Black Box.
 
     Usage:
 
@@ -252,10 +244,8 @@ def localCode(length, description=None,
         python serebo.py localcode --length=10 --description="Notarizing certificate ABC123" --bbpath="serebo_blackbox\\blackbox.sdb"
 
     @param length Integer: Length of random string to generate
-    @param description String: Explanation string for this entry 
-    event. Default = None.
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
+    @param description String: Explanation string for this entry event. Default = None.
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
     """
     db = bb.connectDB(bbpath)
     rstring = bb.randomString(db, length)
@@ -282,8 +272,7 @@ def localDTS(bbpath="serebo_blackbox\\blackbox.sdb"):
 
         python serebo.py localdts --bbpath="serebo_blackbox\\blackbox.sdb"
 
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
     """
     db = bb.connectDB(bbpath)
     dts = bb.dateTime(db)
@@ -291,6 +280,30 @@ def localDTS(bbpath="serebo_blackbox\\blackbox.sdb"):
     rdat = {"SEREBO Black Box": db,
             "Black Box Path": str(db.path),
             "Date Time Stamp": str(dts)}
+    return rdat
+
+def stringHash(message, bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to generate hash for a data string. This event is not logged.
+
+    Usage:
+
+        python serebo.py shash --message=<string to hash> --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py shash --message="SEREBO is hosted at https://github.com/mauriceling/serebo" --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param message String: Message to generate hash.
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
+    """
+    db = bb.connectDB(bbpath)
+    x = bb.stringHash(db, message)
+    print("")
+    rdat = {"SEREBO Black Box": db,
+            "Black Box Path": str(db.path),
+            "Data String": str(message),
+            "Data Hash": str(x)}
     return rdat
 
 
@@ -302,7 +315,7 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--description", type=str, default="NA", help="Explanation string for this entry")
     parser.add_argument("-f", "--filepath", type=str, default=None, help="Path of file")
     parser.add_argument("-l", "--length", type=int, default=10, help="Length of item to generate")
-    parser.add_argument("-m", "--message", type=str, help="Text string to be inserted")
+    parser.add_argument("-m", "--message", type=str, help="Text string to be processed")
 
     args = parser.parse_args()
 
@@ -312,6 +325,7 @@ if __name__ == "__main__":
     elif args.command.lower() == "localcode": result = localCode(args.length, args.description, args.bbpath)
     elif args.command.lower() == "localdts": result = localDTS(args.bbpath)
     elif args.command.lower() == "logfile": result = logFile(args.filepath, args.description, args.bbpath)
+    elif args.command.lower() == "shash": result = stringHash(args.message, args.bbpath)
     elif args.command.lower() == "sysdata": result = systemData()
     elif args.command.lower() == "sysrecord": result = systemRecord(args.bbpath)
 
@@ -336,7 +350,6 @@ if __name__ == "__main__":
 "searchdesc": searchDescription,
 "searchfile": searchFile,
 "selfsign": selfSign,
-"shash": stringHash,
 "viewntpnote": viewNTPNotarizations,
 "viewselfnote": viewSelfNotarizations,
 "viewsnnote": viewNotaryNotarizations,

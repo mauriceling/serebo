@@ -1,29 +1,3 @@
-def stringHash(dstring, bbpath="serebo_blackbox\\blackbox.sdb"):
-    """!
-    Function to generate hash for a data string. This event is not 
-    logged.
-
-    Usage:
-
-        python serebo.py shash --dstring=<string to hash> --bbpath=<path to SEREBO black box> 
-
-    For example:
-
-        python serebo.py shash --dstring="SEREBO is hosted at https://github.com/mauriceling/serebo" --bbpath="serebo_blackbox\\blackbox.sdb"
-
-    @param dstring String: String to generate hash.
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
-    """
-    db = bb.connectDB(bbpath)
-    x = bb.stringHash(db, dstring)
-    print("")
-    rdat = {"SEREBO Black Box": db,
-            "Black Box Path": str(db.path),
-            "Data String": str(dstring),
-            "Data Hash": str(x)}
-    return rdat
-
 def registerBlackbox(owner, email, alias, 
                      notaryURL="https://mauricelab.pythonanywhere.com/serebo_notary/services/call/xmlrpc",
                      bbpath="serebo_blackbox\\blackbox.sdb"):
