@@ -260,47 +260,6 @@ def dumpHash(outputf, bbpath="serebo_blackbox\\blackbox.sdb"):
             "Number of Records": str(count)}
     return rdat
 
-def auditBlockchainHash(bbpath="serebo_blackbox\\blackbox.sdb"):
-    """!
-    Function to check for accuracy in blockchain hash generation 
-    within SEREBO Black Box - recorded hash in blockchain and computed 
-    hash should be identical. This does not insert a record into 
-    SEREBO Black Box.
-
-    Usage: 
-
-        python serebo.py audit_blockchainhash --bbpath=<path to SEREBO black box>
-
-    For example:
-
-        python serebo.py audit_blockchainhash --bbpath="serebo_blackbox\\blackbox.sdb"
-
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
-    """
-    db = bb.connectDB(bbpath)
-    sqlstmt = """select c_ID, p_dtstamp, p_randomstring, p_hash, data, c_hash from blockchain"""
-    print("")
-    print("Audit SEREBO Black Box Blockchain hashes ...")
-    print("")
-    for row in db.cur.execute(sqlstmt):
-        ID = str(row[0])
-        p_dtstamp = str(row[1])
-        p_randomstring = str(row[2])
-        p_hash = str(row[3])
-        data = str(row[4])
-        c_hash = str(row[5])
-        dhash = "".join([str(p_dtstamp), str(p_randomstring),
-                         str(p_hash), str(data)])
-        dhash = bytes(dhash, "utf-8")
-        tHash = db.hash(dhash)
-        if tHash == c_hash:
-            print("Verified record %s in Blockchain" % ID)
-        else:
-            print("ERROR in record %s in Blockchain" % ID)
-            print("Hash in record: %s" % c_hash)
-            print("Computed hash: %s" % tHash)
-
 def checkHash(hashfile, bbpath="serebo_blackbox\\blackbox.sdb"):
     """!
     Function to compare record hash from SEREBO Black Box with that in 
