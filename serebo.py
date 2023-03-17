@@ -692,6 +692,37 @@ def NTPSign(bbpath="serebo_blackbox\\blackbox.sdb"):
             "NTP Server IP": str(ntp_ip)}
     return rdat
 
+def viewNTPNotarizations(bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to view all self-notarization(s) by NTP time server for this SEREBO Black Box - This does not insert a record into SEREBO Black Box.
+
+    Usage:
+
+        python serebo.py viewntpnote --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py viewntpnote --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
+    """
+    db = bb.connectDB(bbpath)
+    print("")
+    print("Black Box Path: %s" % str(bbpath))
+    sqlstmt = """select dtstamp, data, description from datalog where description like 'NTP server (self) notarization%'"""
+    print("")
+    print("Self-Notarization(s) by NTP Time Server(s) ...")
+    rdat = []
+    for row in db.cur.execute(sqlstmt):
+        description = [x.strip() for x in str(row[2]).split("|")]
+        tempD = {"Date Time Stamp": str(row[0]),
+                 "Random Code": str(row[1]),
+                 "NTP Seconds Since Epoch": description[1],
+                 "NTP Date Time": description[2],
+                 "NTP Server IP": description[3]}
+        rdat.append(tempD)
+    return rdat
+
 
 if __name__ == "__main__":
     # Argument Parser
@@ -726,6 +757,7 @@ if __name__ == "__main__":
     elif args.command.lower() == "sysdata": result = systemData()
     elif args.command.lower() == "sysrecord": result = systemRecord(args.bbpath)
     elif args.command.lower() == "viewselfnote": result = viewSelfNotarizations(args.bbpath)
+    elif args.command.lower() == "viewntpnote": result = viewNTPNotarizations(args.bbpath)
     else: result = {"Error": "Command not recognized",
                     "Command": args.command.lower(),
                     "--bbpath": args.bbpath,
@@ -754,7 +786,6 @@ if __name__ == "__main__":
 "dumphash": dumpHash,
 "notarizebb": notarizeBlackbox,
 "register": registerBlackbox,
-"viewntpnote": viewNTPNotarizations,
 "viewsnnote": viewNotaryNotarizations,
 "viewreg": viewRegistration
     """
