@@ -237,6 +237,39 @@ def fileHash(filepath):
             "File Hash": str(fHash)}
     return rdat
 
+def localCode(length, description=None, 
+              bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to generate a random string, and log this generation into 
+    SEREBO Black Box.
+
+    Usage:
+
+        python serebo.py localcode --length=<length of random string> --description=<explanatory description for this insertion> --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py localcode --length=10 --description="Notarizing certificate ABC123" --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param length Integer: Length of random string to generate
+    @param description String: Explanation string for this entry 
+    event. Default = None.
+    @param bbpath String: Path to SEREBO black box. Default = 
+    "serebo_blackbox\\blackbox.sdb".
+    """
+    db = bb.connectDB(bbpath)
+    rstring = bb.randomString(db, length)
+    description = ["Local random string generation"] + [description]
+    description = " | ".join(description)
+    rdata = bb.insertFText(db, rstring, description)
+    print("")
+    print("Generate Random String (Local) ...")
+    rdat = {"SEREBO Black Box": db,
+            "Black Box Path": str(db.path),
+            "Date Time Stamp": str(rdata["DateTimeStamp"]),
+            "Random String": str(rstring)}
+    return rdat
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -245,6 +278,7 @@ if __name__ == "__main__":
     parser.add_argument("-bb", "--bbpath", type=str, help="Path to SEREBO blackbox")
     parser.add_argument("-d", "--description", type=str, default="NA", help="Explanation string for this entry")
     parser.add_argument("-f", "--filepath", type=str, default=None, help="Path of file")
+    parser.add_argument("-l", "--length", type=int, default=10, help="Length of item to generate")
     parser.add_argument("-m", "--message", type=str, help="Text string to be inserted")
 
     args = parser.parse_args()
@@ -252,6 +286,7 @@ if __name__ == "__main__":
     if args.command.lower() == "fhash": result = fileHash(args.filepath)
     elif args.command.lower() == "init": result = initialize(args.bbpath)
     elif args.command.lower() == "intext": result = insertText(args.message, args.description, args.bbpath)
+    elif args.command.lower() == "localcode": result = localCode(args.length, args.description, args.bbpath)
     elif args.command.lower() == "logfile": result = logFile(args.filepath, args.description, args.bbpath)
     elif args.command.lower() == "sysdata": result = systemData()
     elif args.command.lower() == "sysrecord": result = systemRecord(args.bbpath)
@@ -271,7 +306,6 @@ if __name__ == "__main__":
          "checkhash": checkHash,
          "dump": dump,
          "dumphash": dumpHash,
-         "localcode": localCode,
          "localdts": localDTS,
          "notarizebb": notarizeBlackbox,
          "ntpsign": NTPSign,

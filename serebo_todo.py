@@ -1,38 +1,3 @@
-
-
-def localCode(length, description=None, 
-              bbpath="serebo_blackbox\\blackbox.sdb"):
-    """!
-    Function to generate a random string, and log this generation into 
-    SEREBO Black Box.
-
-    Usage:
-
-        python serebo.py localcode --length=<length of random string> --description=<explanatory description for this insertion> --bbpath=<path to SEREBO black box> 
-
-    For example:
-
-        python serebo.py localcode --length=10 --description="Notarizing certificate ABC123" --bbpath="serebo_blackbox\\blackbox.sdb"
-
-    @param length Integer: Length of random string to generate
-    @param description String: Explanation string for this entry 
-    event. Default = None.
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
-    """
-    db = bb.connectDB(bbpath)
-    rstring = bb.randomString(db, length)
-    description = ["Local random string generation"] + [description]
-    description = " | ".join(description)
-    rdata = bb.insertFText(db, rstring, description)
-    print("")
-    print("Generate Random String (Local) ...")
-    rdat = {"SEREBO Black Box": db,
-            "Black Box Path": str(db.path),
-            "Date Time Stamp": str(rdata["DateTimeStamp"]),
-            "Random String": str(rstring)}
-    return rdat
-
 def localDTS(bbpath="serebo_blackbox\\blackbox.sdb"):
     """!
     Function to get date time string. This event is not logged.
