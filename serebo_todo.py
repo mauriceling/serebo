@@ -299,46 +299,6 @@ def checkHash(hashfile, bbpath="serebo_blackbox\\blackbox.sdb"):
             print("Hash in Hash File: %s" % thash)
             print("Hash in Data Log: %s" % dhash)
 
-def NTPSign(bbpath="serebo_blackbox\\blackbox.sdb"):
-    """!
-    Function to self-sign (self notarization) SEREBO Black Box using 
-    NTP (Network Time Protocol) server.
-
-    Usage:
-
-        python serebo.py ntpsign --bbpath=<path to SEREBO black box> 
-
-    For example:
-
-        python serebo.py ntpsign --bbpath="serebo_blackbox\\blackbox.sdb"
-
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
-    """
-    db = bb.connectDB(bbpath)
-    ntp = bb.ntplib.NTPClient()
-    rstring = bb.randomString(db, 32)
-    response = ntp.request("pool.ntp.org", version=3)
-    dtstamp = bb.gmtime(response.tx_time)
-    ntp_ip = bb.ntplib.ref_id_to_text(response.ref_id)
-    description = ["NTP server (self) notarization",
-                   "Seconds Since Epoch: %s" % str(response.tx_time),
-                   "NTP Date Time: %s" % str(dtstamp),
-                   "NTP Server IP: %s" % str(ntp_ip)]
-    description = " | ".join(description)
-    rdata = bb.insertFText(db, rstring, description)
-    print("")
-    print("Self-Signing / Self-Notarization ...")
-    print("")
-    rdat = {"SEREBO Black Box": db,
-            "Black Box Path": str(db.path),
-            "Date Time Stamp": str(rdata["DateTimeStamp"]),
-            "Random String": str(rstring),
-            "Seconds Since Epoch": str(response.tx_time),
-            "NTP Date Time": str(dtstamp),
-            "NTP Server IP": str(ntp_ip)}
-    return rdat
-
 def backup(backuppath="blackbox_backup.sdb",
            bbpath="serebo_blackbox\\blackbox.sdb"):
     """!
