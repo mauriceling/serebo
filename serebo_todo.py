@@ -65,32 +65,6 @@ def registerBlackbox(owner, email, alias,
                 "Notary URL": str(notaryURL)}
         return rdat
 
-def selfSign(bbpath="serebo_blackbox\\blackbox.sdb"):
-    """!
-    Function to self-sign (self notarization) SEREBO Black Box.
-
-    Usage:
-
-        python serebo.py selfsign --bbpath=<path to SEREBO black box> 
-
-    For example:
-
-        python serebo.py selfsign --bbpath="serebo_blackbox\\blackbox.sdb"
-
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
-    """
-    db = bb.connectDB(bbpath)
-    rstring = bb.randomString(db, 32) 
-    rdata = bb.insertFText(db, rstring, "Self notarization")
-    print("")
-    print("Self-Signing / Self-Notarization ...")
-    rdat = {"SEREBO Black Box": db,
-            "Black Box Path": str(db.path),
-            "Date Time Stamp": str(rdata["DateTimeStamp"]),
-            "Random String": str(rstring)}
-    return rdat
-
 def notarizeBlackbox(alias, bbpath="serebo_blackbox\\blackbox.sdb"):
     """!
     Function to notarize SEREBO Black Box with SEREBO Notary.

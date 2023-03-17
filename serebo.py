@@ -306,6 +306,31 @@ def stringHash(message, bbpath="serebo_blackbox\\blackbox.sdb"):
             "Data Hash": str(x)}
     return rdat
 
+def selfSign(bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to self-sign (self-notarization) SEREBO Black Box.
+
+    Usage:
+
+        python serebo.py selfsign --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py selfsign --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
+    """
+    db = bb.connectDB(bbpath)
+    rstring = bb.randomString(db, 32) 
+    rdata = bb.insertFText(db, rstring, "Self notarization")
+    print("")
+    print("Self-Signing / Self-Notarization ...")
+    rdat = {"SEREBO Black Box": db,
+            "Black Box Path": str(db.path),
+            "Date Time Stamp": str(rdata["DateTimeStamp"]),
+            "Random String": str(rstring)}
+    return rdat
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -325,6 +350,7 @@ if __name__ == "__main__":
     elif args.command.lower() == "localcode": result = localCode(args.length, args.description, args.bbpath)
     elif args.command.lower() == "localdts": result = localDTS(args.bbpath)
     elif args.command.lower() == "logfile": result = logFile(args.filepath, args.description, args.bbpath)
+    elif args.command.lower() == "selfsign": result = selfSign(args.bbpath)
     elif args.command.lower() == "shash": result = stringHash(args.message, args.bbpath)
     elif args.command.lower() == "sysdata": result = systemData()
     elif args.command.lower() == "sysrecord": result = systemRecord(args.bbpath)
@@ -349,7 +375,6 @@ if __name__ == "__main__":
 "searchmsg": searchMessage,
 "searchdesc": searchDescription,
 "searchfile": searchFile,
-"selfsign": selfSign,
 "viewntpnote": viewNTPNotarizations,
 "viewselfnote": viewSelfNotarizations,
 "viewsnnote": viewNotaryNotarizations,
