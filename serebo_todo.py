@@ -222,46 +222,6 @@ def changeAlias(alias, newalias,
             "New Alias": newalias}
     return rdat
 
-def auditDatahash(bbpath="serebo_blackbox\\blackbox.sdb"):
-    """!
-    Function to check for accuracy of hash generations in data log 
-    within SEREBO Black Box - recorded hash in data log and computed 
-    hash should be identical. This does not insert a record into 
-    SEREBO Black Box.
-
-    Usage: 
-
-        python serebo.py audit_datahash --bbpath=<path to SEREBO black box>
-
-    For example:
-
-        python serebo.py audit_datahash --bbpath="serebo_blackbox\\blackbox.sdb"
-
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
-    """
-    db = bb.connectDB(bbpath)
-    sqlstmt = """select ID, dtstamp, data, description, hash from datalog"""
-    print("")
-    print("Audit SEREBO Black Box Data Log Records ...")
-    print("")
-    for row in db.cur.execute(sqlstmt):
-        ID = str(row[0])
-        dtstamp = str(row[1])
-        data = str(row[2])
-        description = str(row[3])
-        rHash = str(row[4])
-        dhash = bytes(dtstamp, "utf-8") + \
-                bytes(data, "utf-8") + \
-                bytes(description, "utf-8")
-        tHash = db.hash(dhash)
-        if tHash == rHash:
-            print("Verified record %s in data log" % ID)
-        else:
-            print("ERROR in record %s in data log" % ID)
-            print("Hash in record: %s" % rHash)
-            print("Computed hash: %s" % tHash)
-
 def dumpHash(outputf, bbpath="serebo_blackbox\\blackbox.sdb"):
     """!
     Function to write out record hash from SEREBO Black Box into a 
@@ -437,7 +397,7 @@ def auditBlockchainFlow(bbpath="serebo_blackbox\\blackbox.sdb"):
     db = bb.connectDB(bbpath)
     sqlstmt = """select max(c_ID) from blockchain"""
     print("")
-    print("Trace SEREBO Black Box Blockchain"s block decendancy ...")
+    print("Trace SEREBO Black Box Blockchain's block decendancy ...")
     print("")
     maxID = [row for row in db.cur.execute(sqlstmt)][0][0]
     maxID = int(maxID)
@@ -686,7 +646,7 @@ def viewSelfNotarizations(bbpath="serebo_blackbox\\blackbox.sdb"):
     db = bb.connectDB(bbpath)
     print("")
     print("Black Box Path: %s" % str(bbpath))
-    sqlstmt = """select dtstamp, data from datalog where description like "Self notarization""""
+    sqlstmt = """select dtstamp, data from datalog where description like 'Self notarization'"""
     print("")
     print("Self Notarization(s) ...")
     for row in db.cur.execute(sqlstmt):
@@ -714,7 +674,7 @@ def viewNTPNotarizations(bbpath="serebo_blackbox\\blackbox.sdb"):
     db = bb.connectDB(bbpath)
     print("")
     print("Black Box Path: %s" % str(bbpath))
-    sqlstmt = """select dtstamp, data, description from datalog where description like "NTP server (self) notarization%""""
+    sqlstmt = """select dtstamp, data, description from datalog where description like 'NTP server (self) notarization%'"""
     print("")
     print("Self-Notarization(s) by NTP Time Server(s) ...")
     for row in db.cur.execute(sqlstmt):
@@ -745,7 +705,7 @@ def viewNotaryNotarizations(bbpath="serebo_blackbox\\blackbox.sdb"):
     db = bb.connectDB(bbpath)
     print("")
     print("Black Box Path: %s" % str(bbpath))
-    sqlstmt = """select dtstamp, data, description from datalog where description like "Notarization with SEREBO Notary%""""
+    sqlstmt = """select dtstamp, data, description from datalog where description like 'Notarization with SEREBO Notary%'"""
     print("")
     print("Notarization(s) by SEREBO Notary(ies) ...")
     for row in db.cur.execute(sqlstmt):

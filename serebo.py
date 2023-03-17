@@ -465,6 +465,42 @@ def auditCount(bbpath="serebo_blackbox\\blackbox.sdb"):
             print("Number of records in datalog LESS than the number of records in blockchain")
     return {}
 
+def auditDatahash(bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to check for accuracy of hash generations in data log within SEREBO Black Box - recorded hash in data log and computed hash should be identical. This does not insert a record into SEREBO Black Box.
+
+    Usage: 
+
+        python serebo.py audit_datahash --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py audit_datahash --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    "serebo_blackbox\\blackbox.sdb".
+    """
+    db = bb.connectDB(bbpath)
+    sqlstmt = """select ID, dtstamp, data, description, hash from datalog"""
+    print("")
+    print("Audit SEREBO Black Box Data Log Records ...")
+    print("")
+    for row in db.cur.execute(sqlstmt):
+        ID = str(row[0])
+        dtstamp = str(row[1])
+        data = str(row[2])
+        description = str(row[3])
+        rHash = str(row[4])
+        dhash = bytes(dtstamp, "utf-8") + bytes(data, "utf-8") + bytes(description, "utf-8")
+        tHash = db.hash(dhash)
+        if tHash == rHash:
+            print("Verified record %s in data log" % ID)
+        else:
+            print("ERROR in record %s in data log" % ID)
+            print("Hash in record: %s" % rHash)
+            print("Computed hash: %s" % tHash)
+    return {}
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -480,6 +516,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.command.lower() == "audit_count": result = auditCount(args.bbpath)
+    elif args.command.lower() == "audit_datahash": result = auditDatahash(args.bbpath)
     elif args.command.lower() == "fhash": result = fileHash(args.filepath)
     elif args.command.lower() == "init": result = initialize(args.bbpath)
     elif args.command.lower() == "intext": result = insertText(args.message, args.description, args.bbpath)
@@ -506,7 +543,6 @@ if __name__ == "__main__":
 "audit_blockchainflow": auditBlockchainFlow,
 "audit_blockchainhash": auditBlockchainHash,
 "audit_data_blockchain": auditDataBlockchain,
-"audit_datahash": auditDatahash,
 "audit_notarizebb": auditNotarizeBB,
 "audit_register": auditRegister,
 "backup": backup,
