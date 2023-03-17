@@ -331,6 +331,33 @@ def selfSign(bbpath="serebo_blackbox\\blackbox.sdb"):
             "Random String": str(rstring)}
     return rdat
 
+def viewSelfNotarizations(bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to view all self notarizations for this SEREBO Black Box - This does not insert a record into SEREBO Black Box.
+
+    Usage:
+
+        python serebo.py viewselfnote --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py viewselfnote --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
+    """
+    db = bb.connectDB(bbpath)
+    print("")
+    print("Black Box Path: %s" % str(bbpath))
+    sqlstmt = """select dtstamp, data from datalog where description like 'Self notarization'"""
+    print("")
+    print("Self Notarization(s) ...")
+    rdat = []
+    for row in db.cur.execute(sqlstmt):
+        tempD = {"Date Time Stamp": str(row[0]),
+                 "Hash": str(row[1])}
+        rdat.append(tempD)
+    return rdat
+
 def searchMessage(message, mode="like",
                   bbpath="serebo_blackbox\\blackbox.sdb"):
     """!
@@ -667,8 +694,8 @@ def NTPSign(bbpath="serebo_blackbox\\blackbox.sdb"):
 
 
 if __name__ == "__main__":
+    # Argument Parser
     parser = argparse.ArgumentParser()
-
     parser.add_argument("command", type=str, help="SEREBO command")
     parser.add_argument("-bb", "--bbpath", type=str, default="serebo_blackbox\\blackbox.sdb", help="Path to SEREBO blackbox")
     parser.add_argument("-d", "--description", type=str, default="NA", help="Explanation string for this entry")
@@ -676,9 +703,9 @@ if __name__ == "__main__":
     parser.add_argument("-l", "--length", type=int, default=10, help="Length of item to generate")
     parser.add_argument("-m", "--message", type=str, help="Text string to be processed")
     parser.add_argument("-mo", "--mode", type=str, default="like", help="Type of processing mode")
-
     args = parser.parse_args()
 
+    # Command Routers
     if args.command.lower() == "audit_blockchainflow": result = auditBlockchainFlow(args.bbpath)
     elif args.command.lower() == "audit_blockchainhash": result = auditBlockchainHash(args.bbpath)
     elif args.command.lower() == "audit_count": result = auditCount(args.bbpath)
@@ -698,7 +725,17 @@ if __name__ == "__main__":
     elif args.command.lower() == "shash": result = stringHash(args.message, args.bbpath)
     elif args.command.lower() == "sysdata": result = systemData()
     elif args.command.lower() == "sysrecord": result = systemRecord(args.bbpath)
+    elif args.command.lower() == "viewselfnote": result = viewSelfNotarizations(args.bbpath)
+    else: result = {"Error": "Command not recognized",
+                    "Command": args.command.lower(),
+                    "--bbpath": args.bbpath,
+                    "--description": args.description,
+                    "--filepath": args.filepath,
+                    "--length": args.length,
+                    "--message": args.message,
+                    "--mode": args.mode}
 
+    # Results Display
     for key in result: 
         try:
             print("%s: %s" % (str(key), str(result[key])))
@@ -718,7 +755,6 @@ if __name__ == "__main__":
 "notarizebb": notarizeBlackbox,
 "register": registerBlackbox,
 "viewntpnote": viewNTPNotarizations,
-"viewselfnote": viewSelfNotarizations,
 "viewsnnote": viewNotaryNotarizations,
 "viewreg": viewRegistration
     """

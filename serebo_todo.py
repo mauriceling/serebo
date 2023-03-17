@@ -444,33 +444,6 @@ def auditRegister(alias, bbpath="serebo_blackbox\\blackbox.sdb"):
                 "Notary Authorization": str(notaryAuthorization)}
         return rdat
 
-def viewSelfNotarizations(bbpath="serebo_blackbox\\blackbox.sdb"):
-    """!
-    Function to view all self notarizations for this SEREBO Black 
-    Box - This does not insert a record into SEREBO Black Box.
-
-    Usage:
-
-        python serebo.py viewselfnote --bbpath=<path to SEREBO black box> 
-
-    For example:
-
-        python serebo.py viewselfnote --bbpath="serebo_blackbox\\blackbox.sdb"
-
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
-    """
-    db = bb.connectDB(bbpath)
-    print("")
-    print("Black Box Path: %s" % str(bbpath))
-    sqlstmt = """select dtstamp, data from datalog where description like 'Self notarization'"""
-    print("")
-    print("Self Notarization(s) ...")
-    for row in db.cur.execute(sqlstmt):
-        print("")
-        print("Date Time Stamp: %s" % str(row[0]))
-        print("Hash: %s" % str(row[1]))
-
 def viewNTPNotarizations(bbpath="serebo_blackbox\\blackbox.sdb"):
     """!
     Function to view all self-notarization(s) by NTP time server for 
