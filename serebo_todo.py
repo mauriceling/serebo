@@ -222,53 +222,6 @@ def changeAlias(alias, newalias,
             "New Alias": newalias}
     return rdat
 
-def auditCount(bbpath="serebo_blackbox\\blackbox.sdb"):
-    """!
-    Function to check for equal numbers of records in data log and 
-    blockchain in SEREBO Black Box - should have the same number of 
-    records. This does not insert a record into SEREBO Black Box.
-
-    Usage: 
-
-        python serebo.py audit_count --bbpath=<path to SEREBO black box>
-
-    For example:
-
-        python serebo.py audit_count --bbpath="serebo_blackbox\\blackbox.sdb"
-
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
-    """
-    db = bb.connectDB(bbpath)
-    sqlstmtA = "select ID, dtstamp from datalog"
-    sqlresultA = {}
-    for row in db.cur.execute(sqlstmtA):
-        sqlresultA[row[0]] = row[1]
-    sqlstmtB = "select c_ID, c_dtstamp from blockchain"
-    sqlresultB = {}
-    for row in db.cur.execute(sqlstmtB):
-        sqlresultB[row[0]] = row[1]
-    print("")
-    print("Audit SEREBO Black Box Data Count ...")
-    print("")
-    if len(sqlresultA) == len(sqlresultB):
-        for k in sqlresultA:
-            if sqlresultA[k] != sqlresultB[k]:
-                print("Date time stamp mismatch")
-                print("Datalog record number %s" % str(k))
-                print("Datalog date time stamp: %s" % \
-                    str(sqlresultA[k]))
-                print("Blockchain date time stamp: %s" % \
-                    str(sqlresultB[k]))
-            else:
-                print("Date time stamp match - Record %s" % str(k))
-        print("Number of records in datalog matches the number of records in blockchain")
-    else:
-        if len(sqlresultA) > len(sqlresultB):
-            print("Number of records in datalog MORE than the number of records in blockchain")
-        elif len(sqlresultA) < len(sqlresultB):
-            print("Number of records in datalog LESS than the number of records in blockchain")
-
 def auditDatahash(bbpath="serebo_blackbox\\blackbox.sdb"):
     """!
     Function to check for accuracy of hash generations in data log 
