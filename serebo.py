@@ -501,6 +501,40 @@ def auditDatahash(bbpath="serebo_blackbox\\blackbox.sdb"):
             print("Computed hash: %s" % tHash)
     return {}
 
+def auditDataBlockchain(bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to check for accuracy in data log and blockchain mapping in SEREBO Black Box - recorded hash in data log and data in 
+    blockchain should be identical. This does not insert a record into SEREBO Black Box.
+
+    Usage: 
+
+        python serebo.py audit_data_blockchain --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py audit_data_blockchain --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
+    """
+    db = bb.connectDB(bbpath)
+    sqlstmt = """select datalog.ID, datalog.dtstamp, datalog.hash, blockchain.c_dtstamp, blockchain.data from datalog inner join blockchain where datalog.ID=blockchain.c_ID and datalog.dtstamp=blockchain.c_dtstamp"""
+    print("")
+    print("Audit SEREBO Black Box - Accuracy in Data Log to Blockchain Mapping...")
+    print("")
+    for row in db.cur.execute(sqlstmt):
+        dID = str(row[0])
+        ddtstamp = str(row[1])
+        dhash = str(row[2])
+        bdtstamp = str(row[3])
+        bhash = str(row[4])
+        if dhash == bhash:
+            print("Verified record %s mapping" % dID)
+        else:
+            print("ERROR in record %s mapping" % dID)
+            print("Hash in Data Log: %s" % dHash)
+            print("Data in Blockchain: %s" % bHash)
+    return {}
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -516,6 +550,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.command.lower() == "audit_count": result = auditCount(args.bbpath)
+    elif args.command.lower() == "audit_data_blockchain": result = auditDataBlockchain(args.bbpath)
     elif args.command.lower() == "audit_datahash": result = auditDatahash(args.bbpath)
     elif args.command.lower() == "fhash": result = fileHash(args.filepath)
     elif args.command.lower() == "init": result = initialize(args.bbpath)
@@ -542,7 +577,6 @@ if __name__ == "__main__":
     """
 "audit_blockchainflow": auditBlockchainFlow,
 "audit_blockchainhash": auditBlockchainHash,
-"audit_data_blockchain": auditDataBlockchain,
 "audit_notarizebb": auditNotarizeBB,
 "audit_register": auditRegister,
 "backup": backup,
