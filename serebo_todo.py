@@ -1,35 +1,3 @@
-
-def logFile(filepath, description="NA",
-            bbpath="serebo_blackbox\\blackbox.sdb"):
-    """!
-    Function to log a file into SEREBO blackbox.
-
-    Usage:
-
-        python serebo.py logfile --filepath=<path of file to log> --description=<explanatory description for this insertion> --bbpath=<path to SEREBO black box>
-
-    For example:
-
-        python serebo.py logfile --filepath=doxygen_serebo  --description="Doxygen file for SEREBO" --bbpath="serebo_blackbox\\blackbox.sdb"
-
-    @param fileapth String: Path of file to log in SEREBO black box.
-    @param description String: Explanation string for this entry 
-    event. Default = NA.
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
-    """
-    db = bb.connectDB(bbpath)
-    rdata = bb.logFile(db, filepath, description)
-    print("")
-    print("File Logging Status ...")
-    rdat = {"SEREBO Black Box": db,
-            "Black Box Path": str(db.path),
-            "Date Time Stamp": str(rdata["DateTimeStamp"]),
-            "File Hash": str(rdata["Data"]),
-            "Description": str(rdata["UserDescription"]),
-            "Data Hash": str(rdata["DataHash"])}
-    return rdat
-
 def systemData():
     
     """!
