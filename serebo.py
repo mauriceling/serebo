@@ -270,12 +270,35 @@ def localCode(length, description=None,
             "Random String": str(rstring)}
     return rdat
 
+def localDTS(bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to get date time string. This event is not logged.
+
+    Usage:
+
+        python serebo.py localdts --bbpath=<path to SEREBO black box> 
+
+    For example:
+
+        python serebo.py localdts --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param bbpath String: Path to SEREBO black box. Default = 
+    "serebo_blackbox\\blackbox.sdb".
+    """
+    db = bb.connectDB(bbpath)
+    dts = bb.dateTime(db)
+    print("")
+    rdat = {"SEREBO Black Box": db,
+            "Black Box Path": str(db.path),
+            "Date Time Stamp": str(dts)}
+    return rdat
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("command", type=str, help="SEREBO command")
-    parser.add_argument("-bb", "--bbpath", type=str, help="Path to SEREBO blackbox")
+    parser.add_argument("-bb", "--bbpath", type=str, default="serebo_blackbox\\blackbox.sdb", help="Path to SEREBO blackbox")
     parser.add_argument("-d", "--description", type=str, default="NA", help="Explanation string for this entry")
     parser.add_argument("-f", "--filepath", type=str, default=None, help="Path of file")
     parser.add_argument("-l", "--length", type=int, default=10, help="Length of item to generate")
@@ -287,36 +310,35 @@ if __name__ == "__main__":
     elif args.command.lower() == "init": result = initialize(args.bbpath)
     elif args.command.lower() == "intext": result = insertText(args.message, args.description, args.bbpath)
     elif args.command.lower() == "localcode": result = localCode(args.length, args.description, args.bbpath)
+    elif args.command.lower() == "localdts": result = localDTS(args.bbpath)
     elif args.command.lower() == "logfile": result = logFile(args.filepath, args.description, args.bbpath)
     elif args.command.lower() == "sysdata": result = systemData()
     elif args.command.lower() == "sysrecord": result = systemRecord(args.bbpath)
 
     for key in result: print("%s: %s" % (str(key), str(result[key])))
     """
-     exposed_functions = {\
-         "audit_blockchainflow": auditBlockchainFlow,
-         "audit_blockchainhash": auditBlockchainHash,
-         "audit_count": auditCount,
-         "audit_data_blockchain": auditDataBlockchain,
-         "audit_datahash": auditDatahash,
-         "audit_notarizebb": auditNotarizeBB,
-         "audit_register": auditRegister,
-         "backup": backup,
-         "changealias": changeAlias,
-         "checkhash": checkHash,
-         "dump": dump,
-         "dumphash": dumpHash,
-         "localdts": localDTS,
-         "notarizebb": notarizeBlackbox,
-         "ntpsign": NTPSign,
-         "register": registerBlackbox,
-         "searchmsg": searchMessage,
-         "searchdesc": searchDescription,
-         "searchfile": searchFile,
-         "selfsign": selfSign,
-         "shash": stringHash,
-         "viewntpnote": viewNTPNotarizations,
-         "viewselfnote": viewSelfNotarizations,
-         "viewsnnote": viewNotaryNotarizations,
-         "viewreg": viewRegistration}
+"audit_blockchainflow": auditBlockchainFlow,
+"audit_blockchainhash": auditBlockchainHash,
+"audit_count": auditCount,
+"audit_data_blockchain": auditDataBlockchain,
+"audit_datahash": auditDatahash,
+"audit_notarizebb": auditNotarizeBB,
+"audit_register": auditRegister,
+"backup": backup,
+"changealias": changeAlias,
+"checkhash": checkHash,
+"dump": dump,
+"dumphash": dumpHash,
+"notarizebb": notarizeBlackbox,
+"ntpsign": NTPSign,
+"register": registerBlackbox,
+"searchmsg": searchMessage,
+"searchdesc": searchDescription,
+"searchfile": searchFile,
+"selfsign": selfSign,
+"shash": stringHash,
+"viewntpnote": viewNTPNotarizations,
+"viewselfnote": viewSelfNotarizations,
+"viewsnnote": viewNotaryNotarizations,
+"viewreg": viewRegistration
     """

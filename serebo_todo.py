@@ -1,26 +1,3 @@
-def localDTS(bbpath="serebo_blackbox\\blackbox.sdb"):
-    """!
-    Function to get date time string. This event is not logged.
-
-    Usage:
-
-        python serebo.py localdts --bbpath=<path to SEREBO black box> 
-
-    For example:
-
-        python serebo.py localdts --bbpath="serebo_blackbox\\blackbox.sdb"
-
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
-    """
-    db = bb.connectDB(bbpath)
-    dts = bb.dateTime(db)
-    print("")
-    rdat = {"SEREBO Black Box": db,
-            "Black Box Path": str(db.path),
-            "Date Time Stamp": str(dts)}
-    return rdat
-
 def stringHash(dstring, bbpath="serebo_blackbox\\blackbox.sdb"):
     """!
     Function to generate hash for a data string. This event is not 
