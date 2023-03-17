@@ -389,6 +389,37 @@ def searchDescription(message, mode="like",
         rdat.append(tempD)
     return rdat
 
+def searchFile(filepath, bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to search SEREBO Black Box for a file logging event - This does not insert a record into SEREBO Black Box.
+
+    Usage: 
+
+        python serebo.py searchfile --filepath=<path to file for searching> --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py searchfile --filepath=doxygen_serebo --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param fileapth String: Path of file to search in SEREBO black box.
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
+    """
+    db = bb.connectDB(bbpath)
+    filepath = str(filepath)
+    absPath = bb.absolutePath(filepath)
+    fHash = bb.fileHash(absPath)
+    result = bb.searchDatalog(db, fHash, "data", "exact")
+    rdat = []
+    for row in result:
+        tempD = {"File Path": filepath,
+                 "Absolute File Path": absPath,
+                 "Date Time Stamp": str(row[1]),
+                 "Message": str(row[3]),
+                 "Description": str(row[4])}
+        rdat.append(tempD)
+    return rdat
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
@@ -409,6 +440,7 @@ if __name__ == "__main__":
     elif args.command.lower() == "localdts": result = localDTS(args.bbpath)
     elif args.command.lower() == "logfile": result = logFile(args.filepath, args.description, args.bbpath)
     elif args.command.lower() == "searchdesc": result = searchDescription(args.message, args.mode, args.bbpath)
+    elif args.command.lower() == "searchfile": result = searchFile(args.filepath, args.bbpath)
     elif args.command.lower() == "searchmsg": result = searchMessage(args.message, args.mode, args.bbpath)
     elif args.command.lower() == "selfsign": result = selfSign(args.bbpath)
     elif args.command.lower() == "shash": result = stringHash(args.message, args.bbpath)
@@ -439,7 +471,6 @@ if __name__ == "__main__":
 "notarizebb": notarizeBlackbox,
 "ntpsign": NTPSign,
 "register": registerBlackbox,
-"searchfile": searchFile,
 "viewntpnote": viewNTPNotarizations,
 "viewselfnote": viewSelfNotarizations,
 "viewsnnote": viewNotaryNotarizations,

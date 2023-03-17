@@ -222,65 +222,6 @@ def changeAlias(alias, newalias,
             "New Alias": newalias}
     return rdat
 
-def searchFile(filepath, bbpath="serebo_blackbox\\blackbox.sdb"):
-    """!
-    Function to search SEREBO Black Box for a file logging event - 
-    This does not insert a record into SEREBO Black Box.
-
-    Usage: 
-
-        python serebo.py searchfile --filepath=<path to file for searching> --bbpath=<path to SEREBO black box>
-
-    For example:
-
-        python serebo.py searchfile --filepath=doxygen_serebo --bbpath="serebo_blackbox\\blackbox.sdb"
-
-    @param fileapth String: Path of file to search in SEREBO black box.
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
-    """
-    db = bb.connectDB(bbpath)
-    filepath = str(filepath)
-    absPath = bb.absolutePath(filepath)
-    fHash = bb.fileHash(absPath)
-    result = bb.searchDatalog(db, fHash, "data", "exact")
-    print("")
-    print("Search Result (Search by File) ...")
-    print("")
-    print("File Path: %s" % filepath)
-    print("Absolute File Path: %s" % absPath)
-    print("")
-    for row in result:
-        print("Date Time Stamp: %s" % str(row[1]))
-        print("Message: %s" % str(row[3]))
-        print("Description: %s" % str(row[4]))
-        print("")
-
-def searchFileReturn(filepath, bbpath="serebo_blackbox\\blackbox.sdb"):
-    """!
-    Function to search SEREBO Black Box for a file logging event - 
-    This does not insert a record into SEREBO Black Box. This is 
-    identical to searchFile() but used when results needs to be 
-    returned to the calling function.
-
-    @param fileapth String: Path of file to search in SEREBO black box.
-    @param bbpath String: Path to SEREBO black box. Default = 
-    "serebo_blackbox\\blackbox.sdb".
-    """
-    db = bb.connectDB(bbpath)
-    filepath = str(filepath)
-    absPath = bb.absolutePath(filepath)
-    fHash = bb.fileHash(absPath)
-    result = bb.searchDatalog(db, fHash, "data", "exact")
-    rdat = ["File Path: %s" % filepath,
-            "Absolute File Path: %s" % absPath]
-    for row in result:
-        tempD = {"Date Time Stamp": str(row[1]),
-                 "Message": str(row[3]),
-                 "Description": str(row[4])}
-        rdat.append(tempD)
-    return rdat
-
 def auditCount(bbpath="serebo_blackbox\\blackbox.sdb"):
     """!
     Function to check for equal numbers of records in data log and 
@@ -512,7 +453,7 @@ def checkHash(hashfile, bbpath="serebo_blackbox\\blackbox.sdb"):
         ID = record[0]
         dtstamp = record[1]
         thash = record[2]
-        sqlstmt = """select hash from datalog where ID="%s" and dtstamp="%s"""" % (ID, dtstamp)
+        sqlstmt = """select hash from datalog where ID="%s" and dtstamp="%s"""" % (ID, dtstamp)"""
         dhash = [row for row in db.cur.execute(sqlstmt)][0][0]
         dhash = str(dhash)
         if thash == dhash:
