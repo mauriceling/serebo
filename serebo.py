@@ -8,7 +8,7 @@ not-for-profit use only
 
 
 SEREBO is free software: you can redistribute it and/or modify it 
-under the terms of the GNU General Public License as published by the 
+under the messages of the GNU General Public License as published by the 
 Free Software Foundation, either version 3 of the License, or (at your 
 option) any later version.
 
@@ -331,6 +331,35 @@ def selfSign(bbpath="serebo_blackbox\\blackbox.sdb"):
             "Random String": str(rstring)}
     return rdat
 
+def searchMessage(message, mode="like",
+                  bbpath="serebo_blackbox\\blackbox.sdb"):
+    """!
+    Function to search SEREBO Black Box for a message - This does not insert a record into SEREBO Black Box.
+
+    Usage: 
+
+        python serebo.py searchmsg --mode=<search mode> --message=<search message> --bbpath=<path to SEREBO black box>
+
+    For example:
+
+        python serebo.py searchmsg --mode="like" --message="Self%" --bbpath="serebo_blackbox\\blackbox.sdb"
+
+    @param message String: Case sensitive search message.
+    @param mode String: Mode of search. Allowable modes are "like" and "exact". If mode is "like", wildcards such as "_" (matches any single character) and "%" (matches any number of characters). Default = "like".
+    @param bbpath String: Path to SEREBO black box. Default = "serebo_blackbox\\blackbox.sdb".
+    """
+    db = bb.connectDB(bbpath)
+    mode = str(mode)
+    message = str(message)
+    result = bb.searchDatalog(db, message, "data", mode)
+    rdat = []
+    for row in result:
+        tempD = {"Date Time Stamp": str(row[1]),
+                 "Message": str(row[3]),
+                 "Description": str(row[4])}
+        rdat.append(tempD)
+    return rdat
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -341,6 +370,7 @@ if __name__ == "__main__":
     parser.add_argument("-f", "--filepath", type=str, default=None, help="Path of file")
     parser.add_argument("-l", "--length", type=int, default=10, help="Length of item to generate")
     parser.add_argument("-m", "--message", type=str, help="Text string to be processed")
+    parser.add_argument("-mo", "--mode", type=str, default="like", help="Type of processing mode")
 
     args = parser.parse_args()
 
@@ -350,12 +380,20 @@ if __name__ == "__main__":
     elif args.command.lower() == "localcode": result = localCode(args.length, args.description, args.bbpath)
     elif args.command.lower() == "localdts": result = localDTS(args.bbpath)
     elif args.command.lower() == "logfile": result = logFile(args.filepath, args.description, args.bbpath)
+    elif args.command.lower() == "searchmsg": result = searchMessage(args.message, args.mode, args.bbpath)
     elif args.command.lower() == "selfsign": result = selfSign(args.bbpath)
     elif args.command.lower() == "shash": result = stringHash(args.message, args.bbpath)
     elif args.command.lower() == "sysdata": result = systemData()
     elif args.command.lower() == "sysrecord": result = systemRecord(args.bbpath)
 
-    for key in result: print("%s: %s" % (str(key), str(result[key])))
+    for key in result: 
+        try:
+            print("%s: %s" % (str(key), str(result[key])))
+        except TypeError:
+            for row in result:
+                for k2 in row:
+                    print("%s: %s" % (str(k2), str(row[k2])))
+            print("")
     """
 "audit_blockchainflow": auditBlockchainFlow,
 "audit_blockchainhash": auditBlockchainHash,
@@ -372,7 +410,6 @@ if __name__ == "__main__":
 "notarizebb": notarizeBlackbox,
 "ntpsign": NTPSign,
 "register": registerBlackbox,
-"searchmsg": searchMessage,
 "searchdesc": searchDescription,
 "searchfile": searchFile,
 "viewntpnote": viewNTPNotarizations,
